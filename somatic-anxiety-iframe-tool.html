@@ -1,0 +1,1168 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Somatic Anxiety Regulation Tool</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --page: #f4f7f5;
+      --ink: #17211d;
+      --muted: #5a6962;
+      --line: #cad7d0;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--page);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .embed-shell {
+      width: min(1180px, calc(100vw - 28px));
+      margin: 18px auto;
+    }
+
+    .tool-frame {
+      width: 100%;
+      min-height: calc(100vh - 36px);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: white;
+      box-shadow: 0 18px 50px rgba(35, 54, 46, 0.14);
+    }
+  </style>
+</head>
+<body>
+  <main class="embed-shell" aria-label="Embedded somatic anxiety regulation tool">
+    <iframe
+      id="somaticAnxietyInnerFrame"
+      class="tool-frame"
+      title="Somatic Anxiety Regulation Tool for GAD with Panic"
+      sandbox="allow-scripts allow-forms allow-same-origin"
+      srcdoc='
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      --bg: #f7f5ee;
+      --panel: #ffffff;
+      --panel-soft: #eef6f2;
+      --ink: #13231e;
+      --muted: #5c6d65;
+      --line: #d3ded8;
+      --green: #1f7a5c;
+      --green-dark: #14543f;
+      --teal: #0f6f7d;
+      --gold: #a56612;
+      --red: #b43131;
+      --blue: #335d93;
+      --shadow: 0 16px 36px rgba(34, 49, 43, 0.12);
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.45;
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 320px 1fr;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 24px 20px;
+      background: #17382e;
+      color: white;
+      overflow: auto;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    .mark {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #e8c46a;
+      color: #17382e;
+      font-weight: 900;
+      font-size: 22px;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 4px;
+      font-size: 24px;
+      line-height: 1.1;
+      letter-spacing: 0;
+    }
+
+    .sidebar p {
+      color: rgba(255,255,255,0.78);
+      margin-bottom: 18px;
+      font-size: 14px;
+    }
+
+    .week-tabs {
+      display: grid;
+      gap: 8px;
+      margin: 20px 0;
+    }
+
+    .week-tab {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      min-height: 44px;
+      padding: 10px 12px;
+      border: 1px solid rgba(255,255,255,0.16);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,0.07);
+      color: white;
+      text-align: left;
+    }
+
+    .week-tab.active {
+      background: #ffffff;
+      color: #17382e;
+    }
+
+    .mini {
+      font-size: 12px;
+      color: currentColor;
+      opacity: 0.75;
+    }
+
+    .progress-block {
+      margin-top: 24px;
+      padding: 14px;
+      border-radius: var(--radius);
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.16);
+    }
+
+    .progress-line {
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.2);
+      overflow: hidden;
+      margin: 10px 0;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      background: #e8c46a;
+      transition: width 220ms ease;
+    }
+
+    .main {
+      padding: 28px;
+    }
+
+    .top-band {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(260px, 0.65fr);
+      gap: 16px;
+      align-items: stretch;
+      margin-bottom: 18px;
+    }
+
+    .intro,
+    .medical {
+      padding: 22px;
+      border-radius: var(--radius);
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .intro {
+      background: linear-gradient(135deg, #ffffff 0%, #eef6f2 100%);
+    }
+
+    .intro h2 {
+      margin-bottom: 8px;
+      font-size: 28px;
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+
+    .medical {
+      box-shadow: none;
+      border-color: #e4c7c7;
+      background: #fff7f4;
+    }
+
+    .medical strong {
+      color: var(--red);
+    }
+
+    .privacy-note {
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: var(--radius);
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.16);
+      color: rgba(255,255,255,0.86);
+      font-size: 13px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 16px;
+    }
+
+    .panel {
+      border-radius: var(--radius);
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+
+    .panel h2 {
+      font-size: 20px;
+      margin-bottom: 10px;
+      letter-spacing: 0;
+    }
+
+    .span-4 {
+      grid-column: span 4;
+    }
+
+    .span-5 {
+      grid-column: span 5;
+    }
+
+    .span-7 {
+      grid-column: span 7;
+    }
+
+    .span-8 {
+      grid-column: span 8;
+    }
+
+    .span-12 {
+      grid-column: span 12;
+    }
+
+    .symptom-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .field-stack {
+      display: grid;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .chip-check {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 40px;
+      padding: 9px 10px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fbfcfa;
+      color: var(--ink);
+      font-size: 14px;
+    }
+
+    .chip-check input {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--green);
+    }
+
+    .medical-check {
+      align-items: flex-start;
+      border-color: #e5b9b9;
+      background: #fff8f6;
+    }
+
+    .medical-check span {
+      display: grid;
+      gap: 3px;
+    }
+
+    .medical-check small {
+      color: #7a3333;
+    }
+
+    .rating-row {
+      display: grid;
+      grid-template-columns: 1fr 62px;
+      gap: 12px;
+      align-items: center;
+      margin-top: 14px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--green);
+    }
+
+    .score {
+      display: grid;
+      place-items: center;
+      min-height: 40px;
+      border-radius: var(--radius);
+      background: #eaf3ee;
+      color: var(--green-dark);
+      font-weight: 800;
+    }
+
+    .exercise-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 14px 0 16px;
+    }
+
+    .exercise-tab,
+    .primary,
+    .secondary,
+    .ghost {
+      min-height: 42px;
+      padding: 10px 13px;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: #ffffff;
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    .exercise-tab.active {
+      background: var(--green);
+      border-color: var(--green);
+      color: white;
+    }
+
+    .primary {
+      border-color: var(--green);
+      background: var(--green);
+      color: white;
+    }
+
+    .secondary {
+      border-color: #a9c9be;
+      background: #eaf3ee;
+      color: var(--green-dark);
+    }
+
+    .ghost {
+      background: transparent;
+    }
+
+    .exercise-card {
+      min-height: 330px;
+      display: grid;
+      gap: 14px;
+      align-content: start;
+      padding: 18px;
+      border-radius: var(--radius);
+      background: var(--panel-soft);
+      border: 1px solid #c9ddd4;
+    }
+
+    .breath-orb-wrap {
+      display: grid;
+      place-items: center;
+      min-height: 170px;
+    }
+
+    .breath-orb {
+      width: 118px;
+      height: 118px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: radial-gradient(circle at 40% 35%, #d3f0e4, #25936f);
+      color: white;
+      font-weight: 900;
+      box-shadow: 0 16px 30px rgba(31, 122, 92, 0.25);
+      transform: scale(0.78);
+      transition: transform 900ms ease;
+      text-align: center;
+      padding: 16px;
+    }
+
+    .breath-orb.inhale {
+      transform: scale(1.22);
+    }
+
+    .breath-orb.exhale {
+      transform: scale(0.78);
+    }
+
+    .stepbox {
+      min-height: 96px;
+      padding: 15px;
+      border-radius: var(--radius);
+      background: white;
+      border: 1px solid var(--line);
+    }
+
+    .stepbox h3 {
+      margin-bottom: 6px;
+      font-size: 17px;
+    }
+
+    .timer {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      color: var(--muted);
+    }
+
+    .timer strong {
+      color: var(--ink);
+      font-size: 24px;
+      min-width: 72px;
+      display: inline-block;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 100px;
+      resize: vertical;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      color: var(--ink);
+      background: white;
+    }
+
+    .log-list {
+      display: grid;
+      gap: 10px;
+      max-height: 356px;
+      overflow: auto;
+      padding-right: 3px;
+    }
+
+    .log-item {
+      padding: 12px;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: #fbfcfa;
+    }
+
+    .log-item strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--green-dark);
+    }
+
+    .task-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .task {
+      display: grid;
+      grid-template-columns: 22px 1fr;
+      gap: 10px;
+      padding: 11px;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: #fbfcfa;
+    }
+
+    .task input {
+      width: 18px;
+      height: 18px;
+      margin-top: 2px;
+      accent-color: var(--green);
+    }
+
+    .task small {
+      display: block;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    .insight {
+      min-height: 70px;
+      padding: 13px;
+      border-left: 4px solid var(--teal);
+      background: #eef7f8;
+      border-radius: 0 var(--radius) var(--radius) 0;
+      color: #173d43;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .notice {
+      padding: 12px;
+      border-radius: var(--radius);
+      background: #fff8e8;
+      border: 1px solid #e8d09a;
+      color: #664306;
+    }
+
+    .save-status {
+      min-height: 22px;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .save-status.success {
+      color: var(--green-dark);
+      font-weight: 700;
+    }
+
+    .save-status.warn {
+      color: #7a4b00;
+      font-weight: 700;
+    }
+
+    @media (max-width: 960px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: relative;
+        height: auto;
+      }
+
+      .week-tabs {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .top-band {
+        grid-template-columns: 1fr;
+      }
+
+      .span-4,
+      .span-5,
+      .span-7,
+      .span-8 {
+        grid-column: span 12;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .main {
+        padding: 16px;
+      }
+
+      .sidebar {
+        padding: 18px 14px;
+      }
+
+      .week-tabs {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .symptom-list {
+        grid-template-columns: 1fr;
+      }
+
+      .intro h2 {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="mark" aria-hidden="true">1</div>
+        <div>
+          <h1>Reduce Somatic Anxiety</h1>
+          <p>Weeks 1-4 support for GAD with panic symptoms.</p>
+        </div>
+      </div>
+
+      <nav class="week-tabs" aria-label="Week selector">
+        <button class="week-tab active" data-week="1"><span>Week 1</span><span class="mini">Notice</span></button>
+        <button class="week-tab" data-week="2"><span>Week 2</span><span class="mini">Breathe</span></button>
+        <button class="week-tab" data-week="3"><span>Week 3</span><span class="mini">Release</span></button>
+        <button class="week-tab" data-week="4"><span>Week 4</span><span class="mini">Practice</span></button>
+      </nav>
+
+      <div class="progress-block">
+        <strong>Practice completion</strong>
+        <div class="progress-line" aria-hidden="true"><div class="progress-fill" id="progressFill"></div></div>
+        <p id="progressText">0 of 4 weekly practices complete.</p>
+      </div>
+
+      <div class="privacy-note">
+        This tool supports therapy practice between sessions. It is not emergency care or medical diagnosis. Use the save button only when you are comfortable sharing this check-in with your clinical team.
+      </div>
+    </aside>
+
+    <main class="main">
+      <section class="top-band">
+        <div class="intro">
+          <h2 id="weekTitle">Week 1: Map body signals without fighting them</h2>
+          <p id="weekFocus">This week helps you name somatic symptoms, rate body tension, and practice tracking sensations with steadiness instead of alarm.</p>
+          <div class="actions">
+            <button class="primary" id="startReset">Start a 5-minute regulation round</button>
+            <button class="secondary" id="saveSession">Save today&apos;s check-in</button>
+          </div>
+          <div class="save-status" id="saveStatus" role="status" aria-live="polite">Saved check-ins will be added to your secure client record when this tool is connected to the member page.</div>
+        </div>
+        <div class="medical">
+          <p><strong>Medical follow-up:</strong> seek medical care promptly when symptoms are new, severe, unusual for you, worsening, or concerning. For chest pain, fainting, severe shortness of breath, one-sided weakness, sudden vision changes, or symptoms that feel medically unsafe, use urgent or emergency care.</p>
+        </div>
+      </section>
+
+      <section class="grid">
+        <div class="panel span-5">
+          <h2>Symptom Check-In</h2>
+          <p>Select what is present right now, then rate tension before regulation.</p>
+          <div class="symptom-list" id="symptomList"></div>
+
+          <div class="field-stack">
+            <label class="chip-check medical-check">
+              <input type="checkbox" id="medicalFollowUpFlag">
+              <span>
+                <strong>New, severe, unusual, or concerning symptoms are present</strong>
+                <small>Saving this helps your therapist know that medical follow-up may need to be discussed.</small>
+              </span>
+            </label>
+            <textarea id="medicalFollowUpNote" placeholder="Optional: What feels new, severe, unusual, worsening, or concerning?"></textarea>
+          </div>
+
+          <div class="rating-row">
+            <label for="beforeRating"><strong>Before tension rating</strong><br><span class="mini">0 calm - 10 most intense</span></label>
+            <div class="score" id="beforeScore">5</div>
+          </div>
+          <input type="range" id="beforeRating" min="0" max="10" value="5">
+
+          <div class="rating-row">
+            <label for="afterRating"><strong>After tension rating</strong><br><span class="mini">Complete after a skill</span></label>
+            <div class="score" id="afterScore">3</div>
+          </div>
+          <input type="range" id="afterRating" min="0" max="10" value="3">
+
+          <div class="insight" id="ratingInsight">A small shift still counts. The goal is nervous system training, not forcing symptoms to disappear.</div>
+        </div>
+
+        <div class="panel span-7">
+          <h2>Regulation Skill Lab</h2>
+          <p>Choose one skill and follow the prompts. Use a gentle pace; stop or seek support if something feels unsafe.</p>
+          <div class="exercise-tabs" id="exerciseTabs"></div>
+          <div class="exercise-card" id="exerciseCard"></div>
+        </div>
+
+        <div class="panel span-4">
+          <h2>Weekly Practice Plan</h2>
+          <div class="task-list" id="taskList"></div>
+        </div>
+
+        <div class="panel span-4">
+          <h2>Reflection Notes</h2>
+          <textarea id="notes" placeholder="What did I notice in my body? What helped even 1 percent?"></textarea>
+          <div class="actions">
+            <button class="secondary" id="completeWeek">Mark week complete</button>
+            <button class="ghost" id="clearData">Clear</button>
+          </div>
+        </div>
+
+        <div class="panel span-4">
+          <h2>Session Log</h2>
+          <div class="log-list" id="logList">
+            <div class="notice">Saved check-ins will appear here during this visit.</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const symptoms = [
+      "Chest tightness",
+      "Palpitations",
+      "Sweating",
+      "Weakness",
+      "Visual disturbances",
+      "Back tension",
+      "Fidgeting",
+      "Fatigue",
+      "Panic-like episodes"
+    ];
+
+    const weeks = {
+      1: {
+        title: "Week 1: Map body signals without fighting them",
+        focus: "This week helps you name somatic symptoms, rate body tension, and practice tracking sensations with steadiness instead of alarm.",
+        tasks: [
+          ["Daily 60-second body scan", "Notice location, size, temperature, movement, and intensity."],
+          ["Rate tension before and after one skill", "Use the scale as information, not a grade."],
+          ["Create a medical follow-up rule", "Decide what new, severe, or concerning symptoms mean for care-seeking."]
+        ]
+      },
+      2: {
+        title: "Week 2: Practice paced breathing during early escalation",
+        focus: "This week builds a repeatable breathing rhythm to use when chest tightness, palpitations, sweating, or panic-like symptoms begin to rise.",
+        tasks: [
+          ["Practice paced breathing twice daily", "Use a gentle inhale and longer exhale for two minutes."],
+          ["Pair breathing with one phrase", "Try: I can let my body ride this wave."],
+          ["Track symptom intensity shifts", "Look for direction of change, not perfection."]
+        ]
+      },
+      3: {
+        title: "Week 3: Release tension and orient to safety cues",
+        focus: "This week combines grounding, orienting, and muscle release for back tension, fidgeting, weakness, fatigue, and visual disturbance anxiety.",
+        tasks: [
+          ["Orient to the room once per day", "Name five stable objects and one exit or support."],
+          ["Release jaw, shoulders, hands, and back", "Tense gently for three seconds, then soften."],
+          ["Use grounding after body tracking", "Let attention move between body and environment."]
+        ]
+      },
+      4: {
+        title: "Week 4: Build a personal somatic response plan",
+        focus: "This week turns the skills into a simple plan for future panic-like episodes and ongoing GAD therapy work.",
+        tasks: [
+          ["Choose your first-response skill", "Pick the easiest tool to use when symptoms spike."],
+          ["Write your care-seeking threshold", "Define when you contact a clinician, urgent care, or emergency support."],
+          ["Review your before/after ratings", "Notice what helped your body recover more efficiently."]
+        ]
+      }
+    };
+
+    const exercises = {
+      tracking: {
+        label: "Somatic Tracking",
+        title: "Track one sensation with curiosity",
+        steps: [
+          "Choose one sensation that is present but tolerable.",
+          "Name its location, edges, texture, temperature, and movement.",
+          "Say: This is a body signal. I can observe it without solving it right now.",
+          "Let attention widen to include the room, your feet, and your breath."
+        ],
+        action: "Begin 90-second tracking"
+      },
+      breathing: {
+        label: "Paced Breathing",
+        title: "Use a longer exhale",
+        steps: [
+          "Inhale gently through the nose for 4 counts.",
+          "Exhale slowly for 6 counts, like fogging a mirror.",
+          "Keep the breath comfortable. No breath-holding is required.",
+          "Repeat for two minutes, then re-rate tension."
+        ],
+        action: "Start paced breathing"
+      },
+      grounding: {
+        label: "Grounding",
+        title: "Orient to the present environment",
+        steps: [
+          "Look around and name five colors or shapes.",
+          "Press both feet into the floor and notice support.",
+          "Find three signs that you are in the present moment.",
+          "Let your eyes land on one neutral or pleasant object."
+        ],
+        action: "Start orienting"
+      },
+      release: {
+        label: "Muscle Release",
+        title: "Soften one muscle group at a time",
+        steps: [
+          "Lift shoulders gently for 3 seconds, then let them drop.",
+          "Open and close your hands slowly.",
+          "Press shoulder blades lightly back, then release.",
+          "Notice one area that is even slightly softer."
+        ],
+        action: "Start release practice"
+      }
+    };
+
+    const WIX_COLLECTION_ID = "somaticAnxietyCheckins";
+    const TOOL_SOURCE = "somatic-anxiety-iframe-tool";
+
+    let state = {
+      week: 1,
+      exercise: "tracking",
+      completed: new Set(),
+      logs: [],
+      timerId: null,
+      seconds: 0,
+      breathPhase: "Ready"
+    };
+
+    const symptomList = document.getElementById("symptomList");
+    const exerciseTabs = document.getElementById("exerciseTabs");
+    const exerciseCard = document.getElementById("exerciseCard");
+    const beforeRating = document.getElementById("beforeRating");
+    const afterRating = document.getElementById("afterRating");
+    const beforeScore = document.getElementById("beforeScore");
+    const afterScore = document.getElementById("afterScore");
+    const ratingInsight = document.getElementById("ratingInsight");
+    const taskList = document.getElementById("taskList");
+    const logList = document.getElementById("logList");
+    const saveStatus = document.getElementById("saveStatus");
+
+    function renderSymptoms() {
+      symptomList.innerHTML = symptoms.map((symptom, index) => `
+        <label class="chip-check">
+          <input type="checkbox" value="${symptom}" id="symptom-${index}">
+          <span>${symptom}</span>
+        </label>
+      `).join("");
+    }
+
+    function renderExerciseTabs() {
+      exerciseTabs.innerHTML = Object.entries(exercises).map(([key, exercise]) => `
+        <button class="exercise-tab ${key === state.exercise ? "active" : ""}" data-exercise="${key}">${exercise.label}</button>
+      `).join("");
+    }
+
+    function renderExercise() {
+      clearTimer();
+      const exercise = exercises[state.exercise];
+      const breathOrb = state.exercise === "breathing" ? `
+        <div class="breath-orb-wrap">
+          <div class="breath-orb" id="breathOrb">Ready</div>
+        </div>
+      ` : "";
+      exerciseCard.innerHTML = `
+        <div>
+          <h3>${exercise.title}</h3>
+          <p>${exercise.steps[0]}</p>
+        </div>
+        ${breathOrb}
+        <div class="stepbox" id="stepbox">
+          <h3>Step 1</h3>
+          <p>${exercise.steps[0]}</p>
+        </div>
+        <div class="timer">
+          <strong id="timerText">00:00</strong>
+          <span id="phaseText">${state.exercise === "breathing" ? "Ready for inhale/exhale pacing." : "Ready for guided prompts."}</span>
+        </div>
+        <div class="actions">
+          <button class="primary" id="runExercise">${exercise.action}</button>
+          <button class="secondary" id="nextPrompt">Next prompt</button>
+        </div>
+      `;
+      document.getElementById("runExercise").addEventListener("click", startExercise);
+      document.getElementById("nextPrompt").addEventListener("click", nextPrompt);
+    }
+
+    function renderWeek() {
+      const week = weeks[state.week];
+      document.getElementById("weekTitle").textContent = week.title;
+      document.getElementById("weekFocus").textContent = week.focus;
+      document.querySelectorAll(".week-tab").forEach(button => {
+        button.classList.toggle("active", Number(button.dataset.week) === state.week);
+      });
+      taskList.innerHTML = week.tasks.map((task, index) => `
+        <label class="task">
+          <input type="checkbox" data-task="${index}">
+          <span><strong>${task[0]}</strong><small>${task[1]}</small></span>
+        </label>
+      `).join("");
+    }
+
+    function updateRatings() {
+      beforeScore.textContent = beforeRating.value;
+      afterScore.textContent = afterRating.value;
+      const before = Number(beforeRating.value);
+      const after = Number(afterRating.value);
+      const diff = before - after;
+      if (diff > 0) {
+        ratingInsight.textContent = `Tension decreased by ${diff}. Reinforce what helped: repeat the skill while it is still fresh.`;
+      } else if (diff === 0) {
+        ratingInsight.textContent = "No change yet. That can happen. Try shifting from controlling symptoms to allowing and observing them.";
+      } else {
+        ratingInsight.textContent = "Tension increased. Use grounding, reduce effort, and consider support or medical follow-up if symptoms feel concerning.";
+      }
+    }
+
+    function startExercise() {
+      clearTimer();
+      state.seconds = state.exercise === "breathing" ? 120 : 90;
+      tick();
+      state.timerId = setInterval(tick, 1000);
+    }
+
+    function tick() {
+      const timerText = document.getElementById("timerText");
+      const phaseText = document.getElementById("phaseText");
+      const breathOrb = document.getElementById("breathOrb");
+      if (!timerText || !phaseText) return;
+      const minutes = Math.floor(state.seconds / 60).toString().padStart(2, "0");
+      const seconds = (state.seconds % 60).toString().padStart(2, "0");
+      timerText.textContent = `${minutes}:${seconds}`;
+
+      if (state.exercise === "breathing") {
+        const cycle = state.seconds % 10;
+        const inhale = cycle > 5;
+        phaseText.textContent = inhale ? "Inhale gently for 4." : "Exhale slowly for 6.";
+        if (breathOrb) {
+          breathOrb.textContent = inhale ? "Inhale" : "Exhale";
+          breathOrb.classList.toggle("inhale", inhale);
+          breathOrb.classList.toggle("exhale", !inhale);
+        }
+      } else {
+        phaseText.textContent = "Let the prompt be enough. Gentle attention is the practice.";
+      }
+
+      state.seconds -= 1;
+      if (state.seconds < 0) {
+        clearTimer();
+        timerText.textContent = "Done";
+        phaseText.textContent = "Re-rate tension and save what you noticed.";
+      }
+    }
+
+    function clearTimer() {
+      if (state.timerId) {
+        clearInterval(state.timerId);
+        state.timerId = null;
+      }
+    }
+
+    function nextPrompt() {
+      const exercise = exercises[state.exercise];
+      const stepbox = document.getElementById("stepbox");
+      const current = Number(stepbox.dataset.index || 0);
+      const next = (current + 1) % exercise.steps.length;
+      stepbox.dataset.index = next;
+      stepbox.innerHTML = `<h3>Step ${next + 1}</h3><p>${exercise.steps[next]}</p>`;
+    }
+
+    function selectedSymptoms() {
+      return [...symptomList.querySelectorAll("input:checked")].map(input => input.value);
+    }
+
+    function completedTasks() {
+      return [...taskList.querySelectorAll("input:checked")].map(input => {
+        const task = input.closest(".task");
+        return task ? task.querySelector("strong").textContent.trim() : "";
+      }).filter(Boolean);
+    }
+
+    function setSaveStatus(message, type = "") {
+      saveStatus.textContent = message;
+      saveStatus.className = `save-status ${type}`.trim();
+    }
+
+    function buildCmsItem() {
+      const chosen = selectedSymptoms();
+      const before = Number(beforeRating.value);
+      const after = Number(afterRating.value);
+      const skill = exercises[state.exercise].label;
+      const now = new Date();
+      return {
+        title: `Week ${state.week} - ${skill} - ${now.toLocaleDateString()}`,
+        memberId: "",
+        memberEmail: "",
+        goal: "Reduce somatic anxiety symptoms",
+        week: state.week,
+        skillUsed: skill,
+        symptoms: chosen,
+        beforeTension: before,
+        afterTension: after,
+        tensionChange: before - after,
+        reflectionNotes: document.getElementById("notes").value.trim(),
+        medicalFollowUpFlag: document.getElementById("medicalFollowUpFlag").checked,
+        medicalFollowUpNote: document.getElementById("medicalFollowUpNote").value.trim(),
+        weeklyPracticeComplete: state.completed.has(state.week),
+        completedTasks: completedTasks(),
+        createdAt: { "$date": now.toISOString() },
+        source: TOOL_SOURCE
+      };
+    }
+
+    function saveSession() {
+      const item = buildCmsItem();
+      const log = {
+        week: item.week,
+        exercise: item.skillUsed,
+        before: item.beforeTension,
+        after: item.afterTension,
+        symptoms: item.symptoms,
+        note: item.reflectionNotes,
+        medicalFollowUpFlag: item.medicalFollowUpFlag,
+        time: new Date().toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })
+      };
+      state.logs.unshift(log);
+      renderLogs();
+      setSaveStatus("Saving check-in...", "warn");
+      window.parent.postMessage({
+        type: "SOMATIC_ANXIETY_CHECKIN_SAVE",
+        collectionId: WIX_COLLECTION_ID,
+        item
+      }, "*");
+      window.setTimeout(() => {
+        if (saveStatus.textContent === "Saving check-in...") {
+          setSaveStatus("Check-in is saved in this session. Wix page code must be connected to store it in CMS.", "warn");
+        }
+      }, 1800);
+    }
+
+    function renderLogs() {
+      if (!state.logs.length) {
+        logList.innerHTML = `<div class="notice">Saved check-ins will appear here during this visit.</div>`;
+        return;
+      }
+      logList.innerHTML = state.logs.map(log => `
+        <article class="log-item">
+          <strong>${log.time} - Week ${log.week} - ${log.exercise}</strong>
+          <div>Tension: ${log.before} to ${log.after}</div>
+          <div>Symptoms: ${log.symptoms.length ? log.symptoms.join(", ") : "None selected"}</div>
+          ${log.medicalFollowUpFlag ? `<div>Medical follow-up: flagged for discussion</div>` : ""}
+          ${log.note ? `<div>Note: ${log.note}</div>` : ""}
+        </article>
+      `).join("");
+    }
+
+    function completeWeek() {
+      state.completed.add(state.week);
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const count = state.completed.size;
+      document.getElementById("progressFill").style.width = `${(count / 4) * 100}%`;
+      document.getElementById("progressText").textContent = `${count} of 4 weekly practices complete.`;
+    }
+
+    function clearData() {
+      document.getElementById("notes").value = "";
+      document.getElementById("medicalFollowUpNote").value = "";
+      document.getElementById("medicalFollowUpFlag").checked = false;
+      symptomList.querySelectorAll("input").forEach(input => input.checked = false);
+      beforeRating.value = 5;
+      afterRating.value = 3;
+      updateRatings();
+      setSaveStatus("Cleared this unsaved check-in.", "");
+    }
+
+    function bindEvents() {
+      document.querySelectorAll(".week-tab").forEach(button => {
+        button.addEventListener("click", () => {
+          state.week = Number(button.dataset.week);
+          renderWeek();
+        });
+      });
+      exerciseTabs.addEventListener("click", event => {
+        const button = event.target.closest("[data-exercise]");
+        if (!button) return;
+        state.exercise = button.dataset.exercise;
+        renderExerciseTabs();
+        renderExercise();
+      });
+      beforeRating.addEventListener("input", updateRatings);
+      afterRating.addEventListener("input", updateRatings);
+      document.getElementById("saveSession").addEventListener("click", saveSession);
+      document.getElementById("completeWeek").addEventListener("click", completeWeek);
+      document.getElementById("clearData").addEventListener("click", clearData);
+      document.getElementById("startReset").addEventListener("click", () => {
+        document.querySelector(".panel:nth-of-type(2)").scrollIntoView({ behavior: "smooth", block: "start" });
+        startExercise();
+      });
+      window.addEventListener("message", event => {
+        if (!event.data || event.data.type !== "SOMATIC_ANXIETY_CHECKIN_SAVED") return;
+        if (event.data.ok) {
+          setSaveStatus("Check-in saved to your secure client record.", "success");
+        } else {
+          setSaveStatus("The check-in stayed on this page, but Wix could not save it. Please try again or tell your therapist.", "warn");
+        }
+      });
+    }
+
+    renderSymptoms();
+    renderExerciseTabs();
+    renderExercise();
+    renderWeek();
+    updateRatings();
+    updateProgress();
+    bindEvents();
+  </script>
+</body>
+</html>
+      '></iframe>
+  </main>
+  <script>
+    const somaticFrame = document.getElementById("somaticAnxietyInnerFrame");
+
+    window.addEventListener("message", (event) => {
+      const message = event.data;
+      if (!message || typeof message.type !== "string") {
+        return;
+      }
+
+      if (message.type === "SOMATIC_ANXIETY_CHECKIN_SAVE") {
+        window.parent.postMessage(message, "*");
+      }
+
+      if (message.type === "SOMATIC_ANXIETY_CHECKIN_SAVED") {
+        somaticFrame.contentWindow.postMessage(message, "*");
+      }
+    });
+  </script>
+</body>
+</html>
