@@ -81,11 +81,6 @@
       font-size: 13px;
       color: rgba(255,255,255,.78);
     }
-    .sidebar-item.active {
-      background: rgba(255,255,255,.12);
-      color: #fff;
-      font-weight: 600;
-    }
     .sidebar-num {
       width: 22px;
       height: 22px;
@@ -96,10 +91,6 @@
       font-size: 11px;
       font-weight: 700;
       flex-shrink: 0;
-    }
-    .sidebar-item.active .sidebar-num {
-      background: #e8c46a;
-      color: var(--navy);
     }
     .scale-key {
       margin-top: 28px;
@@ -125,41 +116,25 @@
       margin-bottom: 8px;
       line-height: 1.35;
     }
-    .scale-row .scale-num {
-      font-weight: 700;
-      color: #e8c46a;
-    }
-    .scale-row .scale-def {
-      color: rgba(255,255,255,.65);
-      font-size: 11px;
-      margin-top: 1px;
-    }
+    .scale-row .scale-num { font-weight: 700; color: #e8c46a; }
+    .scale-row .scale-def { color: rgba(255,255,255,.65); font-size: 11px; margin-top: 1px; }
 
     /* ── Main content ── */
-    .main {
-      padding: 32px 36px;
-      max-width: 860px;
-    }
-    .page-header {
-      margin-bottom: 28px;
-    }
-    .page-header h2 {
-      margin: 0 0 4px;
-      font-size: 26px;
-      color: var(--navy);
-    }
-    .page-header p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 14px;
-    }
+    .main { padding: 32px 36px; max-width: 900px; }
+    .page-header { margin-bottom: 28px; }
+    .page-header h2 { margin: 0 0 4px; font-size: 26px; color: var(--navy); }
+    .page-header p { margin: 0; color: var(--muted); font-size: 14px; }
 
     /* ── Meta bar ── */
     .meta-bar {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
       gap: 12px;
       margin-bottom: 28px;
+    }
+    .meta-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
     }
     .meta-field {
       display: flex;
@@ -213,10 +188,7 @@
       color: var(--navy);
       font-weight: 700;
     }
-    .section-head span {
-      font-size: 12px;
-      color: var(--muted);
-    }
+    .section-head span { font-size: 12px; color: var(--muted); }
 
     /* ── Rating rows ── */
     .rating-row {
@@ -228,32 +200,11 @@
       border-bottom: 1px solid var(--line);
     }
     .rating-row:last-child { border-bottom: none; }
-    .rating-label {
-      font-size: 14px;
-      color: var(--ink);
-    }
-    .rating-label small {
-      display: block;
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 2px;
-    }
-    .rating-control {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-    .rating-control input[type="range"] {
-      width: 100%;
-      accent-color: var(--teal);
-      cursor: pointer;
-    }
-    .rating-value {
-      font-size: 12px;
-      color: var(--teal);
-      font-weight: 600;
-      text-align: right;
-    }
+    .rating-label { font-size: 14px; color: var(--ink); line-height: 1.45; }
+    .rating-label small { display: block; font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .rating-control { display: flex; flex-direction: column; gap: 4px; }
+    .rating-control input[type="range"] { width: 100%; accent-color: var(--teal); cursor: pointer; }
+    .rating-value { font-size: 11px; color: var(--teal); font-weight: 600; text-align: right; line-height: 1.3; }
     .rating-ticks {
       display: flex;
       justify-content: space-between;
@@ -262,72 +213,130 @@
       padding: 0 2px;
     }
 
-    /* ── Notes section ── */
-    .notes-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      padding: 20px;
+    /* ── Tooltip ── */
+    .tip-wrap {
+      display: inline-block;
+      position: relative;
+      margin-left: 5px;
+      vertical-align: middle;
     }
-    .notes-grid textarea {
-      width: 100%;
-      min-height: 80px;
-      padding: 10px;
+    .tip-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--line);
+      color: var(--navy);
+      font-size: 10px;
+      font-weight: 700;
+      cursor: help;
+      user-select: none;
+      flex-shrink: 0;
+    }
+    .tip-box {
+      display: none;
+      position: absolute;
+      left: 22px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 300px;
+      background: var(--navy);
+      color: rgba(255,255,255,.9);
+      font-size: 12px;
+      line-height: 1.45;
+      padding: 10px 12px;
+      border-radius: var(--radius);
+      box-shadow: 0 8px 24px rgba(0,0,0,.25);
+      z-index: 100;
+      pointer-events: none;
+    }
+    .tip-box::before {
+      content: '';
+      position: absolute;
+      right: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      border: 6px solid transparent;
+      border-right-color: var(--navy);
+    }
+    .tip-wrap:hover .tip-box,
+    .tip-wrap.open .tip-box { display: block; }
+    .tip-box strong { color: #e8c46a; display: block; margin-bottom: 4px; }
+
+    /* ── Medication grid ── */
+    .med-grid {
+      padding: 16px 20px;
+    }
+    .med-header {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1.5fr 1.5fr;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .med-header span {
+      font-size: 10px;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 600;
+      padding: 0 2px;
+    }
+    .med-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1.5fr 1.5fr;
+      gap: 8px;
+      margin-bottom: 6px;
+      align-items: center;
+    }
+    .med-num {
+      font-size: 11px;
+      color: var(--muted);
+      text-align: right;
+      padding-right: 4px;
+    }
+    .med-row input {
+      height: 34px;
+      padding: 0 8px;
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      resize: vertical;
+      background: #fff;
       color: var(--ink);
+      font-size: 13px;
+      width: 100%;
     }
-    .notes-grid textarea:focus {
+    .med-row input:focus {
       outline: 2px solid var(--teal);
       outline-offset: 1px;
     }
-    .notes-field label {
-      display: block;
+    .med-row input::placeholder { color: #b0bec5; }
+
+    /* ── Sleep / notes ── */
+    .info-grid {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 16px;
+      padding: 20px;
+      align-items: start;
+    }
+    .info-field { display: flex; flex-direction: column; gap: 4px; }
+    .info-field label {
       font-size: 11px;
       letter-spacing: .07em;
       text-transform: uppercase;
       color: var(--muted);
       font-weight: 600;
-      margin-bottom: 6px;
     }
-    .notes-field.full { grid-column: span 2; }
-
-    /* ── Examples table ── */
-    .examples-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13px;
-    }
-    .examples-table th {
-      background: var(--navy);
-      color: #fff;
-      padding: 9px 12px;
-      text-align: left;
-      font-size: 11px;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-    }
-    .examples-table td {
-      padding: 10px 12px;
-      border-bottom: 1px solid var(--line);
-      vertical-align: top;
-      line-height: 1.4;
-    }
-    .examples-table tr:last-child td { border-bottom: none; }
-    .examples-table tr:nth-child(even) td { background: var(--foam); }
-    .examples-table td:first-child {
-      width: 28px;
-      font-weight: 700;
-      color: var(--navy);
-      text-align: center;
-    }
-    .examples-table td:nth-child(2) {
-      width: 220px;
-      font-weight: 600;
+    .info-field input {
+      height: 38px;
+      padding: 0 10px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
       color: var(--ink);
     }
-    .examples-table td:last-child { color: var(--muted); }
+    .info-field input:focus { outline: 2px solid var(--teal); outline-offset: 1px; }
 
     /* ── Submit ── */
     .submit-bar {
@@ -350,10 +359,7 @@
     }
     .btn-submit:hover { background: var(--teal-dark); }
     .btn-submit:disabled { opacity: .5; cursor: default; }
-    .status-msg {
-      font-size: 14px;
-      color: var(--muted);
-    }
+    .status-msg { font-size: 14px; color: var(--muted); }
     .status-msg.saved { color: #1a7a52; font-weight: 600; }
     .status-msg.error { color: var(--red); }
 
@@ -361,10 +367,10 @@
       .layout { grid-template-columns: 1fr; }
       .sidebar { position: static; height: auto; }
       .main { padding: 20px; }
-      .meta-bar { grid-template-columns: 1fr 1fr; }
+      .meta-row { grid-template-columns: 1fr 1fr; }
       .rating-row { grid-template-columns: 1fr; }
-      .notes-grid { grid-template-columns: 1fr; }
-      .notes-field.full { grid-column: span 1; }
+      .med-header, .med-row { grid-template-columns: 1fr 1fr; }
+      .info-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -378,7 +384,7 @@
     <p class="sidebar-sub">Daily Record of Severity of Problems (DRSP)</p>
 
     <div class="sidebar-section">Affective Symptoms</div>
-    <div class="sidebar-item active"><span class="sidebar-num">1</span> Depressed Mood</div>
+    <div class="sidebar-item"><span class="sidebar-num">1</span> Depressed Mood</div>
     <div class="sidebar-item"><span class="sidebar-num">2</span> Anxiety / Tension</div>
     <div class="sidebar-item"><span class="sidebar-num">3</span> Mood Swings</div>
     <div class="sidebar-item"><span class="sidebar-num">4</span> Anger / Irritability</div>
@@ -394,11 +400,10 @@
     <div class="sidebar-section">Physical</div>
     <div class="sidebar-item"><span class="sidebar-num">11</span> Physical Symptoms</div>
 
-    <div class="sidebar-section">Functional Impairment</div>
-    <div class="sidebar-item"><span class="sidebar-num">12</span> Work / School</div>
-    <div class="sidebar-item"><span class="sidebar-num">13</span> Relationships</div>
-    <div class="sidebar-item"><span class="sidebar-num">14</span> Social Activities</div>
-    <div class="sidebar-item"><span class="sidebar-num">15</span> Home</div>
+    <div class="sidebar-section">Functional Impact</div>
+    <div class="sidebar-item"><span class="sidebar-num">A</span> Productivity</div>
+    <div class="sidebar-item"><span class="sidebar-num">B</span> Hobbies / Social</div>
+    <div class="sidebar-item"><span class="sidebar-num">C</span> Relationships</div>
 
     <div class="scale-key">
       <p>Severity Rating Scale</p>
@@ -436,25 +441,41 @@
       <p>Rate each symptom for today using the 1–6 scale. Complete one record per day.</p>
     </div>
 
-    <!-- Meta -->
+    <!-- Patient / Date info -->
     <div class="meta-bar">
-      <div class="meta-field">
-        <label>Date</label>
-        <input type="date" id="entryDate">
+      <div class="meta-row">
+        <div class="meta-field">
+          <label>First Name</label>
+          <input type="text" id="firstName" placeholder="First name" autocomplete="given-name">
+        </div>
+        <div class="meta-field">
+          <label>Last Name</label>
+          <input type="text" id="lastName" placeholder="Last name" autocomplete="family-name">
+        </div>
+        <div class="meta-field">
+          <label>Date of Birth</label>
+          <input type="date" id="dateOfBirth">
+        </div>
       </div>
-      <div class="meta-field">
-        <label>Cycle Day</label>
-        <input type="number" id="cycleDay" min="1" max="35" placeholder="e.g. 14">
-      </div>
-      <div class="meta-field">
-        <label>Menstrual Flow</label>
-        <select id="periodFlow">
-          <option value="none">None</option>
-          <option value="spotting">Spotting</option>
-          <option value="light">Light</option>
-          <option value="moderate">Moderate</option>
-          <option value="heavy">Heavy</option>
-        </select>
+      <div class="meta-row">
+        <div class="meta-field">
+          <label>Date</label>
+          <input type="date" id="entryDate">
+        </div>
+        <div class="meta-field">
+          <label>Cycle Day</label>
+          <input type="number" id="cycleDay" min="1" max="35" placeholder="e.g. 14">
+        </div>
+        <div class="meta-field">
+          <label>Menstrual Flow</label>
+          <select id="periodFlow">
+            <option value="none">None</option>
+            <option value="spotting">Spotting</option>
+            <option value="light">Light</option>
+            <option value="moderate">Moderate</option>
+            <option value="heavy">Heavy</option>
+          </select>
+        </div>
       </div>
     </div>
 
@@ -467,7 +488,8 @@
 
       <div class="rating-row">
         <div class="rating-label">
-          1. Depressed mood, hopelessness, or self-deprecating thoughts
+          1. Felt depressed, sad, "down," or "blue"; hopeless; worthless or guilty
+          <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box"><strong>Rating Examples</strong>1 — Feeling perfectly content<br>6 — Profound, paralyzing despair or intense guilt</span></span>
         </div>
         <div class="rating-control">
           <input type="range" id="sliderMood" min="1" max="6" step="1" value="1">
@@ -478,7 +500,8 @@
 
       <div class="rating-row">
         <div class="rating-label">
-          2. Anxiety, tension, or feeling keyed up / on edge
+          2. Felt anxious, tense, "keyed up," or "on edge"
+          <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box"><strong>Rating Examples</strong>1 — Feeling completely relaxed<br>6 — Constant, severe physical tension or panic</span></span>
         </div>
         <div class="rating-control">
           <input type="range" id="sliderPanic" min="1" max="6" step="1" value="1">
@@ -489,7 +512,8 @@
 
       <div class="rating-row">
         <div class="rating-label">
-          3. Mood swings or increased sensitivity to rejection
+          3. Had mood swings (sudden sadness/tears); sensitive to rejection or easily hurt feelings
+          <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box"><strong>Rating Examples</strong>1 — Emotional stability<br>6 — Uncontrollable crying spells or extreme emotional sensitivity</span></span>
         </div>
         <div class="rating-control">
           <input type="range" id="sliderMoodSwings" min="1" max="6" step="1" value="1">
@@ -500,7 +524,8 @@
 
       <div class="rating-row">
         <div class="rating-label">
-          4. Anger, irritability, or impatience
+          4. Felt angry or irritable
+          <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box"><strong>Rating Examples</strong>1 — Calm and patient<br>6 — Explosive rage or constant, severe agitation</span></span>
         </div>
         <div class="rating-control">
           <input type="range" id="sliderRage" min="1" max="6" step="1" value="1">
@@ -519,8 +544,8 @@
 
       <div class="rating-row">
         <div class="rating-label">
-          5. Decreased interest in usual activities
-          <small>Work, school, hobbies, social activities</small>
+          5. Had less interest in usual activities (work, school, friends, hobbies)
+          <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box"><strong>Rating Examples</strong>1 — Full engagement in all interests<br>6 — Total lack of interest or pleasure in any activity</span></span>
         </div>
         <div class="rating-control">
           <input type="range" id="sliderInterest" min="1" max="6" step="1" value="1">
@@ -531,7 +556,8 @@
 
       <div class="rating-row">
         <div class="rating-label">
-          6. Difficulty concentrating
+          6. Had difficulty concentrating
+          <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box"><strong>Rating Examples</strong>1 — Sharp and focused<br>6 — Completely unable to focus on simple tasks or thoughts</span></span>
         </div>
         <div class="rating-control">
           <input type="range" id="sliderConcentration" min="1" max="6" step="1" value="1">
@@ -542,7 +568,8 @@
 
       <div class="rating-row">
         <div class="rating-label">
-          7. Lethargy, fatigue, or marked lack of energy
+          7. Felt lethargic, tired, or fatigued; lack of energy
+          <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box"><strong>Rating Examples</strong>1 — Feeling energetic<br>6 — Physically exhausted; getting out of bed is impossible</span></span>
         </div>
         <div class="rating-control">
           <input type="range" id="sliderFatigue" min="1" max="6" step="1" value="1">
@@ -553,7 +580,8 @@
 
       <div class="rating-row">
         <div class="rating-label">
-          8. Increased appetite or specific food cravings
+          8. Increased appetite, overeating, or specific food cravings
+          <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box"><strong>Rating Examples</strong>1 — Normal hunger patterns<br>6 — Uncontrollable urge to binge or intense, constant cravings</span></span>
         </div>
         <div class="rating-control">
           <input type="range" id="sliderAppetite" min="1" max="6" step="1" value="1">
@@ -564,8 +592,8 @@
 
       <div class="rating-row">
         <div class="rating-label">
-          9. Sleep disturbance
-          <small>Hypersomnia or insomnia</small>
+          9. Slept more than usual (naps, hard to get up) or had trouble sleeping
+          <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box"><strong>Rating Examples</strong>1 — High-quality, restorative sleep<br>6 — Total insomnia or sleeping throughout the entire day</span></span>
         </div>
         <div class="rating-control">
           <input type="range" id="sliderSleep" min="1" max="6" step="1" value="1">
@@ -576,7 +604,8 @@
 
       <div class="rating-row">
         <div class="rating-label">
-          10. Feeling overwhelmed or out of control
+          10. Felt overwhelmed, unable to cope, or out of control
+          <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box"><strong>Rating Examples</strong>1 — Feeling in total control<br>6 — Complete loss of control over one's life or emotions</span></span>
         </div>
         <div class="rating-control">
           <input type="range" id="sliderOverwhelmed" min="1" max="6" step="1" value="1">
@@ -595,8 +624,8 @@
 
       <div class="rating-row">
         <div class="rating-label">
-          11. Physical symptoms
-          <small>Breast tenderness/swelling, bloating, weight gain, headache, joint or muscle pain</small>
+          11. Breast tenderness/swelling, bloating, weight gain, headache, muscle or joint pain
+          <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box"><strong>Rating Examples</strong>1 — No physical discomfort<br>6 — Severe, debilitating pain or extreme bodily swelling</span></span>
         </div>
         <div class="rating-control">
           <input type="range" id="sliderPhysical" min="1" max="6" step="1" value="1">
@@ -606,27 +635,38 @@
       </div>
     </div>
 
-    <!-- Functional Impairment -->
+    <!-- Functional Impact -->
     <div class="section-card">
       <div class="section-head">
-        <h3>Functional Impairment</h3>
-        <span>Items 12–15 — Rate how much symptoms interfered with each domain</span>
+        <h3>Functional Impact</h3>
+        <span>Rate how much the symptoms above interfered with daily functioning</span>
       </div>
 
       <div class="rating-row">
         <div class="rating-label">
-          12. Work or school productivity
+          A. At work, school, home, or in daily routine, at least one of the problems noted above caused reduction of productivity or efficiency
         </div>
         <div class="rating-control">
-          <input type="range" id="sliderWorkImpairment" min="1" max="6" step="1" value="1">
+          <input type="range" id="sliderProductivity" min="1" max="6" step="1" value="1">
           <div class="rating-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
-          <div class="rating-value" id="labelWorkImpairment">1 — Not at all</div>
+          <div class="rating-value" id="labelProductivity">1 — Not at all</div>
         </div>
       </div>
 
       <div class="rating-row">
         <div class="rating-label">
-          13. Relationships with others
+          B. At least one of the problems noted above caused avoidance of or less participation in hobbies or social activities
+        </div>
+        <div class="rating-control">
+          <input type="range" id="sliderHobbies" min="1" max="6" step="1" value="1">
+          <div class="rating-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+          <div class="rating-value" id="labelHobbies">1 — Not at all</div>
+        </div>
+      </div>
+
+      <div class="rating-row">
+        <div class="rating-label">
+          C. At least one of the problems noted above interfered with relationships with others
         </div>
         <div class="rating-control">
           <input type="range" id="sliderRelationships" min="1" max="6" step="1" value="1">
@@ -634,126 +674,71 @@
           <div class="rating-value" id="labelRelationships">1 — Not at all</div>
         </div>
       </div>
-
-      <div class="rating-row">
-        <div class="rating-label">
-          14. Participation in social activities
-        </div>
-        <div class="rating-control">
-          <input type="range" id="sliderSocialImpairment" min="1" max="6" step="1" value="1">
-          <div class="rating-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
-          <div class="rating-value" id="labelSocialImpairment">1 — Not at all</div>
-        </div>
-      </div>
-
-      <div class="rating-row">
-        <div class="rating-label">
-          15. Home responsibilities
-        </div>
-        <div class="rating-control">
-          <input type="range" id="sliderHomeImpairment" min="1" max="6" step="1" value="1">
-          <div class="rating-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
-          <div class="rating-value" id="labelHomeImpairment">1 — Not at all</div>
-        </div>
-      </div>
     </div>
 
-    <!-- Rating Examples Reference -->
-    <div class="section-card">
-      <div class="section-head">
-        <h3>Rating Examples</h3>
-        <span>Use these anchors to calibrate your responses</span>
-      </div>
-      <div style="padding: 0 0 4px;">
-        <table class="examples-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Statement</th>
-              <th>Examples — Level 1 (Not at all) → Level 6 (Extreme)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>1</td>
-              <td>Depressed mood, hopelessness, worthlessness, or guilt</td>
-              <td>Feeling perfectly content (1) → profound, paralyzing despair or intense guilt (6)</td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Anxiety, tension, or feeling keyed up / on edge</td>
-              <td>Feeling completely relaxed (1) → constant, severe physical tension or panic (6)</td>
-            </tr>
-            <tr>
-              <td>3</td>
-              <td>Mood swings, sensitivity to rejection, or easily hurt feelings</td>
-              <td>Emotional stability (1) → uncontrollable crying spells or extreme emotional sensitivity (6)</td>
-            </tr>
-            <tr>
-              <td>4</td>
-              <td>Anger or irritability</td>
-              <td>Calm and patient (1) → explosive rage or constant, severe agitation (6)</td>
-            </tr>
-            <tr>
-              <td>5</td>
-              <td>Decreased interest in usual activities</td>
-              <td>Full engagement in all interests (1) → total lack of interest or pleasure in any activity (6)</td>
-            </tr>
-            <tr>
-              <td>6</td>
-              <td>Difficulty concentrating</td>
-              <td>Sharp and focused (1) → completely unable to focus on simple tasks or thoughts (6)</td>
-            </tr>
-            <tr>
-              <td>7</td>
-              <td>Lethargy, fatigue, or lack of energy</td>
-              <td>Feeling energetic (1) → physically exhausted to the point that getting out of bed is impossible (6)</td>
-            </tr>
-            <tr>
-              <td>8</td>
-              <td>Increased appetite or specific food cravings</td>
-              <td>Normal hunger patterns (1) → uncontrollable urge to binge or intense, constant cravings (6)</td>
-            </tr>
-            <tr>
-              <td>9</td>
-              <td>Sleep disturbance (hypersomnia or insomnia)</td>
-              <td>High-quality, restorative sleep (1) → total insomnia or sleeping throughout the entire day (6)</td>
-            </tr>
-            <tr>
-              <td>10</td>
-              <td>Feeling overwhelmed or out of control</td>
-              <td>Feeling in total control (1) → complete loss of control over one's life or emotions (6)</td>
-            </tr>
-            <tr>
-              <td>11</td>
-              <td>Physical symptoms (breast tenderness, bloating, headache, joint/muscle pain)</td>
-              <td>No physical discomfort (1) → severe, debilitating pain or extreme bodily swelling (6)</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- Notes -->
+    <!-- Additional Information -->
     <div class="section-card">
       <div class="section-head">
         <h3>Additional Information</h3>
       </div>
-      <div class="notes-grid">
-        <div class="meta-field">
+
+      <!-- Sleep -->
+      <div class="info-grid">
+        <div class="info-field">
           <label>Sleep Hours</label>
           <input type="number" id="inputSleepHours" min="0" max="24" step=".5" placeholder="e.g. 7.5">
         </div>
-        <div class="meta-field">
-          <label>&nbsp;</label>
+      </div>
+
+      <!-- Medications -->
+      <div style="border-top: 1px solid var(--line);">
+        <div class="section-head" style="border-top: none;">
+          <h3>Medications</h3>
+          <span>Enter once — auto-fills on return visits</span>
         </div>
-        <div class="notes-field">
-          <label>Medication Notes</label>
-          <textarea id="inputMedNotes" placeholder="Medications taken, missed doses, changes"></textarea>
-        </div>
-        <div class="notes-field">
-          <label>Clinical Notes</label>
-          <textarea id="inputClinicalNotes" placeholder="Clinically relevant observations"></textarea>
+        <div class="med-grid">
+          <div class="med-header">
+            <span>Medication Name (brand / generic)</span>
+            <span>Dosage</span>
+            <span>Frequency</span>
+            <span>Route</span>
+          </div>
+          <div class="med-row">
+            <input type="text" id="med1Name"      placeholder="e.g. Prozac / fluoxetine">
+            <input type="text" id="med1Dosage"    placeholder="e.g. 20mg">
+            <input type="text" id="med1Frequency" placeholder="e.g. once daily">
+            <input type="text" id="med1Route"     placeholder="e.g. oral">
+          </div>
+          <div class="med-row">
+            <input type="text" id="med2Name"      placeholder="Medication 2">
+            <input type="text" id="med2Dosage"    placeholder="">
+            <input type="text" id="med2Frequency" placeholder="">
+            <input type="text" id="med2Route"     placeholder="">
+          </div>
+          <div class="med-row">
+            <input type="text" id="med3Name"      placeholder="Medication 3">
+            <input type="text" id="med3Dosage"    placeholder="">
+            <input type="text" id="med3Frequency" placeholder="">
+            <input type="text" id="med3Route"     placeholder="">
+          </div>
+          <div class="med-row">
+            <input type="text" id="med4Name"      placeholder="Medication 4">
+            <input type="text" id="med4Dosage"    placeholder="">
+            <input type="text" id="med4Frequency" placeholder="">
+            <input type="text" id="med4Route"     placeholder="">
+          </div>
+          <div class="med-row">
+            <input type="text" id="med5Name"      placeholder="Medication 5">
+            <input type="text" id="med5Dosage"    placeholder="">
+            <input type="text" id="med5Frequency" placeholder="">
+            <input type="text" id="med5Route"     placeholder="">
+          </div>
+          <div class="med-row">
+            <input type="text" id="med6Name"      placeholder="Medication 6">
+            <input type="text" id="med6Dosage"    placeholder="">
+            <input type="text" id="med6Frequency" placeholder="">
+            <input type="text" id="med6Route"     placeholder="">
+          </div>
         </div>
       </div>
     </div>
@@ -780,8 +765,11 @@
     'Mood', 'Panic', 'MoodSwings', 'Rage',
     'Interest', 'Concentration', 'Fatigue', 'Appetite', 'Sleep', 'Overwhelmed',
     'Physical',
-    'WorkImpairment', 'Relationships', 'SocialImpairment', 'HomeImpairment',
+    'Productivity', 'Hobbies', 'Relationships',
   ];
+
+  const MED_NUMS = [1, 2, 3, 4, 5, 6];
+  const MED_FIELDS = ['Name', 'Dosage', 'Frequency', 'Route'];
 
   // Set today's date
   document.getElementById('entryDate').value = new Date().toISOString().slice(0, 10);
@@ -796,44 +784,91 @@
     update();
   });
 
+  // Tooltip: toggle on touch/click for mobile
+  document.querySelectorAll('.tip-wrap').forEach(wrap => {
+    wrap.addEventListener('click', e => {
+      e.stopPropagation();
+      wrap.classList.toggle('open');
+    });
+  });
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.tip-wrap.open').forEach(w => w.classList.remove('open'));
+  });
+
+  // Request prefill from Wix parent on load
+  window.parent.postMessage({ type: 'DRSP_REQUEST_PREFILL' }, '*');
+
+  // Listen for prefill data from Wix
+  window.addEventListener('message', e => {
+    if (!e.data) return;
+
+    if (e.data.type === 'DRSP_PREFILL') {
+      const d = e.data.data || {};
+      const setVal = (id, val) => { const el = document.getElementById(id); if (el && val != null && val !== '') el.value = val; };
+      setVal('firstName',   d.firstName);
+      setVal('lastName',    d.lastName);
+      setVal('dateOfBirth', d.dateOfBirth ? d.dateOfBirth.slice(0,10) : null);
+      MED_NUMS.forEach(n => {
+        MED_FIELDS.forEach(f => setVal(`med${n}${f}`, d[`med${n}${f.toLowerCase()}`] || d[`med${n}${f}`]));
+      });
+    }
+
+    if (e.data.type === 'DRSP_SAVE_RESULT') {
+      const btn    = document.getElementById('btnSubmit');
+      const status = document.getElementById('statusMsg');
+      if (e.data.success) {
+        status.textContent = 'Record saved.';
+        status.className = 'status-msg saved';
+      } else {
+        status.textContent = 'Save failed — please try again.';
+        status.className = 'status-msg error';
+        btn.disabled = false;
+      }
+    }
+  });
+
   // Submit
   document.getElementById('btnSubmit').addEventListener('click', () => {
     const btn    = document.getElementById('btnSubmit');
     const status = document.getElementById('statusMsg');
+    const getNum = id => { const el = document.getElementById(id); return el ? Number(el.value) || 0 : 0; };
+    const getStr = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
 
-    const getValue = id => {
-      const el = document.getElementById(id);
-      return el ? Number(el.value) || 0 : 0;
-    };
+    const meds = {};
+    MED_NUMS.forEach(n => {
+      MED_FIELDS.forEach(f => { meds[`med${n}${f}`] = getStr(`med${n}${f}`); });
+    });
 
     const payload = {
       type: 'DRSP_DAILY_RECORD',
       data: {
-        entryDate:         document.getElementById('entryDate').value,
+        firstName:         getStr('firstName'),
+        lastName:          getStr('lastName'),
+        dateOfBirth:       getStr('dateOfBirth'),
+        entryDate:         getStr('entryDate'),
         cycleDay:          Number(document.getElementById('cycleDay').value) || 1,
         periodFlow:        document.getElementById('periodFlow').value,
         sleepHours:        Number(document.getElementById('inputSleepHours').value) || 0,
-        medicationNotes:   document.getElementById('inputMedNotes').value.trim(),
-        reflectionNote:    document.getElementById('inputClinicalNotes').value.trim(),
         // Affective
-        mood:              getValue('sliderMood'),
-        panic:             getValue('sliderPanic'),
-        moodSwings:        getValue('sliderMoodSwings'),
-        rage:              getValue('sliderRage'),
+        mood:              getNum('sliderMood'),
+        panic:             getNum('sliderPanic'),
+        moodSwings:        getNum('sliderMoodSwings'),
+        rage:              getNum('sliderRage'),
         // Behavioral / Cognitive
-        decreasedInterest: getValue('sliderInterest'),
-        concentration:     getValue('sliderConcentration'),
-        fatigue:           getValue('sliderFatigue'),
-        appetite:          getValue('sliderAppetite'),
-        sleepDisturbance:  getValue('sliderSleep'),
-        sensoryOverload:   getValue('sliderOverwhelmed'),
+        decreasedInterest: getNum('sliderInterest'),
+        concentration:     getNum('sliderConcentration'),
+        fatigue:           getNum('sliderFatigue'),
+        appetite:          getNum('sliderAppetite'),
+        sleepDisturbance:  getNum('sliderSleep'),
+        sensoryOverload:   getNum('sliderOverwhelmed'),
         // Physical
-        physicalSymptoms:  getValue('sliderPhysical'),
-        // Functional impairment
-        workImpairment:    getValue('sliderWorkImpairment'),
-        relationshipUrgency: getValue('sliderRelationships'),
-        socialImpairment:  getValue('sliderSocialImpairment'),
-        homeImpairment:    getValue('sliderHomeImpairment'),
+        physicalSymptoms:  getNum('sliderPhysical'),
+        // Functional impact
+        workImpairment:    getNum('sliderProductivity'),
+        socialImpairment:  getNum('sliderHobbies'),
+        relationshipUrgency: getNum('sliderRelationships'),
+        // Medications
+        ...meds,
       }
     };
 
@@ -842,21 +877,6 @@
     status.className = 'status-msg';
 
     window.parent.postMessage(payload, '*');
-  });
-
-  // Listen for save confirmation from Wix parent
-  window.addEventListener('message', e => {
-    const btn    = document.getElementById('btnSubmit');
-    const status = document.getElementById('statusMsg');
-    if (!e.data || e.data.type !== 'DRSP_SAVE_RESULT') return;
-    if (e.data.success) {
-      status.textContent = 'Record saved.';
-      status.className = 'status-msg saved';
-    } else {
-      status.textContent = 'Save failed — please try again.';
-      status.className = 'status-msg error';
-      btn.disabled = false;
-    }
   });
 </script>
 </body>
