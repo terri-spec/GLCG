@@ -117,13 +117,23 @@
       color: rgba(255,255,255,.55);
     }
     .scale-row {
-      display: flex;
-      justify-content: space-between;
+      display: grid;
+      grid-template-columns: 18px 1fr;
+      gap: 8px;
       font-size: 12px;
-      color: rgba(255,255,255,.7);
-      margin-bottom: 4px;
+      color: rgba(255,255,255,.85);
+      margin-bottom: 8px;
+      line-height: 1.35;
     }
-    .scale-row span:last-child { color: rgba(255,255,255,.45); }
+    .scale-row .scale-num {
+      font-weight: 700;
+      color: #e8c46a;
+    }
+    .scale-row .scale-def {
+      color: rgba(255,255,255,.65);
+      font-size: 11px;
+      margin-top: 1px;
+    }
 
     /* ── Main content ── */
     .main {
@@ -283,6 +293,42 @@
     }
     .notes-field.full { grid-column: span 2; }
 
+    /* ── Examples table ── */
+    .examples-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .examples-table th {
+      background: var(--navy);
+      color: #fff;
+      padding: 9px 12px;
+      text-align: left;
+      font-size: 11px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+    .examples-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+      line-height: 1.4;
+    }
+    .examples-table tr:last-child td { border-bottom: none; }
+    .examples-table tr:nth-child(even) td { background: var(--foam); }
+    .examples-table td:first-child {
+      width: 28px;
+      font-weight: 700;
+      color: var(--navy);
+      text-align: center;
+    }
+    .examples-table td:nth-child(2) {
+      width: 220px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+    .examples-table td:last-child { color: var(--muted); }
+
     /* ── Submit ── */
     .submit-bar {
       display: flex;
@@ -355,13 +401,31 @@
     <div class="sidebar-item"><span class="sidebar-num">15</span> Home</div>
 
     <div class="scale-key">
-      <p>Rating Scale</p>
-      <div class="scale-row"><span>1</span><span>Not at all</span></div>
-      <div class="scale-row"><span>2</span><span>Minimal</span></div>
-      <div class="scale-row"><span>3</span><span>Mild</span></div>
-      <div class="scale-row"><span>4</span><span>Moderate</span></div>
-      <div class="scale-row"><span>5</span><span>Severe</span></div>
-      <div class="scale-row"><span>6</span><span>Extreme</span></div>
+      <p>Severity Rating Scale</p>
+      <div class="scale-row">
+        <span class="scale-num">1</span>
+        <span><strong>Not at all</strong><br><span class="scale-def">The symptom is completely absent.</span></span>
+      </div>
+      <div class="scale-row">
+        <span class="scale-num">2</span>
+        <span><strong>Minimal</strong><br><span class="scale-def">Barely noticeable; does not affect daily life.</span></span>
+      </div>
+      <div class="scale-row">
+        <span class="scale-num">3</span>
+        <span><strong>Mild</strong><br><span class="scale-def">Present but easily managed.</span></span>
+      </div>
+      <div class="scale-row">
+        <span class="scale-num">4</span>
+        <span><strong>Moderate</strong><br><span class="scale-def">Clearly present; causes noticeable discomfort.</span></span>
+      </div>
+      <div class="scale-row">
+        <span class="scale-num">5</span>
+        <span><strong>Severe</strong><br><span class="scale-def">Intense; significantly impacts functioning.</span></span>
+      </div>
+      <div class="scale-row">
+        <span class="scale-num">6</span>
+        <span><strong>Extreme</strong><br><span class="scale-def">Overwhelming and incapacitating.</span></span>
+      </div>
     </div>
   </aside>
 
@@ -594,6 +658,82 @@
       </div>
     </div>
 
+    <!-- Rating Examples Reference -->
+    <div class="section-card">
+      <div class="section-head">
+        <h3>Rating Examples</h3>
+        <span>Use these anchors to calibrate your responses</span>
+      </div>
+      <div style="padding: 0 0 4px;">
+        <table class="examples-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Statement</th>
+              <th>Examples — Level 1 (Not at all) → Level 6 (Extreme)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>Depressed mood, hopelessness, worthlessness, or guilt</td>
+              <td>Feeling perfectly content (1) → profound, paralyzing despair or intense guilt (6)</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>Anxiety, tension, or feeling keyed up / on edge</td>
+              <td>Feeling completely relaxed (1) → constant, severe physical tension or panic (6)</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>Mood swings, sensitivity to rejection, or easily hurt feelings</td>
+              <td>Emotional stability (1) → uncontrollable crying spells or extreme emotional sensitivity (6)</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td>Anger or irritability</td>
+              <td>Calm and patient (1) → explosive rage or constant, severe agitation (6)</td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td>Decreased interest in usual activities</td>
+              <td>Full engagement in all interests (1) → total lack of interest or pleasure in any activity (6)</td>
+            </tr>
+            <tr>
+              <td>6</td>
+              <td>Difficulty concentrating</td>
+              <td>Sharp and focused (1) → completely unable to focus on simple tasks or thoughts (6)</td>
+            </tr>
+            <tr>
+              <td>7</td>
+              <td>Lethargy, fatigue, or lack of energy</td>
+              <td>Feeling energetic (1) → physically exhausted to the point that getting out of bed is impossible (6)</td>
+            </tr>
+            <tr>
+              <td>8</td>
+              <td>Increased appetite or specific food cravings</td>
+              <td>Normal hunger patterns (1) → uncontrollable urge to binge or intense, constant cravings (6)</td>
+            </tr>
+            <tr>
+              <td>9</td>
+              <td>Sleep disturbance (hypersomnia or insomnia)</td>
+              <td>High-quality, restorative sleep (1) → total insomnia or sleeping throughout the entire day (6)</td>
+            </tr>
+            <tr>
+              <td>10</td>
+              <td>Feeling overwhelmed or out of control</td>
+              <td>Feeling in total control (1) → complete loss of control over one's life or emotions (6)</td>
+            </tr>
+            <tr>
+              <td>11</td>
+              <td>Physical symptoms (breast tenderness, bloating, headache, joint/muscle pain)</td>
+              <td>No physical discomfort (1) → severe, debilitating pain or extreme bodily swelling (6)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
     <!-- Notes -->
     <div class="section-card">
       <div class="section-head">
@@ -628,12 +768,12 @@
 
 <script>
   const SCALE = {
-    1: '1 — Not at all',
-    2: '2 — Minimal',
-    3: '3 — Mild',
-    4: '4 — Moderate',
-    5: '5 — Severe',
-    6: '6 — Extreme',
+    1: '1 — Not at all: symptom completely absent',
+    2: '2 — Minimal: barely noticeable, no impact on daily life',
+    3: '3 — Mild: present but easily managed',
+    4: '4 — Moderate: clearly present, noticeable discomfort',
+    5: '5 — Severe: intense, significantly impacts functioning',
+    6: '6 — Extreme: overwhelming and incapacitating',
   };
 
   const SLIDERS = [
