@@ -1,0 +1,723 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Daily Record of Severity of Problems</title>
+  <style>
+    :root {
+      --bg: #eef5f7;
+      --panel: #ffffff;
+      --ink: #10283a;
+      --muted: #5d7280;
+      --line: #bdd0d8;
+      --navy: #14324c;
+      --teal: #0f6f7d;
+      --teal-dark: #0a4d5b;
+      --red: #b43131;
+      --foam: #f4fafb;
+      --shadow: 0 16px 36px rgba(16,40,58,0.13);
+      --radius: 8px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.45;
+      font-size: 15px;
+    }
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      min-height: 100vh;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: auto;
+      background: var(--navy);
+      color: #fff;
+      padding: 24px 20px;
+    }
+    .sidebar-brand {
+      font-size: 11px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.55);
+      margin-bottom: 6px;
+    }
+    .sidebar h1 {
+      margin: 0 0 4px;
+      font-size: 20px;
+      line-height: 1.15;
+    }
+    .sidebar-sub {
+      font-size: 13px;
+      color: rgba(255,255,255,.65);
+      margin: 0 0 24px;
+    }
+    .sidebar-section {
+      font-size: 11px;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.45);
+      margin: 20px 0 8px;
+    }
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 10px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      color: rgba(255,255,255,.78);
+    }
+    .sidebar-item.active {
+      background: rgba(255,255,255,.12);
+      color: #fff;
+      font-weight: 600;
+    }
+    .sidebar-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.15);
+      display: grid;
+      place-items: center;
+      font-size: 11px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .sidebar-item.active .sidebar-num {
+      background: #e8c46a;
+      color: var(--navy);
+    }
+    .scale-key {
+      margin-top: 28px;
+      padding: 14px;
+      border-radius: var(--radius);
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.12);
+    }
+    .scale-key p {
+      margin: 0 0 10px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: rgba(255,255,255,.55);
+    }
+    .scale-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: rgba(255,255,255,.7);
+      margin-bottom: 4px;
+    }
+    .scale-row span:last-child { color: rgba(255,255,255,.45); }
+
+    /* ── Main content ── */
+    .main {
+      padding: 32px 36px;
+      max-width: 860px;
+    }
+    .page-header {
+      margin-bottom: 28px;
+    }
+    .page-header h2 {
+      margin: 0 0 4px;
+      font-size: 26px;
+      color: var(--navy);
+    }
+    .page-header p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* ── Meta bar ── */
+    .meta-bar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .meta-field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .meta-field label {
+      font-size: 11px;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .meta-field input,
+    .meta-field select {
+      height: 38px;
+      padding: 0 10px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+      color: var(--ink);
+    }
+    .meta-field input:focus,
+    .meta-field select:focus {
+      outline: 2px solid var(--teal);
+      outline-offset: 1px;
+    }
+
+    /* ── Section cards ── */
+    .section-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .section-head {
+      padding: 14px 20px;
+      background: var(--foam);
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+    .section-head h3 {
+      margin: 0;
+      font-size: 13px;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--navy);
+      font-weight: 700;
+    }
+    .section-head span {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* ── Rating rows ── */
+    .rating-row {
+      display: grid;
+      grid-template-columns: 1fr 220px;
+      gap: 16px;
+      align-items: center;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--line);
+    }
+    .rating-row:last-child { border-bottom: none; }
+    .rating-label {
+      font-size: 14px;
+      color: var(--ink);
+    }
+    .rating-label small {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .rating-control {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .rating-control input[type="range"] {
+      width: 100%;
+      accent-color: var(--teal);
+      cursor: pointer;
+    }
+    .rating-value {
+      font-size: 12px;
+      color: var(--teal);
+      font-weight: 600;
+      text-align: right;
+    }
+    .rating-ticks {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      color: var(--muted);
+      padding: 0 2px;
+    }
+
+    /* ── Notes section ── */
+    .notes-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      padding: 20px;
+    }
+    .notes-grid textarea {
+      width: 100%;
+      min-height: 80px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      resize: vertical;
+      color: var(--ink);
+    }
+    .notes-grid textarea:focus {
+      outline: 2px solid var(--teal);
+      outline-offset: 1px;
+    }
+    .notes-field label {
+      display: block;
+      font-size: 11px;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .notes-field.full { grid-column: span 2; }
+
+    /* ── Submit ── */
+    .submit-bar {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 8px;
+      padding: 20px 0 40px;
+    }
+    .btn-submit {
+      height: 44px;
+      padding: 0 28px;
+      background: var(--teal);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: .02em;
+    }
+    .btn-submit:hover { background: var(--teal-dark); }
+    .btn-submit:disabled { opacity: .5; cursor: default; }
+    .status-msg {
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .status-msg.saved { color: #1a7a52; font-weight: 600; }
+    .status-msg.error { color: var(--red); }
+
+    @media (max-width: 760px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; height: auto; }
+      .main { padding: 20px; }
+      .meta-bar { grid-template-columns: 1fr 1fr; }
+      .rating-row { grid-template-columns: 1fr; }
+      .notes-grid { grid-template-columns: 1fr; }
+      .notes-field.full { grid-column: span 1; }
+    }
+  </style>
+</head>
+<body>
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">Great Lakes Counseling Group</div>
+    <h1 class="sidebar">Daily Symptom Record</h1>
+    <p class="sidebar-sub">Daily Record of Severity of Problems (DRSP)</p>
+
+    <div class="sidebar-section">Affective Symptoms</div>
+    <div class="sidebar-item active"><span class="sidebar-num">1</span> Depressed Mood</div>
+    <div class="sidebar-item"><span class="sidebar-num">2</span> Anxiety / Tension</div>
+    <div class="sidebar-item"><span class="sidebar-num">3</span> Mood Swings</div>
+    <div class="sidebar-item"><span class="sidebar-num">4</span> Anger / Irritability</div>
+
+    <div class="sidebar-section">Behavioral / Cognitive</div>
+    <div class="sidebar-item"><span class="sidebar-num">5</span> Decreased Interest</div>
+    <div class="sidebar-item"><span class="sidebar-num">6</span> Concentration</div>
+    <div class="sidebar-item"><span class="sidebar-num">7</span> Fatigue</div>
+    <div class="sidebar-item"><span class="sidebar-num">8</span> Appetite</div>
+    <div class="sidebar-item"><span class="sidebar-num">9</span> Sleep</div>
+    <div class="sidebar-item"><span class="sidebar-num">10</span> Overwhelmed</div>
+
+    <div class="sidebar-section">Physical</div>
+    <div class="sidebar-item"><span class="sidebar-num">11</span> Physical Symptoms</div>
+
+    <div class="sidebar-section">Functional Impairment</div>
+    <div class="sidebar-item"><span class="sidebar-num">12</span> Work / School</div>
+    <div class="sidebar-item"><span class="sidebar-num">13</span> Relationships</div>
+    <div class="sidebar-item"><span class="sidebar-num">14</span> Social Activities</div>
+    <div class="sidebar-item"><span class="sidebar-num">15</span> Home</div>
+
+    <div class="scale-key">
+      <p>Rating Scale</p>
+      <div class="scale-row"><span>1</span><span>Not at all</span></div>
+      <div class="scale-row"><span>2</span><span>Minimal</span></div>
+      <div class="scale-row"><span>3</span><span>Mild</span></div>
+      <div class="scale-row"><span>4</span><span>Moderate</span></div>
+      <div class="scale-row"><span>5</span><span>Severe</span></div>
+      <div class="scale-row"><span>6</span><span>Extreme</span></div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+    <div class="page-header">
+      <h2>Daily Record of Severity of Problems</h2>
+      <p>Rate each symptom for today using the 1–6 scale. Complete one record per day.</p>
+    </div>
+
+    <!-- Meta -->
+    <div class="meta-bar">
+      <div class="meta-field">
+        <label>Date</label>
+        <input type="date" id="entryDate">
+      </div>
+      <div class="meta-field">
+        <label>Cycle Day</label>
+        <input type="number" id="cycleDay" min="1" max="35" placeholder="e.g. 14">
+      </div>
+      <div class="meta-field">
+        <label>Menstrual Flow</label>
+        <select id="periodFlow">
+          <option value="none">None</option>
+          <option value="spotting">Spotting</option>
+          <option value="light">Light</option>
+          <option value="moderate">Moderate</option>
+          <option value="heavy">Heavy</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Affective Symptoms -->
+    <div class="section-card">
+      <div class="section-head">
+        <h3>Affective Symptoms</h3>
+        <span>Items 1–4</span>
+      </div>
+
+      <div class="rating-row">
+        <div class="rating-label">
+          1. Depressed mood, hopelessness, or self-deprecating thoughts
+        </div>
+        <div class="rating-control">
+          <input type="range" id="sliderMood" min="1" max="6" step="1" value="1">
+          <div class="rating-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+          <div class="rating-value" id="labelMood">1 — Not at all</div>
+        </div>
+      </div>
+
+      <div class="rating-row">
+        <div class="rating-label">
+          2. Anxiety, tension, or feeling keyed up / on edge
+        </div>
+        <div class="rating-control">
+          <input type="range" id="sliderPanic" min="1" max="6" step="1" value="1">
+          <div class="rating-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+          <div class="rating-value" id="labelPanic">1 — Not at all</div>
+        </div>
+      </div>
+
+      <div class="rating-row">
+        <div class="rating-label">
+          3. Mood swings or increased sensitivity to rejection
+        </div>
+        <div class="rating-control">
+          <input type="range" id="sliderMoodSwings" min="1" max="6" step="1" value="1">
+          <div class="rating-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+          <div class="rating-value" id="labelMoodSwings">1 — Not at all</div>
+        </div>
+      </div>
+
+      <div class="rating-row">
+        <div class="rating-label">
+          4. Anger, irritability, or impatience
+        </div>
+        <div class="rating-control">
+          <input type="range" id="sliderRage" min="1" max="6" step="1" value="1">
+          <div class="rating-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+          <div class="rating-value" id="labelRage">1 — Not at all</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Behavioral / Cognitive -->
+    <div class="section-card">
+      <div class="section-head">
+        <h3>Behavioral / Cognitive</h3>
+        <span>Items 5–10</span>
+      </div>
+
+      <div class="rating-row">
+        <div class="rating-label">
+          5. Decreased interest in usual activities
+          <small>Work, school, hobbies, social activities</small>
+        </div>
+        <div class="rating-control">
+          <input type="range" id="sliderInterest" min="1" max="6" step="1" value="1">
+          <div class="rating-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+          <div class="rating-value" id="labelInterest">1 — Not at all</div>
+        </div>
+      </div>
+
+      <div class="rating-row">
+        <div class="rating-label">
+          6. Difficulty concentrating
+        </div>
+        <div class="rating-control">
+          <input type="range" id="sliderConcentration" min="1" max="6" step="1" value="1">
+          <div class="rating-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+          <div class="rating-value" id="labelConcentration">1 — Not at all</div>
+        </div>
+      </div>
+
+      <div class="rating-row">
+        <div class="rating-label">
+          7. Lethargy, fatigue, or marked lack of energy
+        </div>
+        <div class="rating-control">
+          <input type="range" id="sliderFatigue" min="1" max="6" step="1" value="1">
+          <div class="rating-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+          <div class="rating-value" id="labelFatigue">1 — Not at all</div>
+        </div>
+      </div>
+
+      <div class="rating-row">
+        <div class="rating-label">
+          8. Increased appetite or specific food cravings
+        </div>
+        <div class="rating-control">
+          <input type="range" id="sliderAppetite" min="1" max="6" step="1" value="1">
+          <div class="rating-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+          <div class="rating-value" id="labelAppetite">1 — Not at all</div>
+        </div>
+      </div>
+
+      <div class="rating-row">
+        <div class="rating-label">
+          9. Sleep disturbance
+          <small>Hypersomnia or insomnia</small>
+        </div>
+        <div class="rating-control">
+          <input type="range" id="sliderSleep" min="1" max="6" step="1" value="1">
+          <div class="rating-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+          <div class="rating-value" id="labelSleep">1 — Not at all</div>
+        </div>
+      </div>
+
+      <div class="rating-row">
+        <div class="rating-label">
+          10. Feeling overwhelmed or out of control
+        </div>
+        <div class="rating-control">
+          <input type="range" id="sliderOverwhelmed" min="1" max="6" step="1" value="1">
+          <div class="rating-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+          <div class="rating-value" id="labelOverwhelmed">1 — Not at all</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Physical -->
+    <div class="section-card">
+      <div class="section-head">
+        <h3>Physical Symptoms</h3>
+        <span>Item 11</span>
+      </div>
+
+      <div class="rating-row">
+        <div class="rating-label">
+          11. Physical symptoms
+          <small>Breast tenderness/swelling, bloating, weight gain, headache, joint or muscle pain</small>
+        </div>
+        <div class="rating-control">
+          <input type="range" id="sliderPhysical" min="1" max="6" step="1" value="1">
+          <div class="rating-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+          <div class="rating-value" id="labelPhysical">1 — Not at all</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Functional Impairment -->
+    <div class="section-card">
+      <div class="section-head">
+        <h3>Functional Impairment</h3>
+        <span>Items 12–15 — Rate how much symptoms interfered with each domain</span>
+      </div>
+
+      <div class="rating-row">
+        <div class="rating-label">
+          12. Work or school productivity
+        </div>
+        <div class="rating-control">
+          <input type="range" id="sliderWorkImpairment" min="1" max="6" step="1" value="1">
+          <div class="rating-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+          <div class="rating-value" id="labelWorkImpairment">1 — Not at all</div>
+        </div>
+      </div>
+
+      <div class="rating-row">
+        <div class="rating-label">
+          13. Relationships with others
+        </div>
+        <div class="rating-control">
+          <input type="range" id="sliderRelationships" min="1" max="6" step="1" value="1">
+          <div class="rating-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+          <div class="rating-value" id="labelRelationships">1 — Not at all</div>
+        </div>
+      </div>
+
+      <div class="rating-row">
+        <div class="rating-label">
+          14. Participation in social activities
+        </div>
+        <div class="rating-control">
+          <input type="range" id="sliderSocialImpairment" min="1" max="6" step="1" value="1">
+          <div class="rating-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+          <div class="rating-value" id="labelSocialImpairment">1 — Not at all</div>
+        </div>
+      </div>
+
+      <div class="rating-row">
+        <div class="rating-label">
+          15. Home responsibilities
+        </div>
+        <div class="rating-control">
+          <input type="range" id="sliderHomeImpairment" min="1" max="6" step="1" value="1">
+          <div class="rating-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+          <div class="rating-value" id="labelHomeImpairment">1 — Not at all</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notes -->
+    <div class="section-card">
+      <div class="section-head">
+        <h3>Additional Information</h3>
+      </div>
+      <div class="notes-grid">
+        <div class="meta-field">
+          <label>Sleep Hours</label>
+          <input type="number" id="inputSleepHours" min="0" max="24" step=".5" placeholder="e.g. 7.5">
+        </div>
+        <div class="meta-field">
+          <label>&nbsp;</label>
+        </div>
+        <div class="notes-field">
+          <label>Medication Notes</label>
+          <textarea id="inputMedNotes" placeholder="Medications taken, missed doses, changes"></textarea>
+        </div>
+        <div class="notes-field">
+          <label>Clinical Notes</label>
+          <textarea id="inputClinicalNotes" placeholder="Clinically relevant observations"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <div class="submit-bar">
+      <button class="btn-submit" id="btnSubmit">Save Daily Record</button>
+      <span class="status-msg" id="statusMsg"></span>
+    </div>
+  </main>
+</div>
+
+<script>
+  const SCALE = {
+    1: '1 — Not at all',
+    2: '2 — Minimal',
+    3: '3 — Mild',
+    4: '4 — Moderate',
+    5: '5 — Severe',
+    6: '6 — Extreme',
+  };
+
+  const SLIDERS = [
+    'Mood', 'Panic', 'MoodSwings', 'Rage',
+    'Interest', 'Concentration', 'Fatigue', 'Appetite', 'Sleep', 'Overwhelmed',
+    'Physical',
+    'WorkImpairment', 'Relationships', 'SocialImpairment', 'HomeImpairment',
+  ];
+
+  // Set today's date
+  document.getElementById('entryDate').value = new Date().toISOString().slice(0, 10);
+
+  // Wire sliders
+  SLIDERS.forEach(name => {
+    const slider = document.getElementById('slider' + name);
+    const label  = document.getElementById('label' + name);
+    if (!slider || !label) return;
+    const update = () => { label.textContent = SCALE[slider.value] || slider.value; };
+    slider.addEventListener('input', update);
+    update();
+  });
+
+  // Submit
+  document.getElementById('btnSubmit').addEventListener('click', () => {
+    const btn    = document.getElementById('btnSubmit');
+    const status = document.getElementById('statusMsg');
+
+    const getValue = id => {
+      const el = document.getElementById(id);
+      return el ? Number(el.value) || 0 : 0;
+    };
+
+    const payload = {
+      type: 'DRSP_DAILY_RECORD',
+      data: {
+        entryDate:         document.getElementById('entryDate').value,
+        cycleDay:          Number(document.getElementById('cycleDay').value) || 1,
+        periodFlow:        document.getElementById('periodFlow').value,
+        sleepHours:        Number(document.getElementById('inputSleepHours').value) || 0,
+        medicationNotes:   document.getElementById('inputMedNotes').value.trim(),
+        reflectionNote:    document.getElementById('inputClinicalNotes').value.trim(),
+        // Affective
+        mood:              getValue('sliderMood'),
+        panic:             getValue('sliderPanic'),
+        moodSwings:        getValue('sliderMoodSwings'),
+        rage:              getValue('sliderRage'),
+        // Behavioral / Cognitive
+        decreasedInterest: getValue('sliderInterest'),
+        concentration:     getValue('sliderConcentration'),
+        fatigue:           getValue('sliderFatigue'),
+        appetite:          getValue('sliderAppetite'),
+        sleepDisturbance:  getValue('sliderSleep'),
+        sensoryOverload:   getValue('sliderOverwhelmed'),
+        // Physical
+        physicalSymptoms:  getValue('sliderPhysical'),
+        // Functional impairment
+        workImpairment:    getValue('sliderWorkImpairment'),
+        relationshipUrgency: getValue('sliderRelationships'),
+        socialImpairment:  getValue('sliderSocialImpairment'),
+        homeImpairment:    getValue('sliderHomeImpairment'),
+      }
+    };
+
+    btn.disabled = true;
+    status.textContent = 'Saving…';
+    status.className = 'status-msg';
+
+    window.parent.postMessage(payload, '*');
+  });
+
+  // Listen for save confirmation from Wix parent
+  window.addEventListener('message', e => {
+    const btn    = document.getElementById('btnSubmit');
+    const status = document.getElementById('statusMsg');
+    if (!e.data || e.data.type !== 'DRSP_SAVE_RESULT') return;
+    if (e.data.success) {
+      status.textContent = 'Record saved.';
+      status.className = 'status-msg saved';
+    } else {
+      status.textContent = 'Save failed — please try again.';
+      status.className = 'status-msg error';
+      btn.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>
