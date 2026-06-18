@@ -1013,7 +1013,10 @@
         affirm.textContent = pickByDate(AFFIRMATIONS);
         affirm.classList.add('visible');
       } else {
-        status.textContent = 'Save failed — please try again.';
+        const reason = typeof e.data.reason === 'string' ? e.data.reason.trim() : '';
+        status.textContent = reason
+          ? `Save failed: ${reason}`
+          : 'Save failed — please try again.';
         status.className = 'status-msg error';
         btn.disabled = false;
       }
