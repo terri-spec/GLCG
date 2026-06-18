@@ -385,6 +385,23 @@
       color: var(--muted);
       margin-bottom: 6px;
     }
+    .journal-prompt {
+      font-size: 13px;
+      color: var(--teal);
+      margin-bottom: 8px;
+      font-style: italic;
+    }
+    .affirmation-box {
+      margin-top: 12px;
+      padding: 14px 16px;
+      border-radius: var(--radius);
+      background: #eaf6f0;
+      border: 1px solid #a8d9c2;
+      color: #1a5c3e;
+      font-size: 14px;
+      display: none;
+    }
+    .affirmation-box.visible { display: block; }
     .journal-yesterday-text {
       font-size: 14px;
       color: var(--ink);
@@ -750,6 +767,62 @@
           <h3>Medications</h3>
           <span>Enter once — auto-fills on return visits</span>
         </div>
+        <!-- Datalists -->
+        <datalist id="dlMedNames">
+          <option value="Fluoxetine (Prozac)">
+          <option value="Sertraline (Zoloft)">
+          <option value="Escitalopram (Lexapro)">
+          <option value="Paroxetine (Paxil)">
+          <option value="Citalopram (Celexa)">
+          <option value="Venlafaxine (Effexor)">
+          <option value="Duloxetine (Cymbalta)">
+          <option value="Buspirone (Buspar)">
+          <option value="Alprazolam (Xanax)">
+          <option value="Lorazepam (Ativan)">
+          <option value="Clonazepam (Klonopin)">
+          <option value="Lamotrigine (Lamictal)">
+          <option value="Lithium">
+          <option value="Spironolactone (Aldactone)">
+          <option value="Levonorgestrel / Ethinyl estradiol (Lo Loestrin, Seasonique, others)">
+          <option value="Norethindrone / Ethinyl estradiol (Loestrin, Junel, others)">
+          <option value="Drospirenone / Ethinyl estradiol (Yaz, Yasmin)">
+          <option value="Progesterone (Prometrium)">
+          <option value="Medroxyprogesterone (Depo-Provera)">
+          <option value="Leuprolide (Lupron)">
+          <option value="Nafarelin (Synarel)">
+          <option value="Levonorgestrel IUD (Mirena, Kyleena, Liletta)">
+          <option value="Etonogestrel implant (Nexplanon)">
+          <option value="Calcium carbonate">
+          <option value="Magnesium glycinate">
+          <option value="Vitamin B6 (pyridoxine)">
+          <option value="Vitamin D3">
+          <option value="Ibuprofen (Advil, Motrin)">
+          <option value="Naproxen (Aleve)">
+          <option value="Vitex (chasteberry)">
+          <option value="Other">
+        </datalist>
+        <datalist id="dlFrequency">
+          <option value="Once daily (morning)">
+          <option value="Once daily (evening)">
+          <option value="Twice daily">
+          <option value="Three times daily">
+          <option value="Every other day">
+          <option value="Weekly">
+          <option value="As needed (PRN)">
+          <option value="Cyclically — luteal phase only">
+          <option value="Other">
+        </datalist>
+        <datalist id="dlRoute">
+          <option value="Oral (by mouth)">
+          <option value="Topical (skin)">
+          <option value="Transdermal patch">
+          <option value="Vaginal">
+          <option value="Injection / subcutaneous">
+          <option value="Intranasal">
+          <option value="Sublingual">
+          <option value="Other">
+        </datalist>
+
         <div class="med-grid">
           <div class="med-header">
             <span>Medication Name (brand / generic)</span>
@@ -758,40 +831,40 @@
             <span>Route</span>
           </div>
           <div class="med-row">
-            <input type="text" id="med1Name"      placeholder="e.g. Prozac / fluoxetine">
-            <input type="text" id="med1Dosage"    placeholder="e.g. 20mg">
-            <input type="text" id="med1Frequency" placeholder="e.g. once daily">
-            <input type="text" id="med1Route"     placeholder="e.g. oral">
+            <input type="text" id="med1Name"      list="dlMedNames"  placeholder="Start typing or choose…">
+            <input type="text" id="med1Dosage"                        placeholder="e.g. 20mg">
+            <input type="text" id="med1Frequency" list="dlFrequency"  placeholder="Choose or type…">
+            <input type="text" id="med1Route"     list="dlRoute"      placeholder="Choose or type…">
           </div>
           <div class="med-row">
-            <input type="text" id="med2Name"      placeholder="Medication 2">
-            <input type="text" id="med2Dosage"    placeholder="">
-            <input type="text" id="med2Frequency" placeholder="">
-            <input type="text" id="med2Route"     placeholder="">
+            <input type="text" id="med2Name"      list="dlMedNames"  placeholder="Medication 2">
+            <input type="text" id="med2Dosage"                        placeholder="">
+            <input type="text" id="med2Frequency" list="dlFrequency"  placeholder="">
+            <input type="text" id="med2Route"     list="dlRoute"      placeholder="">
           </div>
           <div class="med-row">
-            <input type="text" id="med3Name"      placeholder="Medication 3">
-            <input type="text" id="med3Dosage"    placeholder="">
-            <input type="text" id="med3Frequency" placeholder="">
-            <input type="text" id="med3Route"     placeholder="">
+            <input type="text" id="med3Name"      list="dlMedNames"  placeholder="Medication 3">
+            <input type="text" id="med3Dosage"                        placeholder="">
+            <input type="text" id="med3Frequency" list="dlFrequency"  placeholder="">
+            <input type="text" id="med3Route"     list="dlRoute"      placeholder="">
           </div>
           <div class="med-row">
-            <input type="text" id="med4Name"      placeholder="Medication 4">
-            <input type="text" id="med4Dosage"    placeholder="">
-            <input type="text" id="med4Frequency" placeholder="">
-            <input type="text" id="med4Route"     placeholder="">
+            <input type="text" id="med4Name"      list="dlMedNames"  placeholder="Medication 4">
+            <input type="text" id="med4Dosage"                        placeholder="">
+            <input type="text" id="med4Frequency" list="dlFrequency"  placeholder="">
+            <input type="text" id="med4Route"     list="dlRoute"      placeholder="">
           </div>
           <div class="med-row">
-            <input type="text" id="med5Name"      placeholder="Medication 5">
-            <input type="text" id="med5Dosage"    placeholder="">
-            <input type="text" id="med5Frequency" placeholder="">
-            <input type="text" id="med5Route"     placeholder="">
+            <input type="text" id="med5Name"      list="dlMedNames"  placeholder="Medication 5">
+            <input type="text" id="med5Dosage"                        placeholder="">
+            <input type="text" id="med5Frequency" list="dlFrequency"  placeholder="">
+            <input type="text" id="med5Route"     list="dlRoute"      placeholder="">
           </div>
           <div class="med-row">
-            <input type="text" id="med6Name"      placeholder="Medication 6">
-            <input type="text" id="med6Dosage"    placeholder="">
-            <input type="text" id="med6Frequency" placeholder="">
-            <input type="text" id="med6Route"     placeholder="">
+            <input type="text" id="med6Name"      list="dlMedNames"  placeholder="Medication 6">
+            <input type="text" id="med6Dosage"                        placeholder="">
+            <input type="text" id="med6Frequency" list="dlFrequency"  placeholder="">
+            <input type="text" id="med6Route"     list="dlRoute"      placeholder="">
           </div>
         </div>
       </div>
@@ -804,7 +877,8 @@
       </div>
       <div class="journal-box">
         <label>Today's Entry</label>
-        <textarea id="journalEntry" placeholder="Write anything relevant to today — how you felt, what happened, what you noticed."></textarea>
+        <div class="journal-prompt" id="journalPrompt"></div>
+        <textarea id="journalEntry" placeholder=""></textarea>
         <div class="journal-yesterday" id="yesterdayBox">
           <div class="journal-yesterday-label">Yesterday's Entry</div>
           <div class="journal-yesterday-date" id="yesterdayDate"></div>
@@ -818,6 +892,7 @@
       <button class="btn-submit" id="btnSubmit">Save Daily Record</button>
       <span class="status-msg" id="statusMsg"></span>
     </div>
+    <div class="affirmation-box" id="affirmationBox"></div>
   </main>
 </div>
 
@@ -834,15 +909,51 @@
   const SLIDERS = [
     'Mood', 'Panic', 'MoodSwings', 'Rage',
     'Interest', 'Concentration', 'Fatigue', 'Appetite', 'Sleep', 'Overwhelmed',
-    'Physical',
-    'Productivity', 'Hobbies', 'Relationships',
+    'Physical', 'Productivity', 'Hobbies', 'Relationships',
   ];
 
-  const MED_NUMS = [1, 2, 3, 4, 5, 6];
+  const MED_NUMS   = [1, 2, 3, 4, 5, 6];
   const MED_FIELDS = ['Name', 'Dosage', 'Frequency', 'Route'];
 
-  // Set today's date
+  const PROMPTS = [
+    'What was the most noticeable shift in your body or mood today?',
+    'How did today compare to how you felt this time last week?',
+    'Did anything help — or make things harder — today?',
+    'What did your energy feel like today, and did it change throughout the day?',
+    'Were there any moments today that felt particularly hard or particularly manageable?',
+    'Did your symptoms affect any of your relationships or responsibilities today?',
+    'What would be most useful for your clinician to know about today?',
+    'What physical sensations were most present today?',
+    'Were there any triggers you noticed today?',
+    'What do you wish others understood about how you felt today?',
+    'How are you doing right now, in this moment?',
+    'Is there anything you want to remember about today when you look back at this record?',
+    'Did today match what your symptom ratings suggest, or did something feel different?',
+    'What, if anything, did you do to manage how you felt today?',
+  ];
+
+  const AFFIRMATIONS = [
+    'Recorded. Consistent tracking is one of the most useful things you can do for your care.',
+    'Saved. Two cycles of data is what confirms a PMDD pattern — you are building that picture.',
+    'Done. Your clinician will have what they need to work with you accurately.',
+    'Recorded. Noticing and naming is clinical work. You did that today.',
+    'Saved. This data belongs to you and tells your story with precision.',
+    'Done. Each entry adds resolution to your clinical picture.',
+    'Recorded. Showing up for this, on days like today, matters.',
+  ];
+
+  function pickByDate(arr) {
+    const d = new Date();
+    const seed = d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+    return arr[seed % arr.length];
+  }
+
+  // Set today's date and journal prompt
   document.getElementById('entryDate').value = new Date().toISOString().slice(0, 10);
+  const promptEl = document.getElementById('journalPrompt');
+  const prompt = pickByDate(PROMPTS);
+  promptEl.textContent = 'Consider: ' + prompt;
+  document.getElementById('journalEntry').placeholder = 'Write here…';
 
   // Wire sliders
   SLIDERS.forEach(name => {
@@ -854,7 +965,7 @@
     update();
   });
 
-  // Tooltip: toggle on touch/click for mobile
+  // Tooltip toggle for mobile
   document.querySelectorAll('.tip-wrap').forEach(wrap => {
     wrap.addEventListener('click', e => {
       e.stopPropagation();
@@ -865,21 +976,24 @@
     document.querySelectorAll('.tip-wrap.open').forEach(w => w.classList.remove('open'));
   });
 
-  // Request prefill from Wix parent on load
+  // Request prefill from Wix parent
   window.parent.postMessage({ type: 'DRSP_REQUEST_PREFILL' }, '*');
 
-  // Listen for prefill data from Wix
+  // Message listener
   window.addEventListener('message', e => {
     if (!e.data) return;
 
     if (e.data.type === 'DRSP_PREFILL') {
       const d = e.data.data || {};
-      const setVal = (id, val) => { const el = document.getElementById(id); if (el && val != null && val !== '') el.value = val; };
+      const setVal = (id, val) => {
+        const el = document.getElementById(id);
+        if (el && val != null && val !== '') el.value = val;
+      };
       setVal('firstName',   d.firstName);
       setVal('lastName',    d.lastName);
-      setVal('dateOfBirth', d.dateOfBirth ? d.dateOfBirth.slice(0,10) : null);
+      setVal('dateOfBirth', d.dateOfBirth ? d.dateOfBirth.slice(0, 10) : null);
       MED_NUMS.forEach(n => {
-        MED_FIELDS.forEach(f => setVal(`med${n}${f}`, d[`med${n}${f.toLowerCase()}`] || d[`med${n}${f}`]));
+        MED_FIELDS.forEach(f => setVal(`med${n}${f}`, d[`med${n}${f}`] || ''));
       });
       if (d.yesterdayEntry && d.yesterdayDate) {
         document.getElementById('yesterdayDate').textContent = d.yesterdayDate;
@@ -889,11 +1003,15 @@
     }
 
     if (e.data.type === 'DRSP_SAVE_RESULT') {
+      clearTimeout(saveTimeout);
       const btn    = document.getElementById('btnSubmit');
       const status = document.getElementById('statusMsg');
+      const affirm = document.getElementById('affirmationBox');
       if (e.data.success) {
         status.textContent = 'Record saved.';
         status.className = 'status-msg saved';
+        affirm.textContent = pickByDate(AFFIRMATIONS);
+        affirm.classList.add('visible');
       } else {
         status.textContent = 'Save failed — please try again.';
         status.className = 'status-msg error';
@@ -903,6 +1021,7 @@
   });
 
   // Submit
+  let saveTimeout;
   document.getElementById('btnSubmit').addEventListener('click', () => {
     const btn    = document.getElementById('btnSubmit');
     const status = document.getElementById('statusMsg');
@@ -917,42 +1036,43 @@
     const payload = {
       type: 'DRSP_DAILY_RECORD',
       data: {
-        firstName:         getStr('firstName'),
-        lastName:          getStr('lastName'),
-        dateOfBirth:       getStr('dateOfBirth'),
-        entryDate:         getStr('entryDate'),
-        cycleDay:          Number(document.getElementById('cycleDay').value) || 1,
-        periodFlow:        document.getElementById('periodFlow').value,
-        sleepHours:        Number(document.getElementById('inputSleepHours').value) || 0,
-        // Affective
-        mood:              getNum('sliderMood'),
-        panic:             getNum('sliderPanic'),
-        moodSwings:        getNum('sliderMoodSwings'),
-        rage:              getNum('sliderRage'),
-        // Behavioral / Cognitive
-        decreasedInterest: getNum('sliderInterest'),
-        concentration:     getNum('sliderConcentration'),
-        fatigue:           getNum('sliderFatigue'),
-        appetite:          getNum('sliderAppetite'),
-        sleepDisturbance:  getNum('sliderSleep'),
-        sensoryOverload:   getNum('sliderOverwhelmed'),
-        // Physical
-        physicalSymptoms:  getNum('sliderPhysical'),
-        // Functional impact
-        workImpairment:    getNum('sliderProductivity'),
-        socialImpairment:  getNum('sliderHobbies'),
+        firstName:           getStr('firstName'),
+        lastName:            getStr('lastName'),
+        dateOfBirth:         getStr('dateOfBirth'),
+        entryDate:           getStr('entryDate'),
+        cycleDay:            Number(document.getElementById('cycleDay').value) || 1,
+        periodFlow:          document.getElementById('periodFlow').value,
+        sleepHours:          Number(document.getElementById('inputSleepHours').value) || 0,
+        mood:                getNum('sliderMood'),
+        panic:               getNum('sliderPanic'),
+        moodSwings:          getNum('sliderMoodSwings'),
+        rage:                getNum('sliderRage'),
+        decreasedInterest:   getNum('sliderInterest'),
+        concentration:       getNum('sliderConcentration'),
+        fatigue:             getNum('sliderFatigue'),
+        appetite:            getNum('sliderAppetite'),
+        sleepDisturbance:    getNum('sliderSleep'),
+        sensoryOverload:     getNum('sliderOverwhelmed'),
+        physicalSymptoms:    getNum('sliderPhysical'),
+        workImpairment:      getNum('sliderProductivity'),
+        socialImpairment:    getNum('sliderHobbies'),
         relationshipUrgency: getNum('sliderRelationships'),
-        // Medications
+        journalEntry:        getStr('journalEntry'),
+        journalEntryDate:    getStr('entryDate'),
         ...meds,
-        // Journal
-        journalEntry:     getStr('journalEntry'),
-        journalEntryDate: getStr('entryDate'),
       }
     };
 
     btn.disabled = true;
     status.textContent = 'Saving…';
     status.className = 'status-msg';
+
+    // Re-enable after 15s if no response from Wix parent
+    saveTimeout = setTimeout(() => {
+      status.textContent = 'No response from server — check your connection and try again.';
+      status.className = 'status-msg error';
+      btn.disabled = false;
+    }, 15000);
 
     window.parent.postMessage(payload, '*');
   });
