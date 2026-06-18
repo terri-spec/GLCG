@@ -338,6 +338,60 @@
     }
     .info-field input:focus { outline: 2px solid var(--teal); outline-offset: 1px; }
 
+    /* ── Journal ── */
+    .journal-box {
+      padding: 20px;
+    }
+    .journal-box label {
+      display: block;
+      font-size: 11px;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .journal-box textarea {
+      width: 100%;
+      min-height: 140px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      resize: vertical;
+      color: var(--ink);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .journal-box textarea:focus { outline: 2px solid var(--teal); outline-offset: 1px; }
+    .journal-yesterday {
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: var(--radius);
+      background: var(--foam);
+      border: 1px solid var(--line);
+      display: none;
+    }
+    .journal-yesterday.visible { display: block; }
+    .journal-yesterday-label {
+      font-size: 11px;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .journal-yesterday-date {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .journal-yesterday-text {
+      font-size: 14px;
+      color: var(--ink);
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+
     /* ── Submit ── */
     .submit-bar {
       display: flex;
@@ -743,6 +797,22 @@
       </div>
     </div>
 
+    <!-- Daily Notes -->
+    <div class="section-card">
+      <div class="section-head">
+        <h3>Daily Notes</h3>
+      </div>
+      <div class="journal-box">
+        <label>Today's Entry</label>
+        <textarea id="journalEntry" placeholder="Write anything relevant to today — how you felt, what happened, what you noticed."></textarea>
+        <div class="journal-yesterday" id="yesterdayBox">
+          <div class="journal-yesterday-label">Yesterday's Entry</div>
+          <div class="journal-yesterday-date" id="yesterdayDate"></div>
+          <div class="journal-yesterday-text" id="yesterdayText"></div>
+        </div>
+      </div>
+    </div>
+
     <!-- Submit -->
     <div class="submit-bar">
       <button class="btn-submit" id="btnSubmit">Save Daily Record</button>
@@ -811,6 +881,11 @@
       MED_NUMS.forEach(n => {
         MED_FIELDS.forEach(f => setVal(`med${n}${f}`, d[`med${n}${f.toLowerCase()}`] || d[`med${n}${f}`]));
       });
+      if (d.yesterdayEntry && d.yesterdayDate) {
+        document.getElementById('yesterdayDate').textContent = d.yesterdayDate;
+        document.getElementById('yesterdayText').textContent = d.yesterdayEntry;
+        document.getElementById('yesterdayBox').classList.add('visible');
+      }
     }
 
     if (e.data.type === 'DRSP_SAVE_RESULT') {
@@ -869,6 +944,9 @@
         relationshipUrgency: getNum('sliderRelationships'),
         // Medications
         ...meds,
+        // Journal
+        journalEntry:     getStr('journalEntry'),
+        journalEntryDate: getStr('entryDate'),
       }
     };
 
