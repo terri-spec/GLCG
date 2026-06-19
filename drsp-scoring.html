@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DRSP Clinical Scoring — C-PASS</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f4f6f9; color: #1a1a2e; font-size: 14px; }
+.app { display: flex; height: 100vh; overflow: hidden; }
+
+/* Sidebar */
+.sidebar { width: 260px; background: #1a2744; color: #e8ecf4; display: flex; flex-direction: column; flex-shrink: 0; }
+.sidebar-header { padding: 20px 16px 12px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.sidebar-header h1 { font-size: 14px; font-weight: 700; letter-spacing: 0.5px; color: #fff; }
+.sidebar-header p { font-size: 11px; color: #8a9bbf; margin-top: 3px; }
+#clientSearch { width: 100%; margin-top: 12px; padding: 8px 10px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; color: #fff; font-size: 13px; }
+#clientSearch::placeholder { color: #8a9bbf; }
+#clientSearch:focus { outline: none; border-color: rgba(255,255,255,0.35); }
+.client-list { flex: 1; overflow-y: auto; padding: 8px 0; }
+.client-item { padding: 10px 16px; cursor: pointer; border-left: 3px solid transparent; transition: all 0.15s; }
+.client-item:hover { background: rgba(255,255,255,0.07); }
+.client-item.active { background: rgba(255,255,255,0.12); border-left-color: #6b9fff; }
+.client-item .cname { font-size: 13px; font-weight: 500; color: #e8ecf4; }
+.client-item .cdob { font-size: 11px; color: #8a9bbf; margin-top: 2px; }
+.sidebar-status { padding: 12px 16px; font-size: 11px; color: #8a9bbf; border-top: 1px solid rgba(255,255,255,0.08); }
+
+/* Main */
+.main { flex: 1; overflow-y: auto; padding: 24px; }
+.empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 70%; color: #8a9bbf; text-align: center; }
+.empty-state .icon { font-size: 44px; margin-bottom: 16px; }
+.empty-state p { font-size: 15px; color: #aab; }
+.empty-state small { margin-top: 8px; font-size: 12px; color: #8a9bbf; }
+.loading { text-align: center; padding: 60px; color: #8a9bbf; font-size: 14px; }
+
+/* Client header */
+.client-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; }
+.client-name { font-size: 22px; font-weight: 700; color: #1a2744; }
+.client-meta { font-size: 13px; color: #666; margin-top: 4px; }
+.record-count { font-size: 12px; background: #e8ecf4; color: #1a2744; padding: 4px 12px; border-radius: 12px; font-weight: 600; white-space: nowrap; margin-top: 4px; }
+
+/* Diagnosis banner */
+.dx-banner { border-radius: 10px; padding: 16px 20px; margin-bottom: 24px; }
+.dx-banner.pmdd { background: #fff0f0; border: 1.5px solid #e74c3c; }
+.dx-banner.mrmd { background: #fff8e6; border: 1.5px solid #e6a817; }
+.dx-banner.none { background: #f0fff4; border: 1.5px solid #27ae60; }
+.dx-banner.insufficient { background: #f4f6f9; border: 1.5px solid #bbb; }
+.dx-banner .dx-label { font-size: 10px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 5px; }
+.dx-banner.pmdd .dx-label { color: #c0392b; }
+.dx-banner.mrmd .dx-label { color: #b7800a; }
+.dx-banner.none .dx-label { color: #1e8449; }
+.dx-banner.insufficient .dx-label { color: #888; }
+.dx-banner .dx-result { font-size: 18px; font-weight: 700; color: #1a2744; }
+.dx-banner .dx-note { font-size: 12px; margin-top: 6px; color: #555; }
+
+/* Tabs */
+.tabs { display: flex; border-bottom: 1px solid #e8ecf4; margin-bottom: 20px; }
+.tab { padding: 8px 20px; cursor: pointer; font-size: 13px; color: #888; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+.tab.active { color: #1a2744; font-weight: 600; border-bottom-color: #1a2744; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* Section */
+.section { background: #fff; border-radius: 10px; padding: 20px; margin-bottom: 20px; border: 1px solid #e8ecf4; }
+.section-title { font-size: 11px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: #1a2744; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid #e8ecf4; }
+
+/* Cycle cards */
+.cycle-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+.cycle-card { border: 1px solid #e0e6ef; border-radius: 8px; overflow: hidden; background: #fff; }
+.cycle-card-header { padding: 12px 16px; font-size: 13px; font-weight: 600; color: #1a2744; background: #f4f6f9; display: flex; justify-content: space-between; align-items: center; }
+.cycle-badge { font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 10px; letter-spacing: 0.5px; }
+.cycle-badge.pmdd { background: #fde8e8; color: #c0392b; }
+.cycle-badge.mrmd { background: #fef3cd; color: #856404; }
+.cycle-badge.none { background: #d4edda; color: #155724; }
+.cycle-badge.insufficient { background: #e8ecf4; color: #666; }
+.cycle-card-body { padding: 14px 16px; }
+.phase-info { display: flex; gap: 16px; margin-bottom: 12px; font-size: 11px; color: #555; }
+.phase-info strong { color: #1a2744; }
+
+/* Domain rows */
+.domain-list { display: flex; flex-direction: column; gap: 7px; margin-top: 10px; }
+.domain-row { display: flex; align-items: center; gap: 8px; }
+.dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.dot.met { background: #e74c3c; }
+.dot.not-met { background: #d0d8e8; }
+.domain-label { font-size: 12px; color: #333; flex: 1; }
+.domain-label.core { font-weight: 600; }
+.domain-detail { font-size: 10px; color: #999; text-align: right; white-space: nowrap; }
+.core-star { color: #e6a817; font-size: 10px; margin-left: 2px; }
+.criteria-summary { font-size: 11px; color: #666; margin-bottom: 10px; padding: 8px 10px; background: #f9fafb; border-radius: 6px; line-height: 1.6; }
+.criteria-summary strong { color: #1a2744; }
+
+/* Records table */
+.rec-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+.rec-table th { background: #f4f6f9; padding: 7px 8px; text-align: left; font-weight: 600; color: #555; border-bottom: 1px solid #e8ecf4; white-space: nowrap; }
+.rec-table td { padding: 6px 8px; border-bottom: 1px solid #f0f2f5; color: #333; text-align: center; }
+.rec-table td:first-child, .rec-table td:nth-child(2) { text-align: left; }
+.rec-table tr:last-child td { border-bottom: none; }
+.phase-tag { font-size: 10px; padding: 2px 7px; border-radius: 8px; font-weight: 600; white-space: nowrap; }
+.phase-tag.pre { background: #fff3cd; color: #856404; }
+.phase-tag.post { background: #d1ecf1; color: #0c5460; }
+.phase-tag.mid { background: #f4f6f9; color: #999; }
+
+/* Notice */
+.cycles-notice { background: #fff8e6; border: 1px solid #e6a817; border-radius: 8px; padding: 12px 16px; font-size: 12px; color: #856404; margin-bottom: 16px; }
+.notice { font-size: 12px; color: #999; font-style: italic; padding: 6px 0; }
+.notes-box { font-size: 12px; color: #555; line-height: 1.8; }
+.notes-box p { margin-bottom: 2px; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h1>DRSP Clinical Scoring</h1>
+      <p>C-PASS · DSM-5 PMDD Assessment</p>
+      <input type="text" id="clientSearch" placeholder="Search clients…">
+    </div>
+    <div class="client-list" id="clientList">
+      <div style="padding:20px 16px; font-size:12px; color:#8a9bbf;">Connecting…</div>
+    </div>
+    <div class="sidebar-status" id="sidebarStatus"></div>
+  </div>
+
+  <div class="main" id="main">
+    <div class="empty-state">
+      <div class="icon">📋</div>
+      <p>Select a client to view C-PASS scoring</p>
+      <small>Two complete cycles required for a final diagnosis</small>
+    </div>
+  </div>
+</div>
+
+<script>
+const SYMPTOM_FIELDS = ['mood','panic','moodSwings','rage','decreasedInterest','concentration','fatigue','appetite','sleepDisturbance','sensoryOverload','physicalSymptoms'];
+
+const DSM5_DOMAINS = [
+  { key:'depression',    label:'Depression',           fields:['mood'],               core:true  },
+  { key:'anxiety',       label:'Anxiety',              fields:['panic'],              core:true  },
+  { key:'moodLability',  label:'Mood Lability',        fields:['moodSwings'],         core:true  },
+  { key:'anger',         label:'Anger / Irritability', fields:['rage'],               core:true  },
+  { key:'interest',      label:'Decreased Interest',   fields:['decreasedInterest'],  core:false },
+  { key:'concentration', label:'Concentration',        fields:['concentration'],      core:false },
+  { key:'lethargy',      label:'Lethargy / Fatigue',   fields:['fatigue'],            core:false },
+  { key:'appetite',      label:'Appetite Change',      fields:['appetite'],           core:false },
+  { key:'sleep',         label:'Sleep Disturbance',    fields:['sleepDisturbance'],   core:false },
+  { key:'overwhelm',     label:'Overwhelmed',          fields:['sensoryOverload'],    core:false },
+  { key:'physical',      label:'Physical Symptoms',    fields:['physicalSymptoms'],   core:false },
+];
+
+let allClients = [];
+let currentClient = null;
+let activeTab = 'scoring';
+
+window.addEventListener('message', e => {
+  const msg = e.data;
+  if (!msg || !msg.type) return;
+  if (msg.type === 'CLIENT_LIST') renderClientList(msg.clients || []);
+  if (msg.type === 'CLIENT_RECORDS') renderClientScoring(msg.records || []);
+});
+
+window.onload = () => {
+  window.parent.postMessage({ type: 'GET_CLIENT_LIST' }, '*');
+  document.getElementById('clientSearch').addEventListener('input', e => filterClients(e.target.value));
+};
+
+function renderClientList(clients) {
+  allClients = clients.sort((a, b) => (a.lastName || '').localeCompare(b.lastName || ''));
+  document.getElementById('sidebarStatus').textContent = `${clients.length} client${clients.length !== 1 ? 's' : ''}`;
+  paintClients(allClients);
+}
+
+function paintClients(list) {
+  const el = document.getElementById('clientList');
+  if (!list.length) { el.innerHTML = '<div style="padding:20px 16px;font-size:12px;color:#8a9bbf;">No clients found</div>'; return; }
+  el.innerHTML = list.map(c => `
+    <div class="client-item${currentClient?.memberId === c.memberId ? ' active' : ''}"
+         onclick="selectClient(${JSON.stringify(c)}, this)">
+      <div class="cname">${esc(c.lastName)}, ${esc(c.firstName)}</div>
+      ${c.dateOfBirth ? `<div class="cdob">DOB: ${fmtDate(c.dateOfBirth)}</div>` : ''}
+    </div>`).join('');
+}
+
+function filterClients(q) {
+  const lq = q.toLowerCase();
+  paintClients(allClients.filter(c => (c.firstName + ' ' + c.lastName).toLowerCase().includes(lq)));
+}
+
+function selectClient(c, el) {
+  currentClient = c;
+  document.querySelectorAll('.client-item').forEach(x => x.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('main').innerHTML = '<div class="loading">Loading records…</div>';
+  window.parent.postMessage({ type: 'GET_CLIENT_RECORDS', memberId: c.memberId }, '*');
+}
+
+function renderClientScoring(records) {
+  if (!records.length) {
+    document.getElementById('main').innerHTML = '<div class="empty-state"><div class="icon">📭</div><p>No records found for this client.</p></div>';
+    return;
+  }
+
+  const sorted = records.map(r => ({ ...r, _date: new Date(r.entryDate || r._createdDate) }))
+                        .sort((a, b) => a._date - b._date);
+
+  const phased = detectPhases(sorted);
+  const cycles = buildCycles(phased);
+  const overallDx = overallDiagnosis(cycles);
+  const c = currentClient;
+
+  document.getElementById('main').innerHTML = `
+    <div class="client-header">
+      <div>
+        <div class="client-name">${esc(c.lastName)}, ${esc(c.firstName)}</div>
+        <div class="client-meta">${c.dateOfBirth ? 'DOB: ' + fmtDate(c.dateOfBirth) : ''}</div>
+      </div>
+      <span class="record-count">${records.length} daily record${records.length !== 1 ? 's' : ''}</span>
+    </div>
+
+    ${dxBanner(overallDx)}
+
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('scoring',this)">C-PASS Scoring</div>
+      <div class="tab" onclick="switchTab('records',this)">All Records</div>
+    </div>
+
+    <div class="tab-panel active" id="tab-scoring">${scoringPanel(cycles)}</div>
+    <div class="tab-panel" id="tab-records">${recordsTable(phased)}</div>
+  `;
+}
+
+/* ── Phase detection ─────────────────────────────────── */
+function detectPhases(recs) {
+  const onsets = [];
+  for (let i = 0; i < recs.length; i++) {
+    const hasPeriod = recs[i].periodFlow && recs[i].periodFlow !== 'none';
+    const prevPeriod = i > 0 && recs[i-1].periodFlow && recs[i-1].periodFlow !== 'none';
+    const gap = i > 0 ? daysDiff(recs[i-1]._date, recs[i]._date) : 999;
+    if (hasPeriod && (!prevPeriod || gap > 3)) onsets.push(recs[i]._date);
+  }
+
+  return recs.map(r => {
+    let phase = 'mid', cycleIndex = -1, dayRel = null;
+    for (let i = 0; i < onsets.length; i++) {
+      const d = daysDiff(onsets[i], r._date); // positive = after onset
+      if (d >= 3 && d <= 9) { phase = 'post'; cycleIndex = i; dayRel = d + 1; break; }
+      if (i + 1 < onsets.length) {
+        const dn = daysDiff(onsets[i+1], r._date); // negative = before onset i+1
+        if (dn >= -7 && dn <= -1) { phase = 'pre'; cycleIndex = i; dayRel = dn; break; }
+      }
+    }
+    return { ...r, phase, cycleIndex, dayRel };
+  });
+}
+
+/* ── C-PASS cycle building & scoring ────────────────── */
+function buildCycles(phased) {
+  // Global max rating across all records (for scale range)
+  const globalMax = Math.max(1, ...phased.flatMap(r => SYMPTOM_FIELDS.map(f => r[f] || 0)));
+  const scaleRange = Math.max(globalMax - 1, 1);
+
+  const preMap = {}, postMap = {};
+  phased.forEach(r => {
+    if (r.phase === 'pre'  && r.cycleIndex >= 0) { (preMap[r.cycleIndex]  ||= []).push(r); }
+    if (r.phase === 'post' && r.cycleIndex >= 0) { (postMap[r.cycleIndex] ||= []).push(r); }
+  });
+
+  const allIdx = new Set([...Object.keys(preMap), ...Object.keys(postMap)].map(Number));
+  const cycles = [];
+  for (const i of [...allIdx].sort((a,b)=>a-b)) {
+    const preRecs  = preMap[i]   || [];
+    const postRecs = postMap[i+1] || []; // C-PASS pairs pre[i] with post[i+1]
+    const scorable = preRecs.length >= 3 && postRecs.length >= 3;
+    cycles.push({
+      index: i,
+      label: `Cycle ${cycles.length + 1}`,
+      preRecs, postRecs, scaleRange, globalMax,
+      scoring: scorable ? scoreCycle(preRecs, postRecs, scaleRange) : null,
+    });
+  }
+  return cycles;
+}
+
+function scoreCycle(preRecs, postRecs, scaleRange) {
+  const domainResults = {};
+  DSM5_DOMAINS.forEach(d => {
+    let domainMeets = false;
+    const fieldResults = {};
+    d.fields.forEach(f => {
+      const pre  = preRecs.map(r => r[f] || 0).filter(v => v > 0);
+      const post = postRecs.map(r => r[f] || 0).filter(v => v > 0);
+      if (!pre.length) { fieldResults[f] = { insufficient: true }; return; }
+      const preMax  = Math.max(...pre);
+      const postMax = post.length ? Math.max(...post) : 0;
+      const preMean  = avg(pre);
+      const postMean = post.length ? avg(post) : 0;
+      const rawChange = preMean - postMean;
+      const pctChange = (rawChange / scaleRange) * 100;
+      const severeDays = pre.filter(v => v >= 4).length;
+      const absSev  = preMax >= 4;
+      const dur     = severeDays >= 2;
+      const relChg  = pctChange >= 30;
+      const clr     = postMax <= 3;
+      const meets   = absSev && dur && relChg && clr;
+      if (meets) domainMeets = true;
+      fieldResults[f] = { preMax, postMax, preMean:+preMean.toFixed(1), postMean:+postMean.toFixed(1), pctChange:+pctChange.toFixed(0), severeDays, absSev, dur, relChg, clr, meets };
+    });
+    domainResults[d.key] = { ...d, fieldResults, meets: domainMeets };
+  });
+
+  const coreMet   = DSM5_DOMAINS.filter(d => d.core).some(d => domainResults[d.key].meets);
+  const totalMet  = Object.values(domainResults).filter(d => d.meets).length;
+  const diagnosis = !coreMet ? 'none' : totalMet < 5 ? 'mrmd' : 'pmdd';
+  return { domainResults, coreMet, totalMet, diagnosis };
+}
+
+function overallDiagnosis(cycles) {
+  const scored = cycles.filter(c => c.scoring);
+  const pmdd   = scored.filter(c => c.scoring.diagnosis === 'pmdd').length;
+  const mrmd   = scored.filter(c => c.scoring.diagnosis === 'mrmd').length;
+  if (scored.length < 2) return { status: 'insufficient', scoredCount: scored.length };
+  if (pmdd >= 2) return { status: 'pmdd', pmdd, mrmd };
+  if (pmdd + mrmd >= 2) return { status: 'mrmd', pmdd, mrmd };
+  return { status: 'none', pmdd, mrmd };
+}
+
+/* ── Rendering ───────────────────────────────────────── */
+function dxBanner(dx) {
+  const map = {
+    pmdd:        { cls:'pmdd',        title:'PMDD — Premenstrual Dysphoric Disorder',   note:`${dx.pmdd} cycle(s) met full PMDD criteria (≥1 core emotional symptom + ≥5 total symptoms).` },
+    mrmd:        { cls:'mrmd',        title:'MRMD — Menstrually Related Mood Disorder', note:`Core emotional symptom met in 2+ cycles but fewer than 5 total DSM-5 symptoms per cycle.` },
+    none:        { cls:'none',        title:'No Diagnosis — Criteria Not Met',           note:'Two symptomatic cycles did not meet threshold for MRMD or PMDD.' },
+    insufficient:{ cls:'insufficient',title:'Insufficient Data for Final Diagnosis',     note:`${dx.scoredCount || 0} scorable cycle(s) found. Minimum 2 complete cycles required.` },
+  };
+  const l = map[dx.status];
+  return `<div class="dx-banner ${l.cls}">
+    <div class="dx-label">Overall Diagnosis</div>
+    <div class="dx-result">${l.title}</div>
+    <div class="dx-note">${l.note}</div>
+  </div>`;
+}
+
+function scoringPanel(cycles) {
+  if (!cycles.length) return '<div class="cycles-notice">⚠️ No period onset data detected. The client must log period flow to enable phase detection and scoring.</div>';
+  const hasInsufficient = cycles.some(c => !c.scoring);
+  return `
+    ${hasInsufficient ? `<div class="cycles-notice">⚠️ Some cycles have insufficient data for scoring. At least 3 premenstrual records and 3 postmenstrual records are required per cycle.</div>` : ''}
+    <div class="cycle-grid">${cycles.map(cycleCard).join('')}</div>
+    <div class="section" style="margin-top:20px;">
+      <div class="section-title">C-PASS Scoring Reference</div>
+      <div class="notes-box">
+        <p>• <strong>Premenstrual phase:</strong> days −7 to −1 before menstrual onset</p>
+        <p>• <strong>Postmenstrual phase:</strong> days 4–10 from menstrual onset</p>
+        <p>• Each C-PASS cycle pairs the premenstrual phase of one biological cycle with the postmenstrual phase of the following cycle</p>
+        <p>• Item criteria: premenstrual max ≥4 AND ≥2 severe days AND ≥30% cyclical change AND postmenstrual max ≤3</p>
+        <p>• PMDD requires: ≥1 core emotional symptom + ≥5 total DSM-5 symptoms meeting criteria in 2 cycles</p>
+        <p>• MRMD requires: ≥1 core emotional symptom in 2 cycles (fewer than 5 total symptoms)</p>
+        <p>• ★ denotes core emotional symptoms (Depression, Anxiety, Mood Lability, Anger/Irritability)</p>
+        <p>• Note: this tool uses a simplified 11-item DRSP; the full instrument has 24 items</p>
+        <p style="margin-top:8px; color:#888;">Eisenlohr-Moul, T., et al. (2016). C-PASS. <em>American Journal of Psychiatry.</em></p>
+      </div>
+    </div>`;
+}
+
+function cycleCard(cycle) {
+  const pre = cycle.preRecs.length, post = cycle.postRecs.length;
+  if (!cycle.scoring) return `
+    <div class="cycle-card">
+      <div class="cycle-card-header">${cycle.label}<span class="cycle-badge insufficient">Insufficient Data</span></div>
+      <div class="cycle-card-body">
+        <div class="phase-info"><span><strong>Pre:</strong> ${pre} day${pre!==1?'s':''}</span><span><strong>Post:</strong> ${post} day${post!==1?'s':''}</span></div>
+        <div class="notice">Need ≥3 days in each phase to score.</div>
+      </div>
+    </div>`;
+
+  const s = cycle.scoring;
+  const badgeLabel = s.diagnosis === 'pmdd' ? 'PMDD' : s.diagnosis === 'mrmd' ? 'MRMD' : 'No Diagnosis';
+  return `
+    <div class="cycle-card">
+      <div class="cycle-card-header">${cycle.label}<span class="cycle-badge ${s.diagnosis}">${badgeLabel}</span></div>
+      <div class="cycle-card-body">
+        <div class="phase-info">
+          <span><strong>Pre:</strong> ${pre} days</span>
+          <span><strong>Post:</strong> ${post} days</span>
+          <span><strong>Scale range:</strong> ${cycle.scaleRange}</span>
+        </div>
+        <div class="criteria-summary">
+          Core emotional symptom: <strong>${s.coreMet ? 'Yes ✓' : 'No ✗'}</strong>
+          &nbsp;·&nbsp; Qualifying symptoms: <strong>${s.totalMet} / 11</strong>
+        </div>
+        <div class="domain-list">
+          ${DSM5_DOMAINS.map(d => {
+            const dr = s.domainResults[d.key];
+            const fr = dr.fieldResults[d.fields[0]];
+            const detail = fr && !fr.insufficient
+              ? `${fr.preMean}→${fr.postMean} · ${fr.pctChange}% Δ`
+              : 'no data';
+            return `<div class="domain-row">
+              <div class="dot ${dr.meets ? 'met' : 'not-met'}"></div>
+              <div class="domain-label${d.core ? ' core' : ''}">${d.label}${d.core ? '<span class="core-star">★</span>' : ''}</div>
+              <div class="domain-detail">${detail}</div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+    </div>`;
+}
+
+function recordsTable(phased) {
+  return `<div class="section">
+    <div class="section-title">All Daily Records</div>
+    <div style="overflow-x:auto;">
+    <table class="rec-table">
+      <thead><tr>
+        <th>Date</th><th>Phase</th><th>Flow</th>
+        <th>Mood</th><th>Anxiety</th><th>Mood Sw.</th><th>Rage</th>
+        <th>Interest</th><th>Conc.</th><th>Fatigue</th>
+        <th>Appetite</th><th>Sleep</th><th>Overwhlm</th><th>Physical</th>
+      </tr></thead>
+      <tbody>${phased.map(r => `<tr>
+        <td>${fmtDate(r._date)}</td>
+        <td><span class="phase-tag ${r.phase === 'pre' ? 'pre' : r.phase === 'post' ? 'post' : 'mid'}">${r.phase === 'pre' ? 'Pre' : r.phase === 'post' ? 'Post' : '—'}</span></td>
+        <td>${r.periodFlow || '—'}</td>
+        ${SYMPTOM_FIELDS.map(f => `<td>${r[f] || '—'}</td>`).join('')}
+      </tr>`).join('')}</tbody>
+    </table></div>
+  </div>`;
+}
+
+function switchTab(tab, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+  activeTab = tab;
+}
+
+function daysDiff(a, b) { return Math.round((b - a) / 86400000); }
+function avg(arr) { return arr.length ? arr.reduce((a,b) => a+b, 0) / arr.length : 0; }
+function fmtDate(d) {
+  const dt = d instanceof Date ? d : new Date(d);
+  if (isNaN(dt)) return String(d).slice(0,10);
+  return dt.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+}
+function esc(s) {
+  return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+</script>
+</body>
+</html>
