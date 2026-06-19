@@ -1431,11 +1431,12 @@
   function syncDobInputFromSelects() {
     if (dobMonth.value && dobDay.value && dobYear.value) {
       dobInput.value = `${dobYear.value}-${dobMonth.value}-${dobDay.value}`;
-    } else {
-      dobInput.value = '';
+      dobInput.dispatchEvent(new Event('input', { bubbles: true }));
+      dobInput.dispatchEvent(new Event('change', { bubbles: true }));
+      return;
     }
-    dobInput.dispatchEvent(new Event('input', { bubbles: true }));
-    dobInput.dispatchEvent(new Event('change', { bubbles: true }));
+    dobInput.value = '';
+    updateSaveAvailability();
   }
 
   [dobMonth, dobDay, dobYear].forEach(select => {
