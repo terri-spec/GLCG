@@ -976,8 +976,21 @@
     document.querySelectorAll('.tip-wrap.open').forEach(w => w.classList.remove('open'));
   });
 
-  // Request prefill from Wix parent
-  window.parent.postMessage({ type: 'DRSP_REQUEST_PREFILL' }, '*');
+  function requestPrefill() {
+    const firstName = document.getElementById('firstName').value.trim();
+    const lastName = document.getElementById('lastName').value.trim();
+    const dateOfBirth = document.getElementById('dateOfBirth').value;
+    if (!firstName || !lastName || !dateOfBirth) return;
+    window.parent.postMessage({
+      type: 'DRSP_REQUEST_PREFILL',
+      data: { firstName, lastName, dateOfBirth }
+    }, '*');
+  }
+
+  ['firstName', 'lastName', 'dateOfBirth'].forEach(id => {
+    document.getElementById(id).addEventListener('change', requestPrefill);
+    document.getElementById(id).addEventListener('blur', requestPrefill);
+  });
 
   // Message listener
   window.addEventListener('message', e => {
