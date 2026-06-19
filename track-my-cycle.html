@@ -689,9 +689,23 @@
     @media (max-width: 760px) {
       .layout { grid-template-columns: 1fr; }
       .sidebar { display: none; }
-      .main { padding: 14px 12px 28px; max-width: none; min-width: 0; overflow: hidden; }
+      html, body, .layout { width: 100%; max-width: 100%; overflow-x: hidden; }
+      .main {
+        width: 100vw;
+        max-width: 100vw;
+        min-width: 0;
+        padding: 14px 12px 28px;
+        overflow-x: hidden;
+      }
       .page-header { margin-bottom: 18px; }
       .page-header h2 { font-size: 22px; line-height: 1.2; }
+      .page-header,
+      .meta-bar,
+      .meta-row,
+      .meta-field,
+      .section-card,
+      .rating-row,
+      .rating-control { width: 100%; min-width: 0; max-width: 100%; }
       .meta-row { grid-template-columns: 1fr; }
       .meta-field input,
       .meta-field select { height: 46px; font-size: 16px; }
@@ -703,7 +717,7 @@
       .rating-control { gap: 8px; }
       .rating-control input[type="range"],
       .rating-ticks { display: none; }
-      .rating-buttons { display: grid; gap: 5px; }
+      .rating-buttons { display: grid; width: 100%; min-width: 0; gap: 5px; }
       .rating-value { text-align: left; font-size: 12px; }
       .med-header, .med-row { grid-template-columns: 1fr 1fr; }
       .info-grid { grid-template-columns: 1fr; }
