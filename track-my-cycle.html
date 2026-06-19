@@ -1,0 +1,1081 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Daily Record of Severity of Problems</title>
+  <style>
+    :root {
+      --bg: #eef5f7;
+      --panel: #ffffff;
+      --ink: #10283a;
+      --muted: #5d7280;
+      --line: #bdd0d8;
+      --navy: #14324c;
+      --teal: #0f6f7d;
+      --teal-dark: #0a4d5b;
+      --red: #b43131;
+      --foam: #f4fafb;
+      --shadow: 0 16px 36px rgba(16,40,58,0.13);
+      --radius: 8px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.45;
+      font-size: 15px;
+    }
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      min-height: 100vh;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: auto;
+      background: var(--navy);
+      color: #fff;
+      padding: 24px 20px;
+    }
+    .sidebar-brand {
+      font-size: 11px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.55);
+      margin-bottom: 6px;
+    }
+    .sidebar h1 {
+      margin: 0 0 4px;
+      font-size: 20px;
+      line-height: 1.15;
+    }
+    .sidebar-sub {
+      font-size: 13px;
+      color: rgba(255,255,255,.65);
+      margin: 0 0 24px;
+    }
+    .sidebar-section {
+      font-size: 11px;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.45);
+      margin: 20px 0 8px;
+    }
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 10px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      color: rgba(255,255,255,.78);
+    }
+    .sidebar-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.15);
+      display: grid;
+      place-items: center;
+      font-size: 11px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .scale-key {
+      margin-top: 28px;
+      padding: 14px;
+      border-radius: var(--radius);
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.12);
+    }
+    .scale-key p {
+      margin: 0 0 10px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: rgba(255,255,255,.55);
+    }
+    .scale-row {
+      display: grid;
+      grid-template-columns: 18px 1fr;
+      gap: 8px;
+      font-size: 12px;
+      color: rgba(255,255,255,.85);
+      margin-bottom: 8px;
+      line-height: 1.35;
+    }
+    .scale-row .scale-num { font-weight: 700; color: #e8c46a; }
+    .scale-row .scale-def { color: rgba(255,255,255,.65); font-size: 11px; margin-top: 1px; }
+
+    /* ── Main content ── */
+    .main { padding: 32px 36px; max-width: 900px; }
+    .page-header { margin-bottom: 28px; }
+    .page-header h2 { margin: 0 0 4px; font-size: 26px; color: var(--navy); }
+    .page-header p { margin: 0; color: var(--muted); font-size: 14px; }
+
+    /* ── Meta bar ── */
+    .meta-bar {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .meta-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .meta-field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .meta-field label {
+      font-size: 11px;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .meta-field input,
+    .meta-field select {
+      height: 38px;
+      padding: 0 10px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+      color: var(--ink);
+    }
+    .meta-field input:focus,
+    .meta-field select:focus {
+      outline: 2px solid var(--teal);
+      outline-offset: 1px;
+    }
+
+    /* ── Section cards ── */
+    .section-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .section-head {
+      padding: 14px 20px;
+      background: var(--foam);
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+    .section-head h3 {
+      margin: 0;
+      font-size: 13px;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--navy);
+      font-weight: 700;
+    }
+    .section-head span { font-size: 12px; color: var(--muted); }
+
+    /* ── Rating rows ── */
+    .rating-row {
+      display: grid;
+      grid-template-columns: 1fr 220px;
+      gap: 16px;
+      align-items: center;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--line);
+    }
+    .rating-row:last-child { border-bottom: none; }
+    .rating-label { font-size: 14px; color: var(--ink); line-height: 1.45; }
+    .rating-label small { display: block; font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .rating-control { display: flex; flex-direction: column; gap: 4px; }
+    .rating-control input[type="range"] { width: 100%; accent-color: var(--teal); cursor: pointer; }
+    .rating-value { font-size: 11px; color: var(--teal); font-weight: 600; text-align: right; line-height: 1.3; }
+    .rating-ticks {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      color: var(--muted);
+      padding: 0 2px;
+    }
+
+    /* ── Tooltip ── */
+    .tip-wrap {
+      display: inline-block;
+      position: relative;
+      margin-left: 5px;
+      vertical-align: middle;
+    }
+    .tip-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--line);
+      color: var(--navy);
+      font-size: 10px;
+      font-weight: 700;
+      cursor: help;
+      user-select: none;
+      flex-shrink: 0;
+    }
+    .tip-box {
+      display: none;
+      position: absolute;
+      left: 22px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 300px;
+      background: var(--navy);
+      color: rgba(255,255,255,.9);
+      font-size: 12px;
+      line-height: 1.45;
+      padding: 10px 12px;
+      border-radius: var(--radius);
+      box-shadow: 0 8px 24px rgba(0,0,0,.25);
+      z-index: 100;
+      pointer-events: none;
+    }
+    .tip-box::before {
+      content: '';
+      position: absolute;
+      right: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      border: 6px solid transparent;
+      border-right-color: var(--navy);
+    }
+    .tip-wrap:hover .tip-box,
+    .tip-wrap.open .tip-box { display: block; }
+    .tip-box strong { color: #e8c46a; display: block; margin-bottom: 4px; }
+
+    /* ── Medication grid ── */
+    .med-grid {
+      padding: 16px 20px;
+    }
+    .med-header {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1.5fr 1.5fr;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .med-header span {
+      font-size: 10px;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 600;
+      padding: 0 2px;
+    }
+    .med-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1.5fr 1.5fr;
+      gap: 8px;
+      margin-bottom: 6px;
+      align-items: center;
+    }
+    .med-num {
+      font-size: 11px;
+      color: var(--muted);
+      text-align: right;
+      padding-right: 4px;
+    }
+    .med-row input {
+      height: 34px;
+      padding: 0 8px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+      color: var(--ink);
+      font-size: 13px;
+      width: 100%;
+    }
+    .med-row input:focus {
+      outline: 2px solid var(--teal);
+      outline-offset: 1px;
+    }
+    .med-row input::placeholder { color: #b0bec5; }
+
+    /* ── Sleep / notes ── */
+    .info-grid {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 16px;
+      padding: 20px;
+      align-items: start;
+    }
+    .info-field { display: flex; flex-direction: column; gap: 4px; }
+    .info-field label {
+      font-size: 11px;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .info-field input {
+      height: 38px;
+      padding: 0 10px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+      color: var(--ink);
+    }
+    .info-field input:focus { outline: 2px solid var(--teal); outline-offset: 1px; }
+
+    /* ── Journal ── */
+    .journal-box {
+      padding: 20px;
+    }
+    .journal-box label {
+      display: block;
+      font-size: 11px;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .journal-box textarea {
+      width: 100%;
+      min-height: 140px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      resize: vertical;
+      color: var(--ink);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .journal-box textarea:focus { outline: 2px solid var(--teal); outline-offset: 1px; }
+    .journal-yesterday {
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: var(--radius);
+      background: var(--foam);
+      border: 1px solid var(--line);
+      display: none;
+    }
+    .journal-yesterday.visible { display: block; }
+    .journal-yesterday-label {
+      font-size: 11px;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .journal-yesterday-date {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .journal-prompt {
+      font-size: 13px;
+      color: var(--teal);
+      margin-bottom: 8px;
+      font-style: italic;
+    }
+    .affirmation-box {
+      margin-top: 12px;
+      padding: 14px 16px;
+      border-radius: var(--radius);
+      background: #eaf6f0;
+      border: 1px solid #a8d9c2;
+      color: #1a5c3e;
+      font-size: 14px;
+      display: none;
+    }
+    .affirmation-box.visible { display: block; }
+    .journal-yesterday-text {
+      font-size: 14px;
+      color: var(--ink);
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+
+    /* ── Submit ── */
+    .submit-bar {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 8px;
+      padding: 20px 0 40px;
+    }
+    .btn-submit {
+      height: 44px;
+      padding: 0 28px;
+      background: var(--teal);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: .02em;
+    }
+    .btn-submit:hover { background: var(--teal-dark); }
+    .btn-submit:disabled { opacity: .5; cursor: default; }
+    .status-msg { font-size: 14px; color: var(--muted); }
+    .status-msg.saved { color: #1a7a52; font-weight: 600; }
+    .status-msg.error { color: var(--red); }
+
+    @media (max-width: 760px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; height: auto; }
+      .main { padding: 20px; }
+      .meta-row { grid-template-columns: 1fr 1fr; }
+      .rating-row { grid-template-columns: 1fr; }
+      .med-header, .med-row { grid-template-columns: 1fr 1fr; }
+      .info-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">Great Lakes Counseling Group</div>
+    <h1 class="sidebar">Daily Symptom Record</h1>
+    <p class="sidebar-sub">Daily Record of Severity of Problems (DRSP)</p>
+
+    <div class="sidebar-section">Affective Symptoms</div>
+    <div class="sidebar-item"><span class="sidebar-num">1</span> Depressed Mood</div>
+    <div class="sidebar-item"><span class="sidebar-num">2</span> Anxiety / Tension</div>
+    <div class="sidebar-item"><span class="sidebar-num">3</span> Mood Swings</div>
+    <div class="sidebar-item"><span class="sidebar-num">4</span> Anger / Irritability</div>
+
+    <div class="sidebar-section">Behavioral / Cognitive</div>
+    <div class="sidebar-item"><span class="sidebar-num">5</span> Decreased Interest</div>
+    <div class="sidebar-item"><span class="sidebar-num">6</span> Concentration</div>
+    <div class="sidebar-item"><span class="sidebar-num">7</span> Fatigue</div>
+    <div class="sidebar-item"><span class="sidebar-num">8</span> Appetite</div>
+    <div class="sidebar-item"><span class="sidebar-num">9</span> Sleep</div>
+    <div class="sidebar-item"><span class="sidebar-num">10</span> Overwhelmed</div>
+
+    <div class="sidebar-section">Physical</div>
+    <div class="sidebar-item"><span class="sidebar-num">11</span> Physical Symptoms</div>
+
+    <div class="sidebar-section">Functional Impact</div>
+    <div class="sidebar-item"><span class="sidebar-num">A</span> Productivity</div>
+    <div class="sidebar-item"><span class="sidebar-num">B</span> Hobbies / Social</div>
+    <div class="sidebar-item"><span class="sidebar-num">C</span> Relationships</div>
+
+    <div class="scale-key">
+      <p>Severity Rating Scale</p>
+      <div class="scale-row">
+        <span class="scale-num">1</span>
+        <span><strong>Not at all</strong><br><span class="scale-def">The symptom is completely absent.</span></span>
+      </div>
+      <div class="scale-row">
+        <span class="scale-num">2</span>
+        <span><strong>Minimal</strong><br><span class="scale-def">Barely noticeable; does not affect daily life.</span></span>
+      </div>
+      <div class="scale-row">
+        <span class="scale-num">3</span>
+        <span><strong>Mild</strong><br><span class="scale-def">Present but easily managed.</span></span>
+      </div>
+      <div class="scale-row">
+        <span class="scale-num">4</span>
+        <span><strong>Moderate</strong><br><span class="scale-def">Clearly present; causes noticeable discomfort.</span></span>
+      </div>
+      <div class="scale-row">
+        <span class="scale-num">5</span>
+        <span><strong>Severe</strong><br><span class="scale-def">Intense; significantly impacts functioning.</span></span>
+      </div>
+      <div class="scale-row">
+        <span class="scale-num">6</span>
+        <span><strong>Extreme</strong><br><span class="scale-def">Overwhelming and incapacitating.</span></span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+    <div class="page-header">
+      <h2>Daily Record of Severity of Problems</h2>
+      <p>Rate each symptom for today using the 1–6 scale. Complete one record per day.</p>
+    </div>
+
+    <!-- Patient / Date info -->
+    <div class="meta-bar">
+      <div class="meta-row">
+        <div class="meta-field">
+          <label>First Name</label>
+          <input type="text" id="firstName" placeholder="First name" autocomplete="given-name">
+        </div>
+        <div class="meta-field">
+          <label>Last Name</label>
+          <input type="text" id="lastName" placeholder="Last name" autocomplete="family-name">
+        </div>
+        <div class="meta-field">
+          <label>Date of Birth</label>
+          <input type="date" id="dateOfBirth">
+        </div>
+      </div>
+      <div class="meta-row">
+        <div class="meta-field">
+          <label>Date</label>
+          <input type="date" id="entryDate">
+        </div>
+        <div class="meta-field">
+          <label>Cycle Day</label>
+          <input type="number" id="cycleDay" min="1" max="35" placeholder="e.g. 14">
+        </div>
+        <div class="meta-field">
+          <label>Menstrual Flow</label>
+          <select id="periodFlow">
+            <option value="none">None</option>
+            <option value="spotting">Spotting</option>
+            <option value="light">Light</option>
+            <option value="moderate">Moderate</option>
+            <option value="heavy">Heavy</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Affective Symptoms -->
+    <div class="section-card">
+      <div class="section-head">
+        <h3>Affective Symptoms</h3>
+        <span>Items 1–4</span>
+      </div>
+
+      <div class="rating-row">
+        <div class="rating-label">
+          1. Felt depressed, sad, "down," or "blue"; hopeless; worthless or guilty
+          <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box"><strong>Rating Examples</strong>1 — Feeling perfectly content<br>6 — Profound, paralyzing despair or intense guilt</span></span>
+        </div>
+        <div class="rating-control">
+          <input type="range" id="sliderMood" min="1" max="6" step="1" value="1">
+          <div class="rating-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+          <div class="rating-value" id="labelMood">1 — Not at all</div>
+        </div>
+      </div>
+
+      <div class="rating-row">
+        <div class="rating-label">
+          2. Felt anxious, tense, "keyed up," or "on edge"
+          <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box"><strong>Rating Examples</strong>1 — Feeling completely relaxed<br>6 — Constant, severe physical tension or panic</span></span>
+        </div>
+        <div class="rating-control">
+          <input type="range" id="sliderPanic" min="1" max="6" step="1" value="1">
+          <div class="rating-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+          <div class="rating-value" id="labelPanic">1 — Not at all</div>
+        </div>
+      </div>
+
+      <div class="rating-row">
+        <div class="rating-label">
+          3. Had mood swings (sudden sadness/tears); sensitive to rejection or easily hurt feelings
+          <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box"><strong>Rating Examples</strong>1 — Emotional stability<br>6 — Uncontrollable crying spells or extreme emotional sensitivity</span></span>
+        </div>
+        <div class="rating-control">
+          <input type="range" id="sliderMoodSwings" min="1" max="6" step="1" value="1">
+          <div class="rating-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+          <div class="rating-value" id="labelMoodSwings">1 — Not at all</div>
+        </div>
+      </div>
+
+      <div class="rating-row">
+        <div class="rating-label">
+          4. Felt angry or irritable
+          <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box"><strong>Rating Examples</strong>1 — Calm and patient<br>6 — Explosive rage or constant, severe agitation</span></span>
+        </div>
+        <div class="rating-control">
+          <input type="range" id="sliderRage" min="1" max="6" step="1" value="1">
+          <div class="rating-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+          <div class="rating-value" id="labelRage">1 — Not at all</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Behavioral / Cognitive -->
+    <div class="section-card">
+      <div class="section-head">
+        <h3>Behavioral / Cognitive</h3>
+        <span>Items 5–10</span>
+      </div>
+
+      <div class="rating-row">
+        <div class="rating-label">
+          5. Had less interest in usual activities (work, school, friends, hobbies)
+          <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box"><strong>Rating Examples</strong>1 — Full engagement in all interests<br>6 — Total lack of interest or pleasure in any activity</span></span>
+        </div>
+        <div class="rating-control">
+          <input type="range" id="sliderInterest" min="1" max="6" step="1" value="1">
+          <div class="rating-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+          <div class="rating-value" id="labelInterest">1 — Not at all</div>
+        </div>
+      </div>
+
+      <div class="rating-row">
+        <div class="rating-label">
+          6. Had difficulty concentrating
+          <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box"><strong>Rating Examples</strong>1 — Sharp and focused<br>6 — Completely unable to focus on simple tasks or thoughts</span></span>
+        </div>
+        <div class="rating-control">
+          <input type="range" id="sliderConcentration" min="1" max="6" step="1" value="1">
+          <div class="rating-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+          <div class="rating-value" id="labelConcentration">1 — Not at all</div>
+        </div>
+      </div>
+
+      <div class="rating-row">
+        <div class="rating-label">
+          7. Felt lethargic, tired, or fatigued; lack of energy
+          <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box"><strong>Rating Examples</strong>1 — Feeling energetic<br>6 — Physically exhausted; getting out of bed is impossible</span></span>
+        </div>
+        <div class="rating-control">
+          <input type="range" id="sliderFatigue" min="1" max="6" step="1" value="1">
+          <div class="rating-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+          <div class="rating-value" id="labelFatigue">1 — Not at all</div>
+        </div>
+      </div>
+
+      <div class="rating-row">
+        <div class="rating-label">
+          8. Increased appetite, overeating, or specific food cravings
+          <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box"><strong>Rating Examples</strong>1 — Normal hunger patterns<br>6 — Uncontrollable urge to binge or intense, constant cravings</span></span>
+        </div>
+        <div class="rating-control">
+          <input type="range" id="sliderAppetite" min="1" max="6" step="1" value="1">
+          <div class="rating-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+          <div class="rating-value" id="labelAppetite">1 — Not at all</div>
+        </div>
+      </div>
+
+      <div class="rating-row">
+        <div class="rating-label">
+          9. Slept more than usual (naps, hard to get up) or had trouble sleeping
+          <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box"><strong>Rating Examples</strong>1 — High-quality, restorative sleep<br>6 — Total insomnia or sleeping throughout the entire day</span></span>
+        </div>
+        <div class="rating-control">
+          <input type="range" id="sliderSleep" min="1" max="6" step="1" value="1">
+          <div class="rating-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+          <div class="rating-value" id="labelSleep">1 — Not at all</div>
+        </div>
+      </div>
+
+      <div class="rating-row">
+        <div class="rating-label">
+          10. Felt overwhelmed, unable to cope, or out of control
+          <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box"><strong>Rating Examples</strong>1 — Feeling in total control<br>6 — Complete loss of control over one's life or emotions</span></span>
+        </div>
+        <div class="rating-control">
+          <input type="range" id="sliderOverwhelmed" min="1" max="6" step="1" value="1">
+          <div class="rating-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+          <div class="rating-value" id="labelOverwhelmed">1 — Not at all</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Physical -->
+    <div class="section-card">
+      <div class="section-head">
+        <h3>Physical Symptoms</h3>
+        <span>Item 11</span>
+      </div>
+
+      <div class="rating-row">
+        <div class="rating-label">
+          11. Breast tenderness/swelling, bloating, weight gain, headache, muscle or joint pain
+          <span class="tip-wrap"><span class="tip-icon">i</span><span class="tip-box"><strong>Rating Examples</strong>1 — No physical discomfort<br>6 — Severe, debilitating pain or extreme bodily swelling</span></span>
+        </div>
+        <div class="rating-control">
+          <input type="range" id="sliderPhysical" min="1" max="6" step="1" value="1">
+          <div class="rating-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+          <div class="rating-value" id="labelPhysical">1 — Not at all</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Functional Impact -->
+    <div class="section-card">
+      <div class="section-head">
+        <h3>Functional Impact</h3>
+        <span>Rate how much the symptoms above interfered with daily functioning</span>
+      </div>
+
+      <div class="rating-row">
+        <div class="rating-label">
+          A. At work, school, home, or in daily routine, at least one of the problems noted above caused reduction of productivity or efficiency
+        </div>
+        <div class="rating-control">
+          <input type="range" id="sliderProductivity" min="1" max="6" step="1" value="1">
+          <div class="rating-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+          <div class="rating-value" id="labelProductivity">1 — Not at all</div>
+        </div>
+      </div>
+
+      <div class="rating-row">
+        <div class="rating-label">
+          B. At least one of the problems noted above caused avoidance of or less participation in hobbies or social activities
+        </div>
+        <div class="rating-control">
+          <input type="range" id="sliderHobbies" min="1" max="6" step="1" value="1">
+          <div class="rating-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+          <div class="rating-value" id="labelHobbies">1 — Not at all</div>
+        </div>
+      </div>
+
+      <div class="rating-row">
+        <div class="rating-label">
+          C. At least one of the problems noted above interfered with relationships with others
+        </div>
+        <div class="rating-control">
+          <input type="range" id="sliderRelationships" min="1" max="6" step="1" value="1">
+          <div class="rating-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+          <div class="rating-value" id="labelRelationships">1 — Not at all</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Additional Information -->
+    <div class="section-card">
+      <div class="section-head">
+        <h3>Additional Information</h3>
+      </div>
+
+      <!-- Sleep -->
+      <div class="info-grid">
+        <div class="info-field">
+          <label>Sleep Hours</label>
+          <input type="number" id="inputSleepHours" min="0" max="24" step=".5" placeholder="e.g. 7.5">
+        </div>
+      </div>
+
+      <!-- Medications -->
+      <div style="border-top: 1px solid var(--line);">
+        <div class="section-head" style="border-top: none;">
+          <h3>Medications</h3>
+          <span>Enter once — auto-fills on return visits</span>
+        </div>
+        <!-- Datalists -->
+        <datalist id="dlMedNames">
+          <option value="Fluoxetine (Prozac)">
+          <option value="Sertraline (Zoloft)">
+          <option value="Escitalopram (Lexapro)">
+          <option value="Paroxetine (Paxil)">
+          <option value="Citalopram (Celexa)">
+          <option value="Venlafaxine (Effexor)">
+          <option value="Duloxetine (Cymbalta)">
+          <option value="Buspirone (Buspar)">
+          <option value="Alprazolam (Xanax)">
+          <option value="Lorazepam (Ativan)">
+          <option value="Clonazepam (Klonopin)">
+          <option value="Lamotrigine (Lamictal)">
+          <option value="Lithium">
+          <option value="Spironolactone (Aldactone)">
+          <option value="Levonorgestrel / Ethinyl estradiol (Lo Loestrin, Seasonique, others)">
+          <option value="Norethindrone / Ethinyl estradiol (Loestrin, Junel, others)">
+          <option value="Drospirenone / Ethinyl estradiol (Yaz, Yasmin)">
+          <option value="Progesterone (Prometrium)">
+          <option value="Medroxyprogesterone (Depo-Provera)">
+          <option value="Leuprolide (Lupron)">
+          <option value="Nafarelin (Synarel)">
+          <option value="Levonorgestrel IUD (Mirena, Kyleena, Liletta)">
+          <option value="Etonogestrel implant (Nexplanon)">
+          <option value="Calcium carbonate">
+          <option value="Magnesium glycinate">
+          <option value="Vitamin B6 (pyridoxine)">
+          <option value="Vitamin D3">
+          <option value="Ibuprofen (Advil, Motrin)">
+          <option value="Naproxen (Aleve)">
+          <option value="Vitex (chasteberry)">
+          <option value="Other">
+        </datalist>
+        <datalist id="dlFrequency">
+          <option value="Once daily (morning)">
+          <option value="Once daily (evening)">
+          <option value="Twice daily">
+          <option value="Three times daily">
+          <option value="Every other day">
+          <option value="Weekly">
+          <option value="As needed (PRN)">
+          <option value="Cyclically — luteal phase only">
+          <option value="Other">
+        </datalist>
+        <datalist id="dlRoute">
+          <option value="Oral (by mouth)">
+          <option value="Topical (skin)">
+          <option value="Transdermal patch">
+          <option value="Vaginal">
+          <option value="Injection / subcutaneous">
+          <option value="Intranasal">
+          <option value="Sublingual">
+          <option value="Other">
+        </datalist>
+
+        <div class="med-grid">
+          <div class="med-header">
+            <span>Medication Name (brand / generic)</span>
+            <span>Dosage</span>
+            <span>Frequency</span>
+            <span>Route</span>
+          </div>
+          <div class="med-row">
+            <input type="text" id="med1Name"      list="dlMedNames"  placeholder="Start typing or choose…">
+            <input type="text" id="med1Dosage"                        placeholder="e.g. 20mg">
+            <input type="text" id="med1Frequency" list="dlFrequency"  placeholder="Choose or type…">
+            <input type="text" id="med1Route"     list="dlRoute"      placeholder="Choose or type…">
+          </div>
+          <div class="med-row">
+            <input type="text" id="med2Name"      list="dlMedNames"  placeholder="Medication 2">
+            <input type="text" id="med2Dosage"                        placeholder="">
+            <input type="text" id="med2Frequency" list="dlFrequency"  placeholder="">
+            <input type="text" id="med2Route"     list="dlRoute"      placeholder="">
+          </div>
+          <div class="med-row">
+            <input type="text" id="med3Name"      list="dlMedNames"  placeholder="Medication 3">
+            <input type="text" id="med3Dosage"                        placeholder="">
+            <input type="text" id="med3Frequency" list="dlFrequency"  placeholder="">
+            <input type="text" id="med3Route"     list="dlRoute"      placeholder="">
+          </div>
+          <div class="med-row">
+            <input type="text" id="med4Name"      list="dlMedNames"  placeholder="Medication 4">
+            <input type="text" id="med4Dosage"                        placeholder="">
+            <input type="text" id="med4Frequency" list="dlFrequency"  placeholder="">
+            <input type="text" id="med4Route"     list="dlRoute"      placeholder="">
+          </div>
+          <div class="med-row">
+            <input type="text" id="med5Name"      list="dlMedNames"  placeholder="Medication 5">
+            <input type="text" id="med5Dosage"                        placeholder="">
+            <input type="text" id="med5Frequency" list="dlFrequency"  placeholder="">
+            <input type="text" id="med5Route"     list="dlRoute"      placeholder="">
+          </div>
+          <div class="med-row">
+            <input type="text" id="med6Name"      list="dlMedNames"  placeholder="Medication 6">
+            <input type="text" id="med6Dosage"                        placeholder="">
+            <input type="text" id="med6Frequency" list="dlFrequency"  placeholder="">
+            <input type="text" id="med6Route"     list="dlRoute"      placeholder="">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Daily Notes -->
+    <div class="section-card">
+      <div class="section-head">
+        <h3>Daily Notes</h3>
+      </div>
+      <div class="journal-box">
+        <label>Today's Entry</label>
+        <div class="journal-prompt" id="journalPrompt"></div>
+        <textarea id="journalEntry" placeholder=""></textarea>
+        <div class="journal-yesterday" id="yesterdayBox">
+          <div class="journal-yesterday-label">Yesterday's Entry</div>
+          <div class="journal-yesterday-date" id="yesterdayDate"></div>
+          <div class="journal-yesterday-text" id="yesterdayText"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <div class="submit-bar">
+      <button class="btn-submit" id="btnSubmit">Save Daily Record</button>
+      <span class="status-msg" id="statusMsg"></span>
+    </div>
+    <div class="affirmation-box" id="affirmationBox"></div>
+  </main>
+</div>
+
+<script>
+  const SCALE = {
+    1: '1 — Not at all: symptom completely absent',
+    2: '2 — Minimal: barely noticeable, no impact on daily life',
+    3: '3 — Mild: present but easily managed',
+    4: '4 — Moderate: clearly present, noticeable discomfort',
+    5: '5 — Severe: intense, significantly impacts functioning',
+    6: '6 — Extreme: overwhelming and incapacitating',
+  };
+
+  const SLIDERS = [
+    'Mood', 'Panic', 'MoodSwings', 'Rage',
+    'Interest', 'Concentration', 'Fatigue', 'Appetite', 'Sleep', 'Overwhelmed',
+    'Physical', 'Productivity', 'Hobbies', 'Relationships',
+  ];
+
+  const MED_NUMS   = [1, 2, 3, 4, 5, 6];
+  const MED_FIELDS = ['Name', 'Dosage', 'Frequency', 'Route'];
+
+  const PROMPTS = [
+    'What was the most noticeable shift in your body or mood today?',
+    'How did today compare to how you felt this time last week?',
+    'Did anything help — or make things harder — today?',
+    'What did your energy feel like today, and did it change throughout the day?',
+    'Were there any moments today that felt particularly hard or particularly manageable?',
+    'Did your symptoms affect any of your relationships or responsibilities today?',
+    'What would be most useful for your clinician to know about today?',
+    'What physical sensations were most present today?',
+    'Were there any triggers you noticed today?',
+    'What do you wish others understood about how you felt today?',
+    'How are you doing right now, in this moment?',
+    'Is there anything you want to remember about today when you look back at this record?',
+    'Did today match what your symptom ratings suggest, or did something feel different?',
+    'What, if anything, did you do to manage how you felt today?',
+  ];
+
+  const AFFIRMATIONS = [
+    'Recorded. Consistent tracking is one of the most useful things you can do for your care.',
+    'Saved. Two cycles of data is what confirms a PMDD pattern — you are building that picture.',
+    'Done. Your clinician will have what they need to work with you accurately.',
+    'Recorded. Noticing and naming is clinical work. You did that today.',
+    'Saved. This data belongs to you and tells your story with precision.',
+    'Done. Each entry adds resolution to your clinical picture.',
+    'Recorded. Showing up for this, on days like today, matters.',
+  ];
+
+  function pickByDate(arr) {
+    const d = new Date();
+    const seed = d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+    return arr[seed % arr.length];
+  }
+
+  // Set today's date and journal prompt
+  document.getElementById('entryDate').value = new Date().toISOString().slice(0, 10);
+  const promptEl = document.getElementById('journalPrompt');
+  const prompt = pickByDate(PROMPTS);
+  promptEl.textContent = 'Consider: ' + prompt;
+  document.getElementById('journalEntry').placeholder = 'Write here…';
+
+  // Wire sliders
+  SLIDERS.forEach(name => {
+    const slider = document.getElementById('slider' + name);
+    const label  = document.getElementById('label' + name);
+    if (!slider || !label) return;
+    const update = () => { label.textContent = SCALE[slider.value] || slider.value; };
+    slider.addEventListener('input', update);
+    update();
+  });
+
+  // Tooltip toggle for mobile
+  document.querySelectorAll('.tip-wrap').forEach(wrap => {
+    wrap.addEventListener('click', e => {
+      e.stopPropagation();
+      wrap.classList.toggle('open');
+    });
+  });
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.tip-wrap.open').forEach(w => w.classList.remove('open'));
+  });
+
+  // Request prefill from Wix parent
+  window.parent.postMessage({ type: 'DRSP_REQUEST_PREFILL' }, '*');
+
+  // Message listener
+  window.addEventListener('message', e => {
+    if (!e.data) return;
+
+    if (e.data.type === 'DRSP_PREFILL') {
+      const d = e.data.data || {};
+      const setVal = (id, val) => {
+        const el = document.getElementById(id);
+        if (el && val != null && val !== '') el.value = val;
+      };
+      setVal('firstName',   d.firstName);
+      setVal('lastName',    d.lastName);
+      setVal('dateOfBirth', d.dateOfBirth ? d.dateOfBirth.slice(0, 10) : null);
+      MED_NUMS.forEach(n => {
+        MED_FIELDS.forEach(f => setVal(`med${n}${f}`, d[`med${n}${f}`] || ''));
+      });
+      if (d.yesterdayEntry && d.yesterdayDate) {
+        document.getElementById('yesterdayDate').textContent = d.yesterdayDate;
+        document.getElementById('yesterdayText').textContent = d.yesterdayEntry;
+        document.getElementById('yesterdayBox').classList.add('visible');
+      }
+    }
+
+    if (e.data.type === 'DRSP_SAVE_RESULT') {
+      clearTimeout(saveTimeout);
+      const btn    = document.getElementById('btnSubmit');
+      const status = document.getElementById('statusMsg');
+      const affirm = document.getElementById('affirmationBox');
+      if (e.data.success) {
+        status.textContent = 'Record saved.';
+        status.className = 'status-msg saved';
+        affirm.textContent = pickByDate(AFFIRMATIONS);
+        affirm.classList.add('visible');
+      } else {
+        status.textContent = 'Save failed — please try again.';
+        status.className = 'status-msg error';
+        btn.disabled = false;
+      }
+    }
+  });
+
+  // Submit
+  let saveTimeout;
+  document.getElementById('btnSubmit').addEventListener('click', () => {
+    const btn    = document.getElementById('btnSubmit');
+    const status = document.getElementById('statusMsg');
+    const getNum = id => { const el = document.getElementById(id); return el ? Number(el.value) || 0 : 0; };
+    const getStr = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
+
+    const meds = {};
+    MED_NUMS.forEach(n => {
+      MED_FIELDS.forEach(f => { meds[`med${n}${f}`] = getStr(`med${n}${f}`); });
+    });
+
+    const payload = {
+      type: 'DRSP_DAILY_RECORD',
+      data: {
+        firstName:           getStr('firstName'),
+        lastName:            getStr('lastName'),
+        dateOfBirth:         getStr('dateOfBirth'),
+        entryDate:           getStr('entryDate'),
+        cycleDay:            Number(document.getElementById('cycleDay').value) || 1,
+        periodFlow:          document.getElementById('periodFlow').value,
+        sleepHours:          Number(document.getElementById('inputSleepHours').value) || 0,
+        mood:                getNum('sliderMood'),
+        panic:               getNum('sliderPanic'),
+        moodSwings:          getNum('sliderMoodSwings'),
+        rage:                getNum('sliderRage'),
+        decreasedInterest:   getNum('sliderInterest'),
+        concentration:       getNum('sliderConcentration'),
+        fatigue:             getNum('sliderFatigue'),
+        appetite:            getNum('sliderAppetite'),
+        sleepDisturbance:    getNum('sliderSleep'),
+        sensoryOverload:     getNum('sliderOverwhelmed'),
+        physicalSymptoms:    getNum('sliderPhysical'),
+        workImpairment:      getNum('sliderProductivity'),
+        socialImpairment:    getNum('sliderHobbies'),
+        relationshipUrgency: getNum('sliderRelationships'),
+        journalEntry:        getStr('journalEntry'),
+        journalEntryDate:    getStr('entryDate'),
+        ...meds,
+      }
+    };
+
+    btn.disabled = true;
+    status.textContent = 'Saving…';
+    status.className = 'status-msg';
+
+    // Re-enable after 15s if no response from Wix parent
+    saveTimeout = setTimeout(() => {
+      status.textContent = 'No response from server — check your connection and try again.';
+      status.className = 'status-msg error';
+      btn.disabled = false;
+    }, 15000);
+
+    window.parent.postMessage(payload, '*');
+  });
+</script>
+</body>
+</html>
