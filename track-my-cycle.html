@@ -403,6 +403,78 @@
     }
     .affirmation-box.visible { display: block; }
 
+    .med-status {
+      margin: 0 18px 16px;
+      padding: 13px 14px;
+      border: 1px solid #b8d7d4;
+      border-radius: 10px;
+      background: #f0f8f7;
+    }
+
+    .med-status[hidden] { display: none; }
+
+    .med-status label {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      color: var(--ink);
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .med-status input {
+      width: 17px;
+      height: 17px;
+      margin-top: 1px;
+      accent-color: var(--teal);
+    }
+
+    .med-status small {
+      display: block;
+      margin: 6px 0 0 26px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .med-grid.locked {
+      opacity: .62;
+    }
+
+    .med-help {
+      margin: -4px 18px 14px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .med-confirmation {
+      padding: 22px;
+      border: 1px solid #d9e2e8;
+      border-radius: 16px;
+      background: #fff;
+      margin-bottom: 20px;
+    }
+
+    .med-confirmation-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .med-confirmation-item {
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: #f5f8fa;
+      color: #344054;
+      line-height: 1.45;
+    }
+
+    .med-confirmation-item strong {
+      display: block;
+      color: #22343d;
+    }
+
     .required-mark { color: #b42318; }
 
     .save-requirements {
@@ -540,6 +612,7 @@
 
     @media (max-width: 720px) {
       .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .med-confirmation-list { grid-template-columns: 1fr; }
     }
     .journal-yesterday-text {
       font-size: 14px;
@@ -904,10 +977,25 @@
       <div style="border-top: 1px solid var(--line);">
         <div class="section-head" style="border-top: none;">
           <h3>Medications</h3>
-          <span>Enter once — auto-fills on return visits</span>
+          <span>Saved medications auto-fill after you enter your name and date of birth</span>
+        </div>
+        <div class="med-status" id="medStatus" hidden>
+          <label>
+            <input type="checkbox" id="medsUnchanged">
+            <span>All medications shown are current—no changes.</span>
+          </label>
+          <small>Check this after reviewing the medications below. Uncheck it to make changes.</small>
+        </div>
+        <div class="med-help">
+          Start typing any prescription, over-the-counter medication, vitamin, or supplement.
+          Common choices appear as suggestions, but you can enter a medication that is not listed.
         </div>
         <!-- Datalists -->
         <datalist id="dlMedNames">
+          <option value="Acetaminophen (Tylenol)">
+          <option value="Acyclovir (Zovirax)">
+          <option value="Albuterol (Ventolin, ProAir)">
+          <option value="Allopurinol (Zyloprim)">
           <option value="Fluoxetine (Prozac)">
           <option value="Sertraline (Zoloft)">
           <option value="Escitalopram (Lexapro)">
@@ -921,6 +1009,87 @@
           <option value="Clonazepam (Klonopin)">
           <option value="Lamotrigine (Lamictal)">
           <option value="Lithium">
+          <option value="Amphetamine / Dextroamphetamine (Adderall)">
+          <option value="Atomoxetine (Strattera)">
+          <option value="Bupropion (Wellbutrin)">
+          <option value="Gabapentin (Neurontin)">
+          <option value="Hydroxyzine (Vistaril, Atarax)">
+          <option value="Lisdexamfetamine (Vyvanse)">
+          <option value="Methylphenidate (Ritalin, Concerta)">
+          <option value="Pregabalin (Lyrica)">
+          <option value="Quetiapine (Seroquel)">
+          <option value="Trazodone">
+          <option value="Zolpidem (Ambien)">
+          <option value="Amlodipine (Norvasc)">
+          <option value="Atenolol (Tenormin)">
+          <option value="Carvedilol (Coreg)">
+          <option value="Clopidogrel (Plavix)">
+          <option value="Furosemide (Lasix)">
+          <option value="Hydrochlorothiazide">
+          <option value="Lisinopril (Zestril)">
+          <option value="Losartan (Cozaar)">
+          <option value="Metoprolol (Lopressor, Toprol XL)">
+          <option value="Propranolol (Inderal)">
+          <option value="Rosuvastatin (Crestor)">
+          <option value="Atorvastatin (Lipitor)">
+          <option value="Apixaban (Eliquis)">
+          <option value="Rivaroxaban (Xarelto)">
+          <option value="Levothyroxine (Synthroid)">
+          <option value="Liothyronine (Cytomel)">
+          <option value="Metformin">
+          <option value="Empagliflozin (Jardiance)">
+          <option value="Glipizide">
+          <option value="Insulin glargine (Lantus, Basaglar)">
+          <option value="Insulin lispro (Humalog)">
+          <option value="Semaglutide (Ozempic, Wegovy, Rybelsus)">
+          <option value="Tirzepatide (Mounjaro, Zepbound)">
+          <option value="Cetirizine (Zyrtec)">
+          <option value="Fexofenadine (Allegra)">
+          <option value="Loratadine (Claritin)">
+          <option value="Diphenhydramine (Benadryl)">
+          <option value="Fluticasone nasal (Flonase)">
+          <option value="Montelukast (Singulair)">
+          <option value="Budesonide / Formoterol (Symbicort)">
+          <option value="Fluticasone / Salmeterol (Advair)">
+          <option value="Tiotropium (Spiriva)">
+          <option value="Omeprazole (Prilosec)">
+          <option value="Pantoprazole (Protonix)">
+          <option value="Famotidine (Pepcid)">
+          <option value="Ondansetron (Zofran)">
+          <option value="Dicyclomine (Bentyl)">
+          <option value="Loperamide (Imodium)">
+          <option value="Polyethylene glycol (MiraLAX)">
+          <option value="Docusate (Colace)">
+          <option value="Amoxicillin">
+          <option value="Amoxicillin / Clavulanate (Augmentin)">
+          <option value="Azithromycin (Z-Pak)">
+          <option value="Cephalexin (Keflex)">
+          <option value="Ciprofloxacin (Cipro)">
+          <option value="Doxycycline">
+          <option value="Fluconazole (Diflucan)">
+          <option value="Metronidazole (Flagyl)">
+          <option value="Nitrofurantoin (Macrobid)">
+          <option value="Valacyclovir (Valtrex)">
+          <option value="Cyclobenzaprine (Flexeril)">
+          <option value="Meloxicam (Mobic)">
+          <option value="Celecoxib (Celebrex)">
+          <option value="Diclofenac (Voltaren)">
+          <option value="Tramadol">
+          <option value="Sumatriptan (Imitrex)">
+          <option value="Rizatriptan (Maxalt)">
+          <option value="Topiramate (Topamax)">
+          <option value="Rimegepant (Nurtec ODT)">
+          <option value="Ubrogepant (Ubrelvy)">
+          <option value="Levetiracetam (Keppra)">
+          <option value="Carbidopa / Levodopa (Sinemet)">
+          <option value="Donepezil (Aricept)">
+          <option value="Methotrexate">
+          <option value="Hydroxychloroquine (Plaquenil)">
+          <option value="Adalimumab (Humira)">
+          <option value="Prednisone">
+          <option value="Triamcinolone topical">
+          <option value="Clobetasol topical">
+          <option value="Tretinoin topical (Retin-A)">
           <option value="Spironolactone (Aldactone)">
           <option value="Levonorgestrel / Ethinyl estradiol (Lo Loestrin, Seasonique, others)">
           <option value="Norethindrone / Ethinyl estradiol (Loestrin, Junel, others)">
@@ -938,6 +1107,12 @@
           <option value="Ibuprofen (Advil, Motrin)">
           <option value="Naproxen (Aleve)">
           <option value="Vitex (chasteberry)">
+          <option value="Aspirin">
+          <option value="Iron (ferrous sulfate)">
+          <option value="Multivitamin">
+          <option value="Omega-3 fish oil">
+          <option value="Vitamin B12 (cyanocobalamin)">
+          <option value="Zinc">
           <option value="Other">
         </datalist>
         <datalist id="dlFrequency">
@@ -945,8 +1120,12 @@
           <option value="Once daily (evening)">
           <option value="Twice daily">
           <option value="Three times daily">
+          <option value="Four times daily">
           <option value="Every other day">
+          <option value="At bedtime">
+          <option value="With meals">
           <option value="Weekly">
+          <option value="Monthly">
           <option value="As needed (PRN)">
           <option value="Cyclically — luteal phase only">
           <option value="Other">
@@ -957,8 +1136,15 @@
           <option value="Transdermal patch">
           <option value="Vaginal">
           <option value="Injection / subcutaneous">
+          <option value="Injection / intramuscular">
+          <option value="Intravenous (IV)">
+          <option value="Inhaled">
+          <option value="Eye drops">
+          <option value="Ear drops">
           <option value="Intranasal">
           <option value="Sublingual">
+          <option value="Rectal">
+          <option value="Implant or IUD">
           <option value="Other">
         </datalist>
 
@@ -1045,6 +1231,12 @@
       <div class="today-summary">
         <h3>Today’s Record</h3>
         <div class="summary-grid" id="todaySummary"></div>
+      </div>
+
+      <div class="med-confirmation">
+        <h3>Medications on Record</h3>
+        <p class="history-entry-meta" id="medicationConfirmationNote"></p>
+        <div class="med-confirmation-list" id="medicationSummary"></div>
       </div>
 
       <div class="history-panel">
@@ -1142,8 +1334,39 @@
     document.querySelectorAll('.tip-wrap.open').forEach(w => w.classList.remove('open'));
   });
 
-  // Request prefill from Wix parent
-  window.parent.postMessage({ type: 'DRSP_REQUEST_PREFILL' }, '*');
+  function requestPrefill() {
+    const firstName = document.getElementById('firstName').value.trim();
+    const lastName = document.getElementById('lastName').value.trim();
+    const dateOfBirth = document.getElementById('dateOfBirth').value;
+    if (!firstName || !lastName || !dateOfBirth) return;
+    window.parent.postMessage({
+      type: 'DRSP_REQUEST_PREFILL',
+      data: { firstName, lastName, dateOfBirth }
+    }, '*');
+  }
+
+  ['firstName', 'lastName', 'dateOfBirth'].forEach(id => {
+    document.getElementById(id).addEventListener('change', requestPrefill);
+    document.getElementById(id).addEventListener('blur', requestPrefill);
+  });
+
+  const medInputs = Array.from(document.querySelectorAll('.med-row input'));
+  const medsUnchanged = document.getElementById('medsUnchanged');
+  const medStatus = document.getElementById('medStatus');
+  const medGrid = document.querySelector('.med-grid');
+
+  function hasMedicationOnForm() {
+    return MED_NUMS.some(n => document.getElementById(`med${n}Name`).value.trim());
+  }
+
+  function setMedicationLock(locked) {
+    medInputs.forEach(input => { input.disabled = locked; });
+    medGrid.classList.toggle('locked', locked);
+  }
+
+  medsUnchanged.addEventListener('change', () => {
+    setMedicationLock(medsUnchanged.checked);
+  });
 
   const REQUIRED_FIELDS = [
     ['firstName', 'first name'],
@@ -1225,6 +1448,27 @@
       </div>
     `).join('');
 
+    const medications = MED_NUMS.map(n => ({
+      name: savedData[`med${n}Name`] || '',
+      dosage: savedData[`med${n}Dosage`] || '',
+      frequency: savedData[`med${n}Frequency`] || '',
+      route: savedData[`med${n}Route`] || '',
+    })).filter(med => med.name);
+    document.getElementById('medicationConfirmationNote').textContent =
+      savedData.medicationsUnchanged && medications.length
+        ? 'Confirmed today: all medications shown are current with no changes.'
+        : medications.length
+          ? 'These medications were saved with today’s record.'
+          : 'No medications were listed with today’s record.';
+    document.getElementById('medicationSummary').innerHTML = medications.length
+      ? medications.map(med => `
+          <div class="med-confirmation-item">
+            <strong>${escapeHtml(med.name)}</strong>
+            ${escapeHtml([med.dosage, med.frequency, med.route].filter(Boolean).join(' · ') || 'Details not entered')}
+          </div>
+        `).join('')
+      : '<div class="med-confirmation-item">No medications listed.</div>';
+
     const items = Array.isArray(history) ? history : [];
     const chartItems = items.slice().reverse();
     document.getElementById('historyChart').innerHTML = chartItems.length
@@ -1298,6 +1542,12 @@
       MED_NUMS.forEach(n => {
         MED_FIELDS.forEach(f => setVal(`med${n}${f}`, d[`med${n}${f}`] || ''));
       });
+      if (hasMedicationOnForm()) {
+        medStatus.hidden = false;
+        medsUnchanged.checked = false;
+        setMedicationLock(false);
+      }
+      updateSaveAvailability();
       if (d.yesterdayEntry && d.yesterdayDate) {
         document.getElementById('yesterdayDate').textContent = d.yesterdayDate;
         document.getElementById('yesterdayText').textContent = d.yesterdayEntry;
@@ -1368,6 +1618,7 @@
         workImpairment:      getNum('sliderProductivity'),
         socialImpairment:    getNum('sliderHobbies'),
         relationshipUrgency: getNum('sliderRelationships'),
+        medicationsUnchanged: medsUnchanged.checked && hasMedicationOnForm(),
         journalEntry:        getStr('journalEntry'),
         journalEntryDate:    getStr('entryDate'),
         ...meds,
