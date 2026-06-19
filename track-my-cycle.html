@@ -162,6 +162,11 @@
       outline: 2px solid var(--teal);
       outline-offset: 1px;
     }
+    .dob-mobile {
+      display: none;
+      grid-template-columns: 1.2fr .8fr 1fr;
+      gap: 6px;
+    }
 
     /* ── Section cards ── */
     .section-card {
@@ -211,6 +216,27 @@
       font-size: 10px;
       color: var(--muted);
       padding: 0 2px;
+    }
+    .rating-buttons {
+      display: none;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 6px;
+    }
+    .rating-button {
+      min-height: 44px;
+      padding: 0;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: #fff;
+      color: var(--navy);
+      font-weight: 700;
+      touch-action: manipulation;
+    }
+    .rating-button.selected {
+      border-color: var(--teal);
+      background: var(--teal);
+      color: #fff;
+      box-shadow: 0 0 0 2px rgba(15,111,125,.16);
     }
 
     /* ── Tooltip ── */
@@ -501,6 +527,15 @@
 
     .main.confirmed > :not(.confirmation-view) { display: none; }
     .main.confirmed .confirmation-view { display: block; }
+    .main.confirmed-mobile > :not(.confirmation-view) {
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .main.confirmed-mobile .confirmation-view {
+      display: block;
+      visibility: visible;
+      pointer-events: auto;
+    }
 
     .confirmation-hero {
       padding: 24px;
@@ -648,12 +683,36 @@
 
     @media (max-width: 760px) {
       .layout { grid-template-columns: 1fr; }
-      .sidebar { position: static; height: auto; }
-      .main { padding: 20px; }
-      .meta-row { grid-template-columns: 1fr 1fr; }
+      .sidebar { display: none; }
+      .main { padding: 14px 12px 28px; max-width: none; }
+      .page-header { margin-bottom: 18px; }
+      .page-header h2 { font-size: 22px; line-height: 1.2; }
+      .meta-row { grid-template-columns: 1fr; }
+      .meta-field input,
+      .meta-field select { height: 46px; font-size: 16px; }
+      #dateOfBirth { display: none; }
+      .dob-mobile { display: grid; }
       .rating-row { grid-template-columns: 1fr; }
+      .rating-row { padding: 16px 14px 18px; gap: 12px; }
+      .rating-label { font-size: 15px; }
+      .rating-control { gap: 8px; }
+      .rating-control input[type="range"],
+      .rating-ticks { display: none; }
+      .rating-buttons { display: grid; }
+      .rating-value { text-align: left; font-size: 12px; }
       .med-header, .med-row { grid-template-columns: 1fr 1fr; }
       .info-grid { grid-template-columns: 1fr; }
+      .submit-bar {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .btn-submit { width: 100%; height: 50px; }
+      .confirmation-view { padding: 0 0 28px; }
+      .confirmation-hero,
+      .today-summary,
+      .med-confirmation,
+      .history-panel { padding: 18px 14px; border-radius: 12px; }
     }
   </style>
 </head>
@@ -738,6 +797,17 @@
         <div class="meta-field">
           <label>Date of Birth <span class="required-mark">*</span></label>
           <input type="date" id="dateOfBirth" required>
+          <div class="dob-mobile" aria-label="Date of birth">
+            <select id="dobMonth" aria-label="Birth month">
+              <option value="">Month</option>
+            </select>
+            <select id="dobDay" aria-label="Birth day">
+              <option value="">Day</option>
+            </select>
+            <select id="dobYear" aria-label="Birth year">
+              <option value="">Year</option>
+            </select>
+          </div>
         </div>
       </div>
       <div class="meta-row">
@@ -1313,12 +1383,77 @@
   promptEl.textContent = 'Consider: ' + prompt;
   document.getElementById('journalEntry').placeholder = 'Write here…';
 
-  // Wire sliders
+  const dobInput = document.getElementById('dateOfBirth');
+  const dobMonth = document.getElementById('dobMonth');
+  const dobDay = document.getElementById('dobDay');
+  const dobYear = document.getElementById('dobYear');
+  const monthNames = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+  monthNames.forEach((month, index) => {
+    dobMonth.add(new Option(month, String(index + 1).padStart(2, '0')));
+  });
+  for (let day = 1; day <= 31; day += 1) {
+    dobDay.add(new Option(String(day), String(day).padStart(2, '0')));
+  }
+  const currentYear = new Date().getFullYear();
+  for (let year = currentYear; year >= currentYear - 110; year -= 1) {
+    dobYear.add(new Option(String(year), String(year)));
+  }
+
+  function syncDobSelectsFromInput() {
+    const [year = '', month = '', day = ''] = dobInput.value.split('-');
+    dobMonth.value = month;
+    dobDay.value = day;
+    dobYear.value = year;
+  }
+
+  function syncDobInputFromSelects() {
+    if (dobMonth.value && dobDay.value && dobYear.value) {
+      dobInput.value = `${dobYear.value}-${dobMonth.value}-${dobDay.value}`;
+    } else {
+      dobInput.value = '';
+    }
+    dobInput.dispatchEvent(new Event('input', { bubbles: true }));
+    dobInput.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
+  [dobMonth, dobDay, dobYear].forEach(select => {
+    select.addEventListener('change', syncDobInputFromSelects);
+  });
+  dobInput.addEventListener('change', syncDobSelectsFromInput);
+
+  // Wire ratings
   SLIDERS.forEach(name => {
     const slider = document.getElementById('slider' + name);
     const label  = document.getElementById('label' + name);
     if (!slider || !label) return;
-    const update = () => { label.textContent = SCALE[slider.value] || slider.value; };
+    const buttonGroup = document.createElement('div');
+    buttonGroup.className = 'rating-buttons';
+    buttonGroup.setAttribute('role', 'group');
+    buttonGroup.setAttribute('aria-label', 'Choose a rating from 1 to 6');
+    for (let value = 1; value <= 6; value += 1) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'rating-button';
+      button.textContent = String(value);
+      button.setAttribute('aria-label', SCALE[value]);
+      button.addEventListener('click', () => {
+        slider.value = String(value);
+        slider.dispatchEvent(new Event('input', { bubbles: true }));
+      });
+      buttonGroup.appendChild(button);
+    }
+    slider.parentNode.insertBefore(buttonGroup, label);
+    const update = () => {
+      label.textContent = SCALE[slider.value] || slider.value;
+      buttonGroup.querySelectorAll('.rating-button').forEach((button, index) => {
+        const selected = index + 1 === Number(slider.value);
+        button.classList.toggle('selected', selected);
+        button.setAttribute('aria-pressed', selected ? 'true' : 'false');
+      });
+    };
     slider.addEventListener('input', update);
     update();
   });
@@ -1504,12 +1639,19 @@
         `).join('')
       : '<p class="history-entry-meta">This is your first saved record.</p>';
 
-    document.querySelector('.main').classList.add('confirmed');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const main = document.querySelector('.main');
+    const isMobile = window.matchMedia('(max-width: 760px)').matches;
+    main.classList.add(isMobile ? 'confirmed-mobile' : 'confirmed');
+    const confirmation = document.getElementById('confirmationView');
+    if (isMobile) {
+      confirmation.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }
 
   function returnToTracker(clearDailyValues) {
-    document.querySelector('.main').classList.remove('confirmed');
+    document.querySelector('.main').classList.remove('confirmed', 'confirmed-mobile');
     if (clearDailyValues) {
       document.getElementById('entryDate').value = new Date().toISOString().slice(0, 10);
       document.getElementById('cycleDay').value = '';
@@ -1551,6 +1693,7 @@
       setVal('firstName',   d.firstName);
       setVal('lastName',    d.lastName);
       setVal('dateOfBirth', d.dateOfBirth ? d.dateOfBirth.slice(0, 10) : null);
+      syncDobSelectsFromInput();
       MED_NUMS.forEach(n => {
         MED_FIELDS.forEach(f => setVal(`med${n}${f}`, d[`med${n}${f}`] || ''));
       });
