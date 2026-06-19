@@ -1439,6 +1439,7 @@
   }
 
   [dobMonth, dobDay, dobYear].forEach(select => {
+    select.addEventListener('input', syncDobInputFromSelects);
     select.addEventListener('change', syncDobInputFromSelects);
   });
   dobInput.addEventListener('change', syncDobSelectsFromInput);
@@ -1534,6 +1535,15 @@
   function missingRequiredFields() {
     return REQUIRED_FIELDS.filter(([id]) => {
       const el = document.getElementById(id);
+      if (
+        id === 'dateOfBirth' &&
+        !el.value &&
+        dobMonth.value &&
+        dobDay.value &&
+        dobYear.value
+      ) {
+        el.value = `${dobYear.value}-${dobMonth.value}-${dobDay.value}`;
+      }
       if (!el || !String(el.value || '').trim()) return true;
       if (id === 'cycleDay') {
         const day = Number(el.value);
