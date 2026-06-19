@@ -402,6 +402,145 @@
       display: none;
     }
     .affirmation-box.visible { display: block; }
+
+    .required-mark { color: #b42318; }
+
+    .save-requirements {
+      margin-top: 8px;
+      color: #667085;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .save-requirements.ready { color: #087443; }
+
+    .btn-submit:disabled {
+      cursor: not-allowed;
+      opacity: .48;
+      filter: grayscale(.15);
+    }
+
+    .confirmation-view {
+      display: none;
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 28px 22px 48px;
+    }
+
+    .main.confirmed > :not(.confirmation-view) { display: none; }
+    .main.confirmed .confirmation-view { display: block; }
+
+    .confirmation-hero {
+      padding: 24px;
+      border: 1px solid #b7e4cf;
+      border-radius: 16px;
+      background: #f0faf5;
+      margin-bottom: 22px;
+    }
+
+    .confirmation-hero h2 { margin: 0 0 8px; color: #116149; }
+    .confirmation-hero p { margin: 0; color: #344054; }
+
+    .today-summary,
+    .history-panel {
+      padding: 22px;
+      border: 1px solid #d9e2e8;
+      border-radius: 16px;
+      background: #fff;
+      margin-bottom: 20px;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .summary-stat {
+      padding: 14px;
+      border-radius: 12px;
+      background: #f5f8fa;
+    }
+
+    .summary-stat span { display: block; color: #667085; font-size: 12px; }
+    .summary-stat strong { display: block; margin-top: 4px; color: #22343d; }
+
+    .history-chart {
+      display: flex;
+      align-items: end;
+      gap: 8px;
+      min-height: 150px;
+      padding: 18px 8px 4px;
+      overflow-x: auto;
+      border-bottom: 1px solid #d9e2e8;
+    }
+
+    .history-bar-wrap {
+      flex: 1 0 42px;
+      min-width: 42px;
+      text-align: center;
+    }
+
+    .history-bar {
+      width: 24px;
+      min-height: 8px;
+      margin: 0 auto 7px;
+      border-radius: 7px 7px 2px 2px;
+      background: linear-gradient(180deg, #5268b5, #3c8b88);
+    }
+
+    .history-bar-wrap small { display: block; color: #667085; font-size: 10px; }
+    .history-bar-wrap b { display: block; color: #344054; font-size: 11px; }
+
+    .history-list { margin-top: 18px; }
+
+    .history-entry {
+      padding: 14px 0;
+      border-top: 1px solid #edf0f2;
+    }
+
+    .history-entry:first-child { border-top: 0; }
+    .history-entry-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: #22343d;
+      font-weight: 700;
+    }
+
+    .history-entry-meta,
+    .history-entry-note {
+      margin-top: 5px;
+      color: #667085;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .confirmation-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .confirmation-actions button {
+      border: 1px solid #5268b5;
+      border-radius: 10px;
+      padding: 11px 16px;
+      color: #5268b5;
+      background: #fff;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .confirmation-actions .primary {
+      color: #fff;
+      background: #5268b5;
+    }
+
+    @media (max-width: 720px) {
+      .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
     .journal-yesterday-text {
       font-size: 14px;
       color: var(--ink);
@@ -516,26 +655,26 @@
     <div class="meta-bar">
       <div class="meta-row">
         <div class="meta-field">
-          <label>First Name</label>
-          <input type="text" id="firstName" placeholder="First name" autocomplete="given-name">
+          <label>First Name <span class="required-mark">*</span></label>
+          <input type="text" id="firstName" placeholder="First name" autocomplete="given-name" required>
         </div>
         <div class="meta-field">
-          <label>Last Name</label>
-          <input type="text" id="lastName" placeholder="Last name" autocomplete="family-name">
+          <label>Last Name <span class="required-mark">*</span></label>
+          <input type="text" id="lastName" placeholder="Last name" autocomplete="family-name" required>
         </div>
         <div class="meta-field">
-          <label>Date of Birth</label>
-          <input type="date" id="dateOfBirth">
+          <label>Date of Birth <span class="required-mark">*</span></label>
+          <input type="date" id="dateOfBirth" required>
         </div>
       </div>
       <div class="meta-row">
         <div class="meta-field">
-          <label>Date</label>
-          <input type="date" id="entryDate">
+          <label>Date <span class="required-mark">*</span></label>
+          <input type="date" id="entryDate" required>
         </div>
         <div class="meta-field">
-          <label>Cycle Day</label>
-          <input type="number" id="cycleDay" min="1" max="35" placeholder="e.g. 14">
+          <label>Cycle Day <span class="required-mark">*</span></label>
+          <input type="number" id="cycleDay" min="1" max="35" placeholder="e.g. 14" required>
         </div>
         <div class="meta-field">
           <label>Menstrual Flow</label>
@@ -889,10 +1028,37 @@
 
     <!-- Submit -->
     <div class="submit-bar">
-      <button class="btn-submit" id="btnSubmit">Save Daily Record</button>
+      <button class="btn-submit" id="btnSubmit" disabled>Save Daily Record</button>
       <span class="status-msg" id="statusMsg"></span>
+      <div class="save-requirements" id="saveRequirements">
+        Complete first name, last name, date of birth, date, and cycle day to save.
+      </div>
     </div>
     <div class="affirmation-box" id="affirmationBox"></div>
+
+    <section class="confirmation-view" id="confirmationView" aria-live="polite">
+      <div class="confirmation-hero">
+        <h2>Record saved</h2>
+        <p>Your daily tracking information has been added to your history.</p>
+      </div>
+
+      <div class="today-summary">
+        <h3>Today’s Record</h3>
+        <div class="summary-grid" id="todaySummary"></div>
+      </div>
+
+      <div class="history-panel">
+        <h3>My Tracking History</h3>
+        <p class="history-entry-meta">Daily average symptom severity, from 1 (not at all) to 6 (extreme).</p>
+        <div class="history-chart" id="historyChart"></div>
+        <div class="history-list" id="historyList"></div>
+      </div>
+
+      <div class="confirmation-actions">
+        <button class="primary" id="btnNewRecord">Return to Tracker</button>
+        <button id="btnEditToday">Edit Today’s Record</button>
+      </div>
+    </section>
   </main>
 </div>
 
@@ -979,6 +1145,143 @@
   // Request prefill from Wix parent
   window.parent.postMessage({ type: 'DRSP_REQUEST_PREFILL' }, '*');
 
+  const REQUIRED_FIELDS = [
+    ['firstName', 'first name'],
+    ['lastName', 'last name'],
+    ['dateOfBirth', 'date of birth'],
+    ['entryDate', 'date'],
+    ['cycleDay', 'cycle day'],
+  ];
+
+  function missingRequiredFields() {
+    return REQUIRED_FIELDS.filter(([id]) => {
+      const el = document.getElementById(id);
+      if (!el || !String(el.value || '').trim()) return true;
+      if (id === 'cycleDay') {
+        const day = Number(el.value);
+        return day < 1 || day > 35;
+      }
+      return false;
+    });
+  }
+
+  function updateSaveAvailability() {
+    const missing = missingRequiredFields();
+    const btn = document.getElementById('btnSubmit');
+    const hint = document.getElementById('saveRequirements');
+    btn.disabled = missing.length > 0;
+    if (missing.length) {
+      hint.textContent = `Complete ${missing.map(([, label]) => label).join(', ')} to save.`;
+      hint.classList.remove('ready');
+    } else {
+      hint.textContent = 'Required information complete — ready to save.';
+      hint.classList.add('ready');
+    }
+  }
+
+  REQUIRED_FIELDS.forEach(([id]) => {
+    const el = document.getElementById(id);
+    el.addEventListener('input', updateSaveAvailability);
+    el.addEventListener('change', updateSaveAvailability);
+  });
+  updateSaveAvailability();
+
+  function escapeHtml(value) {
+    return String(value == null ? '' : value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  function formatDate(value) {
+    if (!value) return '';
+    const parts = String(value).slice(0, 10).split('-');
+    return parts.length === 3 ? `${parts[1]}/${parts[2]}/${parts[0]}` : String(value);
+  }
+
+  function renderConfirmation(savedData, history) {
+    const averages = [
+      savedData.mood, savedData.panic, savedData.moodSwings, savedData.rage,
+      savedData.decreasedInterest, savedData.concentration, savedData.fatigue,
+      savedData.appetite, savedData.sleepDisturbance, savedData.sensoryOverload,
+      savedData.physicalSymptoms, savedData.workImpairment, savedData.socialImpairment,
+      savedData.relationshipUrgency,
+    ].map(Number).filter(Number.isFinite);
+    const average = averages.length
+      ? (averages.reduce((sum, value) => sum + value, 0) / averages.length).toFixed(1)
+      : '—';
+
+    document.getElementById('todaySummary').innerHTML = [
+      ['Date', formatDate(savedData.entryDate)],
+      ['Cycle Day', savedData.cycleDay || '—'],
+      ['Average Severity', average],
+      ['Menstrual Flow', savedData.periodFlow || 'None'],
+    ].map(([label, value]) => `
+      <div class="summary-stat">
+        <span>${escapeHtml(label)}</span>
+        <strong>${escapeHtml(value)}</strong>
+      </div>
+    `).join('');
+
+    const items = Array.isArray(history) ? history : [];
+    const chartItems = items.slice().reverse();
+    document.getElementById('historyChart').innerHTML = chartItems.length
+      ? chartItems.map(item => {
+          const score = Math.max(1, Math.min(6, Number(item.averageSeverity) || 1));
+          return `
+            <div class="history-bar-wrap" title="${escapeHtml(formatDate(item.entryDate))}: ${score.toFixed(1)}">
+              <div class="history-bar" style="height:${Math.round(score / 6 * 120)}px"></div>
+              <b>${score.toFixed(1)}</b>
+              <small>${escapeHtml(String(item.entryDate || '').slice(5))}</small>
+            </div>
+          `;
+        }).join('')
+      : '<p class="history-entry-meta">This is your first saved record.</p>';
+
+    document.getElementById('historyList').innerHTML = items.length
+      ? items.map(item => `
+          <article class="history-entry">
+            <div class="history-entry-head">
+              <span>${escapeHtml(formatDate(item.entryDate))}</span>
+              <span>Cycle Day ${escapeHtml(item.cycleDay || '—')}</span>
+            </div>
+            <div class="history-entry-meta">
+              Average severity: ${escapeHtml(Number(item.averageSeverity || 1).toFixed(1))}
+              · Highest: ${escapeHtml(item.highestSymptoms || '—')}
+              · Flow: ${escapeHtml(item.periodFlow || 'None')}
+            </div>
+            ${item.journalEntry
+              ? `<div class="history-entry-note"><strong>Daily note:</strong> ${escapeHtml(item.journalEntry)}</div>`
+              : ''}
+          </article>
+        `).join('')
+      : '<p class="history-entry-meta">This is your first saved record.</p>';
+
+    document.querySelector('.main').classList.add('confirmed');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function returnToTracker(clearDailyValues) {
+    document.querySelector('.main').classList.remove('confirmed');
+    if (clearDailyValues) {
+      document.getElementById('entryDate').value = new Date().toISOString().slice(0, 10);
+      document.getElementById('cycleDay').value = '';
+      document.getElementById('journalEntry').value = '';
+      document.getElementById('statusMsg').textContent = '';
+      document.getElementById('affirmationBox').classList.remove('visible');
+      document.getElementById('btnSubmit').disabled = true;
+      updateSaveAvailability();
+    } else {
+      document.getElementById('btnSubmit').disabled = false;
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  document.getElementById('btnNewRecord').addEventListener('click', () => returnToTracker(true));
+  document.getElementById('btnEditToday').addEventListener('click', () => returnToTracker(false));
+
   // Message listener
   window.addEventListener('message', e => {
     if (!e.data) return;
@@ -1012,6 +1315,7 @@
         status.className = 'status-msg saved';
         affirm.textContent = pickByDate(AFFIRMATIONS);
         affirm.classList.add('visible');
+        renderConfirmation(lastSubmittedData || {}, e.data.history || []);
       } else {
         status.textContent = 'Save failed — please try again.';
         status.className = 'status-msg error';
@@ -1022,6 +1326,7 @@
 
   // Submit
   let saveTimeout;
+  let lastSubmittedData = null;
   document.getElementById('btnSubmit').addEventListener('click', () => {
     const btn    = document.getElementById('btnSubmit');
     const status = document.getElementById('statusMsg');
@@ -1032,6 +1337,12 @@
     MED_NUMS.forEach(n => {
       MED_FIELDS.forEach(f => { meds[`med${n}${f}`] = getStr(`med${n}${f}`); });
     });
+
+    const missing = missingRequiredFields();
+    if (missing.length) {
+      updateSaveAvailability();
+      return;
+    }
 
     const payload = {
       type: 'DRSP_DAILY_RECORD',
@@ -1062,6 +1373,7 @@
         ...meds,
       }
     };
+    lastSubmittedData = payload.data;
 
     btn.disabled = true;
     status.textContent = 'Saving…';
