@@ -1533,6 +1533,17 @@
 
     if (e.data.type === 'DRSP_PREFILL') {
       const d = e.data.data || {};
+      const currentFirstName = document.getElementById('firstName').value.trim().toLowerCase();
+      const currentLastName = document.getElementById('lastName').value.trim().toLowerCase();
+      const currentDateOfBirth = document.getElementById('dateOfBirth').value;
+      const responseFirstName = String(d.firstName || '').trim().toLowerCase();
+      const responseLastName = String(d.lastName || '').trim().toLowerCase();
+      const responseDateOfBirth = d.dateOfBirth ? String(d.dateOfBirth).slice(0, 10) : '';
+      if (
+        responseFirstName !== currentFirstName ||
+        responseLastName !== currentLastName ||
+        responseDateOfBirth !== currentDateOfBirth
+      ) return;
       const setVal = (id, val) => {
         const el = document.getElementById(id);
         if (el && val != null && val !== '') el.value = val;
