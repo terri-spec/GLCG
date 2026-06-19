@@ -1346,6 +1346,7 @@
   }
 
   ['firstName', 'lastName', 'dateOfBirth'].forEach(id => {
+    document.getElementById(id).addEventListener('input', requestPrefill);
     document.getElementById(id).addEventListener('change', requestPrefill);
     document.getElementById(id).addEventListener('blur', requestPrefill);
   });
