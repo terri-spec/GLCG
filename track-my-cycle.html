@@ -167,6 +167,10 @@
       grid-template-columns: 1.2fr .8fr 1fr;
       gap: 6px;
     }
+    .dob-mobile select {
+      min-width: 0;
+      width: 100%;
+    }
 
     /* ── Section cards ── */
     .section-card {
@@ -223,6 +227,7 @@
       gap: 6px;
     }
     .rating-button {
+      min-width: 0;
       min-height: 44px;
       padding: 0;
       border: 1px solid var(--line);
@@ -684,7 +689,7 @@
     @media (max-width: 760px) {
       .layout { grid-template-columns: 1fr; }
       .sidebar { display: none; }
-      .main { padding: 14px 12px 28px; max-width: none; }
+      .main { padding: 14px 12px 28px; max-width: none; min-width: 0; overflow: hidden; }
       .page-header { margin-bottom: 18px; }
       .page-header h2 { font-size: 22px; line-height: 1.2; }
       .meta-row { grid-template-columns: 1fr; }
@@ -698,7 +703,7 @@
       .rating-control { gap: 8px; }
       .rating-control input[type="range"],
       .rating-ticks { display: none; }
-      .rating-buttons { display: grid; }
+      .rating-buttons { display: grid; gap: 5px; }
       .rating-value { text-align: left; font-size: 12px; }
       .med-header, .med-row { grid-template-columns: 1fr 1fr; }
       .info-grid { grid-template-columns: 1fr; }
