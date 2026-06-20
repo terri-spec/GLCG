@@ -926,14 +926,6 @@
       return RATING_FIELDS.reduce((sum, [key]) => sum + Number(item[key] || 0), 0) / RATING_FIELDS.length;
     }
 
-    function initializeDob() {
-      const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-      months.forEach((name, index) => $("dobMonth").add(new Option(name, String(index + 1).padStart(2, "0"))));
-      for (let day = 1; day <= 31; day++) $("dobDay").add(new Option(String(day), String(day).padStart(2, "0")));
-      const year = new Date().getFullYear();
-      for (let value = year - 18; value >= year - 100; value--) $("dobYear").add(new Option(String(value), String(value)));
-    }
-
     function identityFromForm() {
       const month = $("dobMonth").value;
       const day = $("dobDay").value;
@@ -1311,7 +1303,6 @@
       }, 3000);
     }
 
-    initializeDob();
     renderRatings();
     renderSkills();
     $("entryDate").value = new Date().toISOString().slice(0,10);
