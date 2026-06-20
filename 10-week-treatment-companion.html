@@ -1,0 +1,1077 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>10-Week Treatment Companion</title>
+  <style>
+    :root {
+      --navy: #17344b;
+      --teal: #176f78;
+      --teal-dark: #10555d;
+      --blue-soft: #edf5f7;
+      --panel: #ffffff;
+      --line: #bfd0d8;
+      --ink: #172b3a;
+      --muted: #5f7380;
+      --green: #23724f;
+      --red: #a33a3a;
+      --shadow: 0 12px 30px rgba(23, 52, 75, .1);
+      --radius: 14px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: #f3f7f8;
+      color: var(--ink);
+      font: 15px/1.5 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+    [hidden], .hidden { display: none !important; }
+
+    .shell { min-height: 100vh; }
+    .app-header {
+      background: var(--navy);
+      color: #fff;
+      padding: 20px 24px;
+    }
+    .app-header-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+    .app-header h1 { margin: 0; font-size: 23px; }
+    .app-header p { margin: 3px 0 0; color: rgba(255,255,255,.72); font-size: 13px; }
+    .identity-display { color: rgba(255,255,255,.78); font-size: 13px; text-align: right; }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      padding: 9px 12px;
+      background: rgba(255,255,255,.96);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(8px);
+    }
+    .nav button {
+      border: 0;
+      border-radius: 9px;
+      padding: 9px 13px;
+      background: transparent;
+      color: var(--muted);
+      font-weight: 700;
+    }
+    .nav button.active { background: var(--blue-soft); color: var(--teal-dark); }
+
+    main { max-width: 1120px; margin: 0 auto; padding: 28px 22px 56px; }
+    .view-title { margin-bottom: 20px; }
+    .view-title h2 { margin: 0 0 6px; font-size: 28px; color: var(--navy); }
+    .view-title p { margin: 0; color: var(--muted); }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+    .card h3 { margin: 0 0 8px; color: var(--navy); }
+    .card p { margin: 0; }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 18px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px; }
+
+    .btn {
+      min-height: 44px;
+      border: 1px solid var(--teal);
+      border-radius: 10px;
+      padding: 10px 16px;
+      color: #fff;
+      background: var(--teal);
+      font-weight: 750;
+    }
+    .btn:hover { background: var(--teal-dark); }
+    .btn.secondary { color: var(--teal-dark); background: #fff; }
+    .btn.danger { border-color: #b45151; color: #983939; background: #fff; }
+    .btn:disabled { opacity: .45; cursor: not-allowed; }
+    .button-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field label {
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      font-weight: 750;
+    }
+    .field input, .field select, .field textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+      color: var(--ink);
+      padding: 11px 12px;
+    }
+    .field input, .field select { min-height: 44px; }
+    .field textarea { min-height: 96px; resize: vertical; }
+    .field input:focus, .field select:focus, .field textarea:focus {
+      outline: 2px solid var(--teal);
+      outline-offset: 1px;
+    }
+    .required { color: var(--red); }
+    .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px; }
+    .dob-grid { display: grid; grid-template-columns: 1.2fr .8fr 1fr; gap: 7px; }
+    .form-note { margin-top: 8px; color: var(--muted); font-size: 13px; }
+    .form-note.ready { color: var(--green); font-weight: 700; }
+
+    .identity-screen {
+      min-height: 80vh;
+      display: grid;
+      place-items: center;
+      padding: 30px 18px;
+    }
+    .identity-box { max-width: 650px; width: 100%; }
+    .identity-box h1 { margin: 0 0 8px; color: var(--navy); font-size: 30px; }
+    .identity-box > p { color: var(--muted); margin: 0 0 22px; }
+
+    .summary-stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .stat {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 18px;
+    }
+    .stat span { display: block; color: var(--muted); font-size: 12px; }
+    .stat strong { display: block; margin-top: 5px; color: var(--navy); font-size: 24px; }
+
+    .current-week-card { border-left: 5px solid var(--teal); }
+    .current-week-card .eyebrow, .week-eyebrow {
+      margin-bottom: 5px;
+      color: var(--teal);
+      font-size: 11px;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      font-weight: 800;
+    }
+    .current-week-card h2 { margin: 0 0 8px; color: var(--navy); }
+    .current-week-card p { color: var(--muted); }
+
+    .week-list { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 13px; }
+    .week-card {
+      display: grid;
+      grid-template-columns: 46px 1fr auto;
+      gap: 12px;
+      align-items: center;
+      width: 100%;
+      text-align: left;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 15px;
+      background: #fff;
+      color: var(--ink);
+    }
+    .week-card.current { border: 2px solid var(--teal); background: #f1f9f9; }
+    .week-card.complete .week-number { background: var(--green); color: #fff; }
+    .week-number {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--blue-soft);
+      color: var(--navy);
+      font-weight: 800;
+    }
+    .week-card strong { display: block; color: var(--navy); }
+    .week-card small { display: block; margin-top: 3px; color: var(--muted); line-height: 1.35; }
+    .week-card .arrow { color: var(--teal); font-size: 20px; }
+
+    .week-detail { display: grid; gap: 18px; }
+    .week-heading {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+    .week-heading .week-number { flex: 0 0 58px; width: 58px; height: 58px; background: var(--teal); color: #fff; font-size: 22px; }
+    .week-heading h2 { margin: 0 0 5px; color: var(--navy); }
+    .week-heading p { margin: 0; color: var(--muted); }
+    .clinical-section { border-top: 1px solid #e1e8eb; padding-top: 18px; }
+    .clinical-section:first-child { border-top: 0; padding-top: 0; }
+    .clinical-section h3 { margin: 0 0 7px; color: var(--navy); font-size: 17px; }
+    .clinical-section > p { color: #344b59; }
+    .prompt-grid { display: grid; gap: 13px; margin-top: 14px; }
+    .script-box {
+      margin-top: 14px;
+      border-left: 4px solid var(--teal);
+      padding: 12px 14px;
+      background: var(--blue-soft);
+      color: #294552;
+      border-radius: 0 9px 9px 0;
+    }
+    .check-list { display: grid; gap: 9px; margin-top: 14px; }
+    .check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      border: 1px solid #dbe5e9;
+      border-radius: 9px;
+      padding: 11px;
+      background: #fbfdfd;
+    }
+    .check-item input { width: 18px; height: 18px; accent-color: var(--teal); }
+
+    .ratings { display: grid; gap: 13px; }
+    .rating-row {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px;
+      background: #fff;
+    }
+    .rating-row label { display: block; margin-bottom: 10px; color: var(--navy); font-weight: 750; }
+    .rating-buttons { display: grid; grid-template-columns: repeat(6, minmax(0,1fr)); gap: 7px; }
+    .rating-button {
+      min-width: 0;
+      min-height: 45px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      color: var(--navy);
+      background: #fff;
+      font-weight: 800;
+    }
+    .rating-button.selected { background: var(--teal); color: #fff; border-color: var(--teal); }
+    .rating-description { margin-top: 8px; color: var(--muted); font-size: 12px; }
+
+    .skill-options { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 9px; }
+    .skill-option {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      padding: 10px;
+    }
+    .skill-option input { width: 18px; height: 18px; accent-color: var(--teal); }
+
+    .confirmation { display: grid; gap: 18px; }
+    .confirmation-banner { background: #edf8f3; border-color: #add4c0; }
+    .confirmation-banner h2 { margin: 0 0 6px; color: var(--green); }
+    .confirmation-banner p { color: #385b4c; }
+    .today-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; margin-top: 14px; }
+    .today-item { padding: 12px; border-radius: 9px; background: var(--blue-soft); }
+    .today-item span { display: block; color: var(--muted); font-size: 11px; }
+    .today-item strong { display: block; margin-top: 4px; color: var(--navy); }
+
+    .chart {
+      display: flex;
+      align-items: end;
+      gap: 7px;
+      min-height: 160px;
+      padding: 20px 5px 5px;
+      border-bottom: 1px solid var(--line);
+      overflow-x: auto;
+    }
+    .bar-wrap { flex: 1 0 46px; min-width: 46px; text-align: center; }
+    .bar {
+      width: 27px;
+      min-height: 7px;
+      margin: 0 auto 6px;
+      border-radius: 6px 6px 2px 2px;
+      background: var(--teal);
+    }
+    .bar-wrap b, .bar-wrap small { display: block; }
+    .bar-wrap b { color: var(--navy); font-size: 11px; }
+    .bar-wrap small { color: var(--muted); font-size: 10px; }
+
+    .history-list { display: grid; gap: 12px; margin-top: 18px; }
+    .history-entry { border: 1px solid #dce6e9; border-radius: 11px; padding: 15px; }
+    .history-head { display: flex; justify-content: space-between; gap: 12px; font-weight: 800; color: var(--navy); }
+    .history-ratings { margin-top: 7px; color: var(--muted); font-size: 13px; }
+    .history-reflection { margin-top: 10px; display: grid; gap: 5px; font-size: 13px; }
+    .history-reflection strong { color: var(--navy); }
+    .empty { padding: 25px; text-align: center; color: var(--muted); border: 1px dashed var(--line); border-radius: 10px; }
+
+    .status { color: var(--muted); font-size: 13px; }
+    .status.success { color: var(--green); font-weight: 700; }
+    .status.error { color: var(--red); font-weight: 700; }
+
+    @media (max-width: 760px) {
+      .app-header { padding: 14px 15px; }
+      .app-header h1 { font-size: 20px; }
+      .app-header-inner { align-items: flex-start; }
+      .identity-display { display: none; }
+      .nav { justify-content: flex-start; overflow-x: auto; }
+      .nav button { flex: 0 0 auto; }
+      main { padding: 18px 12px 42px; }
+      .view-title h2 { font-size: 24px; }
+      .grid-2, .grid-3, .form-grid, .week-list, .summary-stats, .today-grid, .skill-options { grid-template-columns: 1fr; }
+      .week-card { grid-template-columns: 42px 1fr auto; }
+      .card { padding: 17px 14px; }
+      .rating-buttons { gap: 5px; }
+      .rating-button { min-height: 48px; }
+      .button-row .btn { width: 100%; }
+      .history-head { flex-direction: column; gap: 3px; }
+    }
+  </style>
+</head>
+<body>
+  <section class="identity-screen" id="identityScreen">
+    <div class="identity-box card">
+      <h1>10-Week Treatment Companion</h1>
+      <p>Enter the identifying information used for this treatment plan. All three fields are required to retrieve or save records.</p>
+      <div class="form-grid">
+        <div class="field">
+          <label for="firstName">First Name <span class="required">*</span></label>
+          <input id="firstName" autocomplete="given-name">
+        </div>
+        <div class="field">
+          <label for="lastName">Last Name <span class="required">*</span></label>
+          <input id="lastName" autocomplete="family-name">
+        </div>
+      </div>
+      <div class="field" style="margin-top:14px">
+        <label>Date of Birth <span class="required">*</span></label>
+        <div class="dob-grid">
+          <select id="dobMonth" aria-label="Birth month"><option value="">Month</option></select>
+          <select id="dobDay" aria-label="Birth day"><option value="">Day</option></select>
+          <select id="dobYear" aria-label="Birth year"><option value="">Year</option></select>
+        </div>
+      </div>
+      <div class="button-row" style="margin-top:18px">
+        <button class="btn" id="loadButton" disabled>Open Treatment Companion</button>
+        <span class="status" id="identityStatus">Complete first name, last name, and date of birth.</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="shell hidden" id="appShell">
+    <header class="app-header">
+      <div class="app-header-inner">
+        <div>
+          <h1>10-Week Treatment Companion</h1>
+          <p>Anxiety, emotional responsibility, burnout, relationship patterns, and family load</p>
+        </div>
+        <div class="identity-display" id="identityDisplay"></div>
+      </div>
+    </header>
+
+    <nav class="nav" aria-label="Treatment companion navigation">
+      <button class="active" data-view="overview">Overview</button>
+      <button data-view="plan">10-Week Plan</button>
+      <button data-view="tracker">Daily Tracker</button>
+      <button data-view="history">History</button>
+    </nav>
+
+    <main>
+      <section class="view" id="overviewView">
+        <div class="view-title">
+          <h2>Treatment Overview</h2>
+          <p>Review current progress and continue the active treatment week.</p>
+        </div>
+        <div class="summary-stats">
+          <div class="stat"><span>Current Week</span><strong id="currentWeekStat">1</strong></div>
+          <div class="stat"><span>Weeks Completed</span><strong id="completedStat">0</strong></div>
+          <div class="stat"><span>Daily Records</span><strong id="checkinStat">0</strong></div>
+        </div>
+        <div class="card current-week-card">
+          <div class="eyebrow">Current treatment focus</div>
+          <h2 id="currentWeekTitle"></h2>
+          <p id="currentWeekSummary"></p>
+          <div class="button-row" style="margin-top:17px">
+            <button class="btn" id="continueWeekButton">Open Current Week</button>
+            <button class="btn secondary" data-open-view="tracker">Complete Daily Tracker</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="view hidden" id="planView">
+        <div class="view-title">
+          <h2>10-Week Treatment Plan</h2>
+          <p>All weeks remain available. The current week advances only when it is explicitly marked complete.</p>
+        </div>
+        <div class="week-list" id="weekList"></div>
+      </section>
+
+      <section class="view hidden" id="weekView">
+        <div class="button-row" style="margin-bottom:14px">
+          <button class="btn secondary" data-open-view="plan">Back to Treatment Plan</button>
+        </div>
+        <div class="card week-detail">
+          <div class="week-heading">
+            <div class="week-number" id="weekNumber">1</div>
+            <div>
+              <div class="week-eyebrow">Treatment week</div>
+              <h2 id="weekTitle"></h2>
+              <p id="weekFocus"></p>
+            </div>
+          </div>
+          <div class="clinical-section">
+            <h3>Session Plan</h3>
+            <p id="weekSession"></p>
+          </div>
+          <div class="clinical-section">
+            <h3>Clinical Reflection</h3>
+            <div class="prompt-grid" id="weekPrompts"></div>
+            <div class="script-box hidden" id="weekScript"></div>
+          </div>
+          <div class="clinical-section">
+            <h3>Between-Session Assignment</h3>
+            <p id="weekHomework"></p>
+            <div class="check-list" id="weekChecks"></div>
+          </div>
+          <div class="clinical-section">
+            <div class="field">
+              <label for="weekNotes">Private Treatment Notes</label>
+              <textarea id="weekNotes" placeholder="Record observations, relevant examples, questions, or material to review in session."></textarea>
+            </div>
+          </div>
+          <div class="button-row">
+            <button class="btn" id="saveWeekButton">Save Week</button>
+            <button class="btn secondary" id="completeWeekButton">Mark Week Complete</button>
+            <span class="status" id="weekStatus"></span>
+          </div>
+        </div>
+      </section>
+
+      <section class="view hidden" id="trackerView">
+        <div class="view-title">
+          <h2>Daily Clinical Tracker</h2>
+          <p>Rate each treatment domain from 1 (minimal) to 6 (severe), then document the clinical sequence.</p>
+        </div>
+        <form id="trackerForm">
+          <div class="card" style="margin-bottom:18px">
+            <div class="field" style="max-width:260px">
+              <label for="entryDate">Date <span class="required">*</span></label>
+              <input type="date" id="entryDate">
+            </div>
+          </div>
+          <div class="ratings" id="ratings"></div>
+          <div class="card" style="margin-top:18px">
+            <h3>Structured Clinical Reflection</h3>
+            <div class="form-grid" style="margin-top:14px">
+              <div class="field">
+                <label for="triggerSituation">Trigger or Situation <span class="required">*</span></label>
+                <textarea id="triggerSituation" placeholder="Describe the event, interaction, demand, or internal cue."></textarea>
+              </div>
+              <div class="field">
+                <label for="bodyCues">Body Cues</label>
+                <textarea id="bodyCues" placeholder="Physical sensations or early signs of activation."></textarea>
+              </div>
+              <div class="field">
+                <label for="automaticThought">Automatic Thought</label>
+                <textarea id="automaticThought" placeholder="What did you assume, predict, or tell yourself?"></textarea>
+              </div>
+              <div class="field">
+                <label for="behavioralResponse">Behavioral Response</label>
+                <textarea id="behavioralResponse" placeholder="What did you do, avoid, explain, manage, or seek?"></textarea>
+              </div>
+              <div class="field">
+                <label for="outcome">Outcome</label>
+                <textarea id="outcome" placeholder="What changed afterward, if anything?"></textarea>
+              </div>
+              <div class="field">
+                <label for="sessionDiscussion">Information to Discuss in Session</label>
+                <textarea id="sessionDiscussion" placeholder="What should be reviewed with the clinician?"></textarea>
+              </div>
+            </div>
+            <div class="clinical-section" style="margin-top:18px">
+              <h3>Regulation or Boundary Skill Used</h3>
+              <div class="skill-options" id="skillOptions"></div>
+            </div>
+            <div class="button-row" style="margin-top:18px">
+              <button class="btn" id="saveCheckinButton" type="submit" disabled>Save Daily Record</button>
+              <span class="status" id="trackerStatus">Select all six ratings and complete the trigger or situation.</span>
+            </div>
+          </div>
+        </form>
+      </section>
+
+      <section class="view hidden" id="confirmationView">
+        <div class="confirmation">
+          <div class="card confirmation-banner">
+            <h2>Daily Record Saved</h2>
+            <p>The record has been added to this client’s treatment history.</p>
+          </div>
+          <div class="card">
+            <h3>Today’s Clinical Summary</h3>
+            <div class="today-grid" id="todaySummary"></div>
+          </div>
+          <div class="card">
+            <h3>Recent Treatment-Domain Trends</h3>
+            <div class="chart" id="confirmationChart"></div>
+          </div>
+          <div class="card">
+            <h3>Structured Reflection</h3>
+            <div class="history-reflection" id="confirmationReflection"></div>
+          </div>
+          <div class="button-row">
+            <button class="btn" id="returnTrackerButton">Return to Tracker</button>
+            <button class="btn secondary" id="editTodayButton">Edit Today’s Entry</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="view hidden" id="historyView">
+        <div class="view-title">
+          <h2>Treatment History</h2>
+          <p>Review saved daily records, treatment-domain trends, skill use, and structured reflections.</p>
+        </div>
+        <div class="card">
+          <h3>Daily Average Severity</h3>
+          <div class="chart" id="historyChart"></div>
+        </div>
+        <div class="history-list" id="historyList"></div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const WEEK_DATA = [
+      {
+        focus: "Clarify current stressors and treatment priorities",
+        session: "Review anxiety, burnout, marriage, parenting, and summer-break changes. Identify which issue is currently producing the greatest distress or impairment.",
+        homework: "Track three moments of emotional overload or hypervigilance.",
+        prompts: [
+          "Which area is producing the greatest current distress or impairment?",
+          "What has changed since the school year or summer schedule changed?",
+          "What would measurable improvement look like by week 10?"
+        ],
+        checks: ["Identify the primary treatment priority", "Track overload or hypervigilance moment 1", "Track moment 2", "Track moment 3"]
+      },
+      {
+        focus: "Anxiety and nervous system awareness",
+        session: "Map the sequence: trigger → body cue → thought → behavior → consequence. Examine reassurance-seeking, including “Are you mad at me?” and guilt-based responses.",
+        homework: "Practice grounding or self-validation three times.",
+        prompts: [
+          "What body cue usually appears before reassurance-seeking or overexplaining?",
+          "What thought or feared outcome follows that body cue?",
+          "What short-term relief and long-term consequence follows the response?"
+        ],
+        script: "Self-validation example: “I notice uncertainty and activation. I can tolerate not knowing what another person feels until they communicate it directly.”",
+        checks: ["Map one full anxiety sequence", "Practice grounding or self-validation 1", "Practice 2", "Practice 3"]
+      },
+      {
+        focus: "Emotional responsibility versus actual responsibility",
+        session: "Identify where responsibility is absorbed for a spouse, students, children, coworkers, or other adults. Separate appropriate support from emotional management.",
+        homework: "Use the prompt: “Is this mine to solve, support, or release?”",
+        prompts: [
+          "Whose emotion or outcome did you feel responsible for?",
+          "What was your actual role or obligation?",
+          "What changed when responsibility was categorized as solve, support, or release?"
+        ],
+        script: "Clinical decision prompt: “Is this mine to solve, support, or release?”",
+        checks: ["Identify one responsibility that is yours to solve", "Identify one situation to support without taking over", "Identify one responsibility to release"]
+      },
+      {
+        focus: "Distress tolerance and emotion regulation",
+        session: "Practice lowering emotional intensity before problem-solving, reassurance-seeking, confrontation, withdrawal, or overfunctioning.",
+        homework: "Use one regulation skill during a stressful moment and document the outcome.",
+        prompts: [
+          "How did you know emotional intensity was increasing?",
+          "Which regulation skill was appropriate for the intensity level?",
+          "What became possible after emotional intensity decreased?"
+        ],
+        script: "Sequence: pause → orient to the present → regulate the body → identify the problem → choose a response.",
+        checks: ["Select a first-line regulation skill", "Use the skill during one stressful moment", "Document the outcome"]
+      },
+      {
+        focus: "Burnout recovery and emotional boundaries",
+        session: "Assess depletion, role saturation, and emotional carryover. Develop a work-to-home transition plan that remains usable during summer or schedule changes.",
+        homework: "Practice one containment statement daily.",
+        prompts: [
+          "What demand continued occupying attention after the responsibility ended?",
+          "Which signals indicate depletion rather than anxiety alone?",
+          "What transition behavior would mark the end of one role and the beginning of another?"
+        ],
+        script: "Containment statement: “This requires attention, but it does not require continuous attention. I will return to it at the planned time.”",
+        checks: ["Define a work-to-home transition", "Use a containment statement on three days", "Protect one recovery period"]
+      },
+      {
+        focus: "Marriage: direct requests",
+        session: "Practice requesting specific observable behaviors without overexplaining, apologizing, mind-reading, or attempting to manage the spouse’s emotional response.",
+        homework: "Make one direct request and observe the response.",
+        prompts: [
+          "What specific behavior or action is being requested?",
+          "Which explanations or apologies are unnecessary?",
+          "What reaction belongs to the spouse rather than to the client to manage?"
+        ],
+        script: "Direct request structure: “I am asking you to [specific behavior] by [time or situation]. Please tell me whether you can agree to that.”",
+        checks: ["Write one specific request", "Make the request without overexplaining", "Observe the response without managing it"]
+      },
+      {
+        focus: "Marriage: mutual hypervigilance cycle",
+        session: "Map pursue/withdraw, defensiveness, shutdown, reassurance-seeking, and escalation patterns. Identify the earliest point where either partner can interrupt the sequence.",
+        homework: "Notice one occurrence of the cycle and pause before responding.",
+        prompts: [
+          "What initiated the cycle?",
+          "What did each person do next?",
+          "Where was the earliest realistic interruption point?"
+        ],
+        script: "Interruption statement: “I notice the pattern escalating. I am going to pause and return when I can communicate directly.”",
+        checks: ["Identify one cycle occurrence", "Name each person’s response", "Pause before continuing the interaction"]
+      },
+      {
+        focus: "Default parent role and household load",
+        session: "Clarify practical responsibilities, anticipatory labor, monitoring, and emotional management. Identify what needs to be shared, delegated, or renegotiated.",
+        homework: "Select one task or mental-load responsibility to share, delegate, or renegotiate.",
+        prompts: [
+          "Which invisible or anticipatory tasks are being carried?",
+          "What would shared ownership require beyond occasional help?",
+          "Which responsibility can be transferred with clear expectations?"
+        ],
+        script: "Renegotiation statement: “I need shared ownership of [responsibility], including planning, follow-through, and noticing when it needs attention.”",
+        checks: ["Identify one mental-load item", "Define what full ownership includes", "Share, delegate, or renegotiate the item"]
+      },
+      {
+        focus: "Trauma-informed self-compassion",
+        session: "Connect childhood emotional monitoring and threat detection to current patterns without self-blame. Practice responding to guilt and hypervigilance as learned protective responses.",
+        homework: "Write or reflect on one compassionate reframe after a guilt trigger.",
+        prompts: [
+          "What earlier environment made emotional monitoring adaptive?",
+          "How is that response being activated in the present?",
+          "What present-day information changes the interpretation?"
+        ],
+        script: "Compassionate reframe: “This response developed for a reason. I can acknowledge its protective purpose and choose a response based on the present situation.”",
+        checks: ["Identify one guilt or monitoring trigger", "Name the learned protective response", "Write one compassionate reframe"]
+      },
+      {
+        focus: "Review progress and next treatment phase",
+        session: "Evaluate progress in anxiety, boundaries, marital communication, emotional responsibility, parenting load, and burnout. Select the next treatment focus.",
+        homework: "Create a maintenance plan with three skills to continue.",
+        prompts: [
+          "Which symptoms or patterns have changed in frequency, intensity, or duration?",
+          "Which interventions produced the most reliable benefit?",
+          "What remains clinically significant and should guide the next phase?"
+        ],
+        checks: ["Review anxiety and hypervigilance progress", "Review boundaries and responsibility", "Review marriage and family load", "Select three maintenance skills"]
+      }
+    ];
+
+    const RATING_FIELDS = [
+      ["anxiety", "Anxiety and hypervigilance"],
+      ["overload", "Emotional overload"],
+      ["responsibility", "Guilt and excessive responsibility"],
+      ["burnout", "Burnout or depletion"],
+      ["maritalTension", "Marital tension"],
+      ["parentingLoad", "Parenting or household load"]
+    ];
+
+    const SKILLS = [
+      "Grounding or orienting",
+      "Paced breathing",
+      "Self-validation",
+      "Distress-tolerance pause",
+      "Containment statement",
+      "Direct request",
+      "Responsibility check: solve, support, or release",
+      "Boundary statement",
+      "Delegation or renegotiation",
+      "Compassionate reframe",
+      "No skill used"
+    ];
+
+    const state = {
+      identity: null,
+      profile: { currentWeek: 1 },
+      weeks: {},
+      checkins: []
+    };
+    let activeWeek = 1;
+    let activeView = "overview";
+    let editingDate = "";
+    const ratings = {};
+
+    const $ = id => document.getElementById(id);
+
+    function escapeHtml(value = "") {
+      return String(value).replace(/[&<>"']/g, char => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
+      }[char]));
+    }
+
+    function parseMessage(value) {
+      if (typeof value !== "string") return value || {};
+      try { return JSON.parse(value); } catch { return {}; }
+    }
+
+    function post(message) {
+      window.parent.postMessage(message, "*");
+    }
+
+    function dateOnly(value) {
+      return String(value || "").slice(0, 10);
+    }
+
+    function formatDate(value) {
+      const raw = dateOnly(value);
+      if (!raw) return "";
+      return new Date(raw + "T12:00:00").toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+    }
+
+    function averageRatings(item) {
+      return RATING_FIELDS.reduce((sum, [key]) => sum + Number(item[key] || 0), 0) / RATING_FIELDS.length;
+    }
+
+    function initializeDob() {
+      const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+      months.forEach((name, index) => $("dobMonth").add(new Option(name, String(index + 1).padStart(2, "0"))));
+      for (let day = 1; day <= 31; day++) $("dobDay").add(new Option(String(day), String(day).padStart(2, "0")));
+      const year = new Date().getFullYear();
+      for (let value = year; value >= year - 110; value--) $("dobYear").add(new Option(String(value), String(value)));
+    }
+
+    function identityFromForm() {
+      const firstName = $("firstName").value.trim();
+      const lastName = $("lastName").value.trim();
+      const month = $("dobMonth").value;
+      const day = $("dobDay").value;
+      const year = $("dobYear").value;
+      return {
+        firstName,
+        lastName,
+        dateOfBirth: month && day && year ? `${year}-${month}-${day}` : ""
+      };
+    }
+
+    function updateIdentityAvailability() {
+      const identity = identityFromForm();
+      const ready = Boolean(identity.firstName && identity.lastName && identity.dateOfBirth);
+      $("loadButton").disabled = !ready;
+      $("identityStatus").textContent = ready
+        ? "Identifying information complete."
+        : "Complete first name, last name, and date of birth.";
+      $("identityStatus").className = ready ? "status success" : "status";
+    }
+
+    function showView(name) {
+      activeView = name;
+      document.querySelectorAll(".view").forEach(view => view.classList.add("hidden"));
+      $(name + "View").classList.remove("hidden");
+      document.querySelectorAll(".nav button").forEach(button => {
+        button.classList.toggle("active", button.dataset.view === name);
+      });
+      if (name === "history") renderHistory();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function renderOverview() {
+      const currentWeek = Number(state.profile.currentWeek || 1);
+      const completed = Object.values(state.weeks).filter(week => week.complete).length;
+      $("currentWeekStat").textContent = currentWeek;
+      $("completedStat").textContent = completed;
+      $("checkinStat").textContent = state.checkins.length;
+      $("currentWeekTitle").textContent = WEEK_DATA[currentWeek - 1].focus;
+      $("currentWeekSummary").textContent = WEEK_DATA[currentWeek - 1].session;
+    }
+
+    function renderWeekList() {
+      $("weekList").innerHTML = WEEK_DATA.map((week, index) => {
+        const number = index + 1;
+        const saved = state.weeks[number] || {};
+        return `<button class="week-card ${number === Number(state.profile.currentWeek) ? "current" : ""} ${saved.complete ? "complete" : ""}" data-week="${number}">
+          <span class="week-number">${saved.complete ? "✓" : number}</span>
+          <span><strong>${escapeHtml(week.focus)}</strong><small>${escapeHtml(week.homework)}</small></span>
+          <span class="arrow">→</span>
+        </button>`;
+      }).join("");
+      document.querySelectorAll("[data-week]").forEach(button => {
+        button.addEventListener("click", () => openWeek(Number(button.dataset.week)));
+      });
+    }
+
+    function openWeek(number) {
+      activeWeek = number;
+      const week = WEEK_DATA[number - 1];
+      const saved = state.weeks[number] || {};
+      $("weekNumber").textContent = number;
+      $("weekTitle").textContent = week.focus;
+      $("weekFocus").textContent = `Week ${number}`;
+      $("weekSession").textContent = week.session;
+      $("weekHomework").textContent = week.homework;
+      $("weekPrompts").innerHTML = week.prompts.map((prompt, index) => `
+        <div class="field">
+          <label for="weekPrompt${index}">${escapeHtml(prompt)}</label>
+          <textarea id="weekPrompt${index}" data-week-prompt="${index}">${escapeHtml(saved.responses?.[index] || "")}</textarea>
+        </div>
+      `).join("");
+      $("weekScript").textContent = week.script || "";
+      $("weekScript").classList.toggle("hidden", !week.script);
+      $("weekChecks").innerHTML = week.checks.map((check, index) => `
+        <label class="check-item">
+          <input type="checkbox" data-week-check="${index}" ${saved.checks?.[index] ? "checked" : ""}>
+          <span>${escapeHtml(check)}</span>
+        </label>
+      `).join("");
+      $("weekNotes").value = saved.notes || "";
+      $("completeWeekButton").textContent = saved.complete ? "Reopen Week" : "Mark Week Complete";
+      $("weekStatus").textContent = "";
+      showView("week");
+    }
+
+    function weekFormData() {
+      return {
+        title: WEEK_DATA[activeWeek - 1].focus,
+        responses: [...document.querySelectorAll("[data-week-prompt]")].map(field => field.value.trim()),
+        checks: [...document.querySelectorAll("[data-week-check]")].map(field => field.checked),
+        notes: $("weekNotes").value.trim(),
+        complete: Boolean(state.weeks[activeWeek]?.complete)
+      };
+    }
+
+    function renderRatings() {
+      $("ratings").innerHTML = RATING_FIELDS.map(([key, label]) => `
+        <div class="rating-row">
+          <label>${escapeHtml(label)} <span class="required">*</span></label>
+          <div class="rating-buttons" data-rating="${key}">
+            ${[1,2,3,4,5,6].map(value => `<button type="button" class="rating-button" data-rating-key="${key}" data-rating-value="${value}">${value}</button>`).join("")}
+          </div>
+          <div class="rating-description" id="${key}Description">Select a rating.</div>
+        </div>
+      `).join("");
+      document.querySelectorAll("[data-rating-key]").forEach(button => {
+        button.addEventListener("click", () => {
+          const key = button.dataset.ratingKey;
+          ratings[key] = Number(button.dataset.ratingValue);
+          document.querySelectorAll(`[data-rating-key="${key}"]`).forEach(item => {
+            item.classList.toggle("selected", item === button);
+          });
+          $(`${key}Description`).textContent = `${ratings[key]} — ${["","Minimal","Low","Mild","Moderate","High","Severe"][ratings[key]]}`;
+          updateTrackerAvailability();
+        });
+      });
+    }
+
+    function renderSkills(selected = []) {
+      $("skillOptions").innerHTML = SKILLS.map((skill, index) => `
+        <label class="skill-option">
+          <input type="checkbox" data-skill="${index}" ${selected.includes(skill) ? "checked" : ""}>
+          <span>${escapeHtml(skill)}</span>
+        </label>
+      `).join("");
+    }
+
+    function updateTrackerAvailability() {
+      const completeRatings = RATING_FIELDS.every(([key]) => Number(ratings[key]) >= 1);
+      const ready = completeRatings && Boolean($("entryDate").value && $("triggerSituation").value.trim());
+      $("saveCheckinButton").disabled = !ready;
+      $("trackerStatus").textContent = ready
+        ? "Required information complete."
+        : "Select all six ratings and complete the trigger or situation.";
+      $("trackerStatus").className = ready ? "status success" : "status";
+    }
+
+    function collectCheckin() {
+      const checkin = {
+        date: $("entryDate").value,
+        triggerSituation: $("triggerSituation").value.trim(),
+        bodyCues: $("bodyCues").value.trim(),
+        automaticThought: $("automaticThought").value.trim(),
+        behavioralResponse: $("behavioralResponse").value.trim(),
+        outcome: $("outcome").value.trim(),
+        sessionDiscussion: $("sessionDiscussion").value.trim(),
+        skillsUsed: [...document.querySelectorAll("[data-skill]:checked")].map(input => SKILLS[Number(input.dataset.skill)]),
+        clientTimeZone: Intl.DateTimeFormat().resolvedOptions().timeZone || ""
+      };
+      RATING_FIELDS.forEach(([key]) => { checkin[key] = Number(ratings[key]); });
+      return checkin;
+    }
+
+    function clearTracker() {
+      editingDate = "";
+      Object.keys(ratings).forEach(key => delete ratings[key]);
+      $("trackerForm").reset();
+      $("entryDate").value = new Date().toISOString().slice(0,10);
+      document.querySelectorAll(".rating-button").forEach(button => button.classList.remove("selected"));
+      RATING_FIELDS.forEach(([key]) => { $(`${key}Description`).textContent = "Select a rating."; });
+      renderSkills();
+      updateTrackerAvailability();
+    }
+
+    function editCheckin(item) {
+      editingDate = item.date;
+      $("entryDate").value = item.date;
+      RATING_FIELDS.forEach(([key]) => {
+        ratings[key] = Number(item[key]);
+        document.querySelectorAll(`[data-rating-key="${key}"]`).forEach(button => {
+          button.classList.toggle("selected", Number(button.dataset.ratingValue) === Number(item[key]));
+        });
+        $(`${key}Description`).textContent = `${item[key]} — ${["","Minimal","Low","Mild","Moderate","High","Severe"][item[key]]}`;
+      });
+      ["triggerSituation","bodyCues","automaticThought","behavioralResponse","outcome","sessionDiscussion"].forEach(key => {
+        $(key).value = item[key] || "";
+      });
+      renderSkills(item.skillsUsed || []);
+      updateTrackerAvailability();
+      showView("tracker");
+    }
+
+    function renderChart(targetId, items) {
+      const target = $(targetId);
+      if (!items.length) {
+        target.innerHTML = `<div class="empty" style="width:100%">No daily records have been saved.</div>`;
+        return;
+      }
+      target.innerHTML = items.slice(-14).map(item => {
+        const average = averageRatings(item);
+        return `<div class="bar-wrap" title="${escapeHtml(formatDate(item.date))}: ${average.toFixed(1)}">
+          <div class="bar" style="height:${Math.round(average / 6 * 125)}px"></div>
+          <b>${average.toFixed(1)}</b>
+          <small>${escapeHtml(item.date.slice(5))}</small>
+        </div>`;
+      }).join("");
+    }
+
+    function reflectionHtml(item) {
+      const rows = [
+        ["Trigger or situation", item.triggerSituation],
+        ["Body cues", item.bodyCues],
+        ["Automatic thought", item.automaticThought],
+        ["Behavioral response", item.behavioralResponse],
+        ["Skill used", (item.skillsUsed || []).join(", ")],
+        ["Outcome", item.outcome],
+        ["Discuss in session", item.sessionDiscussion]
+      ].filter(([, value]) => value);
+      return rows.map(([label, value]) => `<div><strong>${escapeHtml(label)}:</strong> ${escapeHtml(value)}</div>`).join("");
+    }
+
+    function renderConfirmation(item) {
+      $("todaySummary").innerHTML = RATING_FIELDS.map(([key, label]) => `
+        <div class="today-item"><span>${escapeHtml(label)}</span><strong>${item[key]}/6</strong></div>
+      `).join("");
+      $("confirmationReflection").innerHTML = reflectionHtml(item) || "<div>No additional reflection was entered.</div>";
+      renderChart("confirmationChart", state.checkins);
+      showView("confirmation");
+      $("confirmationView").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function renderHistory() {
+      renderChart("historyChart", state.checkins);
+      $("historyList").innerHTML = state.checkins.length
+        ? [...state.checkins].reverse().map(item => `
+          <article class="history-entry">
+            <div class="history-head">
+              <span>${escapeHtml(formatDate(item.date))}</span>
+              <span>Average ${averageRatings(item).toFixed(1)}/6</span>
+            </div>
+            <div class="history-ratings">${RATING_FIELDS.map(([key,label]) => `${escapeHtml(label)} ${item[key]}/6`).join(" · ")}</div>
+            <div class="history-reflection">${reflectionHtml(item)}</div>
+          </article>
+        `).join("")
+        : `<div class="empty">No daily records have been saved.</div>`;
+    }
+
+    function applyLoadedState(loaded) {
+      state.profile = { currentWeek: Number(loaded.profile?.currentWeek || 1) };
+      state.weeks = loaded.weeks || {};
+      state.checkins = Array.isArray(loaded.checkins) ? loaded.checkins : [];
+      renderOverview();
+      renderWeekList();
+      renderHistory();
+      $("identityScreen").classList.add("hidden");
+      $("appShell").classList.remove("hidden");
+      $("identityDisplay").textContent = `${state.identity.firstName} ${state.identity.lastName}`;
+      showView("overview");
+    }
+
+    window.addEventListener("message", event => {
+      const message = parseMessage(event.data);
+      if (message.type === "CLINICAL_TREATMENT_INIT") {
+        $("loadButton").disabled = false;
+        if (message.ok) {
+          applyLoadedState(message.state || {});
+        } else {
+          $("identityStatus").textContent = message.reason || "Unable to load treatment records.";
+          $("identityStatus").className = "status error";
+        }
+      }
+      if (message.type === "CLINICAL_TREATMENT_SAVE_RESULT") {
+        if (message.action === "week") {
+          $("weekStatus").textContent = message.ok ? "Week saved." : (message.reason || "Unable to save week.");
+          $("weekStatus").className = message.ok ? "status success" : "status error";
+        }
+        if (message.action === "checkin") {
+          $("saveCheckinButton").disabled = false;
+          if (message.ok) {
+            state.checkins = message.history || state.checkins;
+            const saved = state.checkins.find(item => item.date === message.date) || collectCheckin();
+            renderOverview();
+            renderHistory();
+            renderConfirmation(saved);
+          } else {
+            $("trackerStatus").textContent = message.reason || "Unable to save daily record.";
+            $("trackerStatus").className = "status error";
+          }
+        }
+      }
+    });
+
+    $("loadButton").addEventListener("click", () => {
+      state.identity = identityFromForm();
+      $("loadButton").disabled = true;
+      $("identityStatus").textContent = "Loading treatment records…";
+      post({ type: "CLINICAL_TREATMENT_LOAD", identity: state.identity });
+    });
+    ["firstName","lastName","dobMonth","dobDay","dobYear"].forEach(id => $(id).addEventListener("input", updateIdentityAvailability));
+    ["dobMonth","dobDay","dobYear"].forEach(id => $(id).addEventListener("change", updateIdentityAvailability));
+
+    document.querySelectorAll(".nav button").forEach(button => button.addEventListener("click", () => showView(button.dataset.view)));
+    document.querySelectorAll("[data-open-view]").forEach(button => button.addEventListener("click", () => showView(button.dataset.openView)));
+    $("continueWeekButton").addEventListener("click", () => openWeek(Number(state.profile.currentWeek || 1)));
+
+    $("saveWeekButton").addEventListener("click", () => {
+      state.weeks[activeWeek] = weekFormData();
+      $("weekStatus").textContent = "Saving…";
+      post({ type: "CLINICAL_TREATMENT_SAVE_WEEK", identity: state.identity, weekNumber: activeWeek, weekData: state.weeks[activeWeek] });
+      renderOverview();
+      renderWeekList();
+    });
+
+    $("completeWeekButton").addEventListener("click", () => {
+      const data = weekFormData();
+      data.complete = !Boolean(state.weeks[activeWeek]?.complete);
+      state.weeks[activeWeek] = data;
+      if (data.complete && activeWeek === Number(state.profile.currentWeek) && activeWeek < 10) {
+        state.profile.currentWeek = activeWeek + 1;
+      }
+      $("weekStatus").textContent = "Saving…";
+      post({ type: "CLINICAL_TREATMENT_SAVE_WEEK", identity: state.identity, weekNumber: activeWeek, weekData: data, currentWeek: state.profile.currentWeek });
+      renderOverview();
+      renderWeekList();
+      openWeek(activeWeek);
+    });
+
+    $("trackerForm").addEventListener("input", updateTrackerAvailability);
+    $("trackerForm").addEventListener("submit", event => {
+      event.preventDefault();
+      const checkin = collectCheckin();
+      $("saveCheckinButton").disabled = true;
+      $("trackerStatus").textContent = "Saving…";
+      post({ type: "CLINICAL_TREATMENT_SAVE_CHECKIN", identity: state.identity, checkin });
+    });
+    $("returnTrackerButton").addEventListener("click", () => { clearTracker(); showView("tracker"); });
+    $("editTodayButton").addEventListener("click", () => {
+      const item = state.checkins.find(entry => entry.date === editingDate) || state.checkins[state.checkins.length - 1];
+      if (item) editCheckin(item);
+    });
+
+    initializeDob();
+    renderRatings();
+    renderSkills();
+    $("entryDate").value = new Date().toISOString().slice(0,10);
+    updateIdentityAvailability();
+    updateTrackerAvailability();
+  </script>
+</body>
+</html>
