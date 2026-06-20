@@ -398,14 +398,14 @@
       <div class="field" style="margin-top:14px">
         <label>Date of Birth <span class="required">*</span></label>
         <div class="dob-grid">
-          <select id="dobMonth" aria-label="Birth month">
+          <select id="dobMonth" aria-label="Birth month" onchange="updateIdentityAvailability()">
             <option value="">Month</option>
             <option value="01">January</option><option value="02">February</option><option value="03">March</option>
             <option value="04">April</option><option value="05">May</option><option value="06">June</option>
             <option value="07">July</option><option value="08">August</option><option value="09">September</option>
             <option value="10">October</option><option value="11">November</option><option value="12">December</option>
           </select>
-          <select id="dobDay" aria-label="Birth day">
+          <select id="dobDay" aria-label="Birth day" onchange="updateIdentityAvailability()">
             <option value="">Day</option>
             <option value="01">1</option><option value="02">2</option><option value="03">3</option><option value="04">4</option><option value="05">5</option>
             <option value="06">6</option><option value="07">7</option><option value="08">8</option><option value="09">9</option><option value="10">10</option>
@@ -415,7 +415,7 @@
             <option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option>
             <option value="31">31</option>
           </select>
-          <select id="dobYear" aria-label="Birth year">
+          <select id="dobYear" aria-label="Birth year" onchange="updateIdentityAvailability()">
             <option value="">Year</option>
             <option>1940</option><option>1941</option><option>1942</option><option>1943</option><option>1944</option>
             <option>1945</option><option>1946</option><option>1947</option><option>1948</option><option>1949</option>
