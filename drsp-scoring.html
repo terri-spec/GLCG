@@ -173,9 +173,13 @@ function renderClientList(clients) {
 function paintClients(list) {
   const el = document.getElementById('clientList');
   if (!list.length) { el.innerHTML = '<div style="padding:20px 16px;font-size:12px;color:#8a9bbf;">No clients found</div>'; return; }
+  // Store clients by memberId so onclick can look them up safely (avoids JSON-in-HTML-attr issues)
+  window._clientMap = window._clientMap || {};
+  list.forEach(c => { window._clientMap[c.memberId] = c; });
   el.innerHTML = list.map(c => `
     <div class="client-item${currentClient?.memberId === c.memberId ? ' active' : ''}"
-         onclick="selectClient(${JSON.stringify(c)}, this)">
+         data-mid="${esc(c.memberId)}"
+         onclick="selectClient(this)">
       <div class="cname">${esc(c.lastName)}, ${esc(c.firstName)}</div>
       ${c.dateOfBirth ? `<div class="cdob">DOB: ${fmtDate(c.dateOfBirth)}</div>` : ''}
     </div>`).join('');
@@ -186,8 +190,9 @@ function filterClients(q) {
   paintClients(allClients.filter(c => (c.firstName + ' ' + c.lastName).toLowerCase().includes(lq)));
 }
 
-function selectClient(c, el) {
-  currentClient = c;
+function selectClient(el) {
+  const mid = el.getAttribute('data-mid');
+  currentClient = window._clientMap[mid];
   document.querySelectorAll('.client-item').forEach(x => x.classList.remove('active'));
   el.classList.add('active');
   document.getElementById('main').innerHTML = '<div class="loading">Loading records…</div>';
