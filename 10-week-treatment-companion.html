@@ -435,8 +435,8 @@
         </div>
       </div>
       <div class="button-row" style="margin-top:18px">
-        <button class="btn" id="loadButton" disabled>Open Treatment Companion</button>
-        <span class="status" id="identityStatus">Complete first name, last name, and date of birth.</span>
+        <button class="btn" id="loadButton">Open Treatment Companion</button>
+        <span class="status" id="identityStatus"></span>
       </div>
       <div id="testModeRow" style="margin-top:14px;display:none">
         <button class="btn secondary" id="testModeButton" style="font-size:13px">Preview without Wix (test mode)</button>
@@ -1234,7 +1234,13 @@
     });
 
     $("loadButton").addEventListener("click", () => {
-      state.identity = identityFromForm();
+      const identity = identityFromForm();
+      if (!identity.firstName || !identity.lastName || !identity.dateOfBirth) {
+        $("identityStatus").textContent = "Complete first name, last name, and date of birth.";
+        $("identityStatus").className = "status";
+        return;
+      }
+      state.identity = identity;
       $("loadButton").disabled = true;
       $("identityStatus").textContent = "Loading treatment records…";
       post({ type: "CLINICAL_TREATMENT_LOAD", identity: state.identity });
