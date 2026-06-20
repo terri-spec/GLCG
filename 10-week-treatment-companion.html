@@ -88,6 +88,7 @@
     .card p { margin: 0; }
     .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 18px; }
     .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 12px; }
 
     .btn {
       min-height: 44px;
@@ -144,7 +145,7 @@
 
     .summary-stats {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0,1fr));
+      grid-template-columns: repeat(4, minmax(0,1fr));
       gap: 12px;
       margin-bottom: 18px;
     }
@@ -221,6 +222,51 @@
       color: #294552;
       border-radius: 0 9px 9px 0;
     }
+    .instruction-note {
+      margin: 10px 0 0;
+      padding: 11px 14px;
+      background: #f0f8fa;
+      border-radius: 9px;
+      color: var(--muted);
+      font-size: 13px;
+      font-style: italic;
+    }
+    .skill-building-structure {
+      margin-top: 14px;
+      display: grid;
+      gap: 10px;
+    }
+    .skill-building-row {
+      display: grid;
+      grid-template-columns: 60px 1fr;
+      gap: 10px;
+      align-items: start;
+    }
+    .skill-building-row .label {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--teal-dark);
+      padding-top: 2px;
+    }
+    .skill-building-row .value {
+      color: #344b59;
+    }
+    .end-of-week-prompts {
+      margin-bottom: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+    .prompt-chip {
+      padding: 6px 11px;
+      background: var(--blue-soft);
+      border-radius: 20px;
+      font-size: 13px;
+      color: var(--teal-dark);
+      font-weight: 600;
+    }
     .check-list { display: grid; gap: 9px; margin-top: 14px; }
     .check-item {
       display: flex;
@@ -252,7 +298,7 @@
       font-weight: 800;
     }
     .rating-button.selected { background: var(--teal); color: #fff; border-color: var(--teal); }
-    .rating-description { margin-top: 8px; color: var(--muted); font-size: 12px; }
+    .rating-description { margin-top: 8px; color: var(--muted); font-size: 13px; min-height: 20px; }
 
     .skill-options { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 9px; }
     .skill-option {
@@ -263,7 +309,14 @@
       border-radius: 9px;
       padding: 10px;
     }
-    .skill-option input { width: 18px; height: 18px; accent-color: var(--teal); }
+    .skill-option input { width: 18px; height: 18px; accent-color: var(--teal); flex: 0 0 18px; margin-top: 2px; }
+    .skill-option a {
+      color: var(--teal-dark);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .skill-option a:hover { text-decoration: underline; }
+    .skill-option span { color: var(--ink); }
 
     .confirmation { display: grid; gap: 18px; }
     .confirmation-banner { background: #edf8f3; border-color: #add4c0; }
@@ -316,13 +369,14 @@
       .nav button { flex: 0 0 auto; }
       main { padding: 18px 12px 42px; }
       .view-title h2 { font-size: 24px; }
-      .grid-2, .grid-3, .form-grid, .week-list, .summary-stats, .today-grid, .skill-options { grid-template-columns: 1fr; }
+      .grid-2, .grid-3, .grid-4, .form-grid, .week-list, .summary-stats, .today-grid, .skill-options { grid-template-columns: 1fr; }
       .week-card { grid-template-columns: 42px 1fr auto; }
       .card { padding: 17px 14px; }
       .rating-buttons { gap: 5px; }
       .rating-button { min-height: 48px; }
       .button-row .btn { width: 100%; }
       .history-head { flex-direction: column; gap: 3px; }
+      .skill-building-row { grid-template-columns: 1fr; gap: 3px; }
     }
   </style>
 </head>
@@ -352,6 +406,9 @@
       <div class="button-row" style="margin-top:18px">
         <button class="btn" id="loadButton" disabled>Open Treatment Companion</button>
         <span class="status" id="identityStatus">Complete first name, last name, and date of birth.</span>
+      </div>
+      <div id="testModeRow" style="margin-top:14px;display:none">
+        <button class="btn secondary" id="testModeButton" style="font-size:13px">Preview without Wix (test mode)</button>
       </div>
     </div>
   </section>
@@ -384,6 +441,7 @@
           <div class="stat"><span>Current Week</span><strong id="currentWeekStat">1</strong></div>
           <div class="stat"><span>Weeks Completed</span><strong id="completedStat">0</strong></div>
           <div class="stat"><span>Daily Records</span><strong id="checkinStat">0</strong></div>
+          <div class="stat"><span>Daily Average Severity</span><strong id="avgSeverityStat">—</strong></div>
         </div>
         <div class="card current-week-card">
           <div class="eyebrow">Current treatment focus</div>
@@ -412,33 +470,39 @@
           <div class="week-heading">
             <div class="week-number" id="weekNumber">1</div>
             <div>
-              <div class="week-eyebrow">Treatment week</div>
+              <div class="week-eyebrow">This Week's Goal</div>
               <h2 id="weekTitle"></h2>
-              <p id="weekFocus"></p>
             </div>
           </div>
           <div class="clinical-section">
-            <h3>Session Plan</h3>
+            <h3>This week's treatment focus</h3>
             <p id="weekSession"></p>
           </div>
           <div class="clinical-section">
-            <h3>Clinical Reflection</h3>
+            <h3>This week's reflections</h3>
+            <p class="instruction-note">At the end of this week, you'll come back here and complete these reflections. You can keep notes here throughout the week to make it easier to summarize at the end.</p>
             <div class="prompt-grid" id="weekPrompts"></div>
             <div class="script-box hidden" id="weekScript"></div>
           </div>
           <div class="clinical-section">
-            <h3>Between-Session Assignment</h3>
-            <p id="weekHomework"></p>
+            <h3>This week's skill building</h3>
+            <div class="skill-building-structure" id="weekSkillBuilding"></div>
             <div class="check-list" id="weekChecks"></div>
           </div>
           <div class="clinical-section">
             <div class="field">
-              <label for="weekNotes">Private Treatment Notes</label>
-              <textarea id="weekNotes" placeholder="Record observations, relevant examples, questions, or material to review in session."></textarea>
+              <label for="weekNotes">End of week reflection</label>
+              <div class="end-of-week-prompts">
+                <span class="prompt-chip">What went well this week?</span>
+                <span class="prompt-chip">What was hard this week?</span>
+                <span class="prompt-chip">What will you change?</span>
+              </div>
+              <textarea id="weekNotes" placeholder="Use the prompts above to guide your reflection, or write freely about what felt most important this week."></textarea>
             </div>
           </div>
           <div class="button-row">
-            <button class="btn" id="saveWeekButton">Save Week</button>
+            <button class="btn" id="saveWeekButton">Save</button>
+            <button class="btn secondary" id="goToTrackerButton">Go to Daily Tracker</button>
             <button class="btn secondary" id="completeWeekButton">Mark Week Complete</button>
             <span class="status" id="weekStatus"></span>
           </div>
@@ -459,10 +523,10 @@
           </div>
           <div class="ratings" id="ratings"></div>
           <div class="card" style="margin-top:18px">
-            <h3>Structured Clinical Reflection</h3>
+            <h3>Today's Reflection</h3>
             <div class="form-grid" style="margin-top:14px">
               <div class="field">
-                <label for="triggerSituation">Trigger or Situation <span class="required">*</span></label>
+                <label for="triggerSituation">Trigger or Situation</label>
                 <textarea id="triggerSituation" placeholder="Describe the event, interaction, demand, or internal cue."></textarea>
               </div>
               <div class="field">
@@ -487,12 +551,12 @@
               </div>
             </div>
             <div class="clinical-section" style="margin-top:18px">
-              <h3>Regulation or Boundary Skill Used</h3>
+              <h3>Skills to practice</h3>
               <div class="skill-options" id="skillOptions"></div>
             </div>
             <div class="button-row" style="margin-top:18px">
               <button class="btn" id="saveCheckinButton" type="submit" disabled>Save Daily Record</button>
-              <span class="status" id="trackerStatus">Select all six ratings and complete the trigger or situation.</span>
+              <span class="status" id="trackerStatus">Select all six ratings to continue.</span>
             </div>
           </div>
         </form>
@@ -502,10 +566,10 @@
         <div class="confirmation">
           <div class="card confirmation-banner">
             <h2>Daily Record Saved</h2>
-            <p>The record has been added to this client’s treatment history.</p>
+            <p>The record has been added to this client's treatment history.</p>
           </div>
           <div class="card">
-            <h3>Today’s Clinical Summary</h3>
+            <h3>Today's Clinical Summary</h3>
             <div class="today-grid" id="todaySummary"></div>
           </div>
           <div class="card">
@@ -518,15 +582,15 @@
           </div>
           <div class="button-row">
             <button class="btn" id="returnTrackerButton">Return to Tracker</button>
-            <button class="btn secondary" id="editTodayButton">Edit Today’s Entry</button>
+            <button class="btn secondary" id="editTodayButton">Edit Today's Entry</button>
           </div>
         </div>
       </section>
 
       <section class="view hidden" id="historyView">
         <div class="view-title">
-          <h2>Treatment History</h2>
-          <p>Review saved daily records, treatment-domain trends, skill use, and structured reflections.</p>
+          <h2>History</h2>
+          <p>Review your treatment history here and gain insight.</p>
         </div>
         <div class="card">
           <h3>Daily Average Severity</h3>
@@ -542,6 +606,11 @@
       {
         focus: "Clarify current stressors and treatment priorities",
         session: "Review anxiety, burnout, marriage, parenting, and summer-break changes. Identify which issue is currently producing the greatest distress or impairment.",
+        skillBuilding: {
+          what: "Track three moments of emotional overload or hypervigilance",
+          how: "Here on the app",
+          why: "To find the earliest point where you can pause, regulate, and choose what to do next."
+        },
         homework: "Track three moments of emotional overload or hypervigilance.",
         prompts: [
           "Which area is producing the greatest current distress or impairment?",
@@ -552,31 +621,46 @@
       },
       {
         focus: "Anxiety and nervous system awareness",
-        session: "Map the sequence: trigger → body cue → thought → behavior → consequence. Examine reassurance-seeking, including “Are you mad at me?” and guilt-based responses.",
+        session: "Map the sequence: trigger → body cue → thought → behavior → consequence. Examine reassurance-seeking, including "Are you mad at me?" and guilt-based responses.",
+        skillBuilding: {
+          what: "Practice grounding or self-validation three times",
+          how: "When body cues appear, pause and use the self-validation statement before seeking reassurance",
+          why: "To interrupt the anxiety cycle before it escalates into reassurance-seeking or overexplaining."
+        },
         homework: "Practice grounding or self-validation three times.",
         prompts: [
           "What body cue usually appears before reassurance-seeking or overexplaining?",
           "What thought or feared outcome follows that body cue?",
           "What short-term relief and long-term consequence follows the response?"
         ],
-        script: "Self-validation example: “I notice uncertainty and activation. I can tolerate not knowing what another person feels until they communicate it directly.”",
+        script: "Self-validation example: "I notice uncertainty and activation. I can tolerate not knowing what another person feels until they communicate it directly."",
         checks: ["Map one full anxiety sequence", "Practice grounding or self-validation 1", "Practice 2", "Practice 3"]
       },
       {
         focus: "Emotional responsibility versus actual responsibility",
         session: "Identify where responsibility is absorbed for a spouse, students, children, coworkers, or other adults. Separate appropriate support from emotional management.",
-        homework: "Use the prompt: “Is this mine to solve, support, or release?”",
+        skillBuilding: {
+          what: "Use the responsibility prompt each time guilt or over-involvement appears",
+          how: "Ask yourself: Is this mine to solve, support, or release?",
+          why: "To separate genuine responsibility from emotional labor you have absorbed from others."
+        },
+        homework: "Use the prompt: "Is this mine to solve, support, or release?"",
         prompts: [
           "Whose emotion or outcome did you feel responsible for?",
           "What was your actual role or obligation?",
           "What changed when responsibility was categorized as solve, support, or release?"
         ],
-        script: "Clinical decision prompt: “Is this mine to solve, support, or release?”",
+        script: "Clinical decision prompt: "Is this mine to solve, support, or release?"",
         checks: ["Identify one responsibility that is yours to solve", "Identify one situation to support without taking over", "Identify one responsibility to release"]
       },
       {
         focus: "Distress tolerance and emotion regulation",
         session: "Practice lowering emotional intensity before problem-solving, reassurance-seeking, confrontation, withdrawal, or overfunctioning.",
+        skillBuilding: {
+          what: "Use one regulation skill during a stressful moment and document the outcome",
+          how: "Pause → orient to the present → regulate the body → identify the problem → choose a response",
+          why: "To lower emotional intensity before reacting, explaining, or problem-solving."
+        },
         homework: "Use one regulation skill during a stressful moment and document the outcome.",
         prompts: [
           "How did you know emotional intensity was increasing?",
@@ -589,66 +673,96 @@
       {
         focus: "Burnout recovery and emotional boundaries",
         session: "Assess depletion, role saturation, and emotional carryover. Develop a work-to-home transition plan that remains usable during summer or schedule changes.",
+        skillBuilding: {
+          what: "Practice one containment statement daily",
+          how: "When a responsibility keeps occupying your attention after it ends, say the containment statement and do something that marks the transition",
+          why: "To create clear role boundaries and protect recovery time."
+        },
         homework: "Practice one containment statement daily.",
         prompts: [
           "What demand continued occupying attention after the responsibility ended?",
           "Which signals indicate depletion rather than anxiety alone?",
           "What transition behavior would mark the end of one role and the beginning of another?"
         ],
-        script: "Containment statement: “This requires attention, but it does not require continuous attention. I will return to it at the planned time.”",
+        script: "Containment statement: "This requires attention, but it does not require continuous attention. I will return to it at the planned time."",
         checks: ["Define a work-to-home transition", "Use a containment statement on three days", "Protect one recovery period"]
       },
       {
         focus: "Marriage: direct requests",
-        session: "Practice requesting specific observable behaviors without overexplaining, apologizing, mind-reading, or attempting to manage the spouse’s emotional response.",
+        session: "Practice requesting specific observable behaviors without overexplaining, apologizing, mind-reading, or attempting to manage the spouse's emotional response.",
+        skillBuilding: {
+          what: "Make one direct request and observe the response without managing it",
+          how: "State the specific behavior, the timeframe, and ask for a yes or no — without adding apology or explanation",
+          why: "To practice communication that doesn't depend on guessing or managing someone else's response."
+        },
         homework: "Make one direct request and observe the response.",
         prompts: [
           "What specific behavior or action is being requested?",
           "Which explanations or apologies are unnecessary?",
           "What reaction belongs to the spouse rather than to the client to manage?"
         ],
-        script: "Direct request structure: “I am asking you to [specific behavior] by [time or situation]. Please tell me whether you can agree to that.”",
+        script: "Direct request structure: "I am asking you to [specific behavior] by [time or situation]. Please tell me whether you can agree to that."",
         checks: ["Write one specific request", "Make the request without overexplaining", "Observe the response without managing it"]
       },
       {
         focus: "Marriage: mutual hypervigilance cycle",
         session: "Map pursue/withdraw, defensiveness, shutdown, reassurance-seeking, and escalation patterns. Identify the earliest point where either partner can interrupt the sequence.",
+        skillBuilding: {
+          what: "Notice one occurrence of the cycle and pause before responding",
+          how: "Identify the pattern as it starts, then use the interruption statement and step away briefly",
+          why: "To break the cycle at the earliest point rather than after it has escalated."
+        },
         homework: "Notice one occurrence of the cycle and pause before responding.",
         prompts: [
           "What initiated the cycle?",
           "What did each person do next?",
           "Where was the earliest realistic interruption point?"
         ],
-        script: "Interruption statement: “I notice the pattern escalating. I am going to pause and return when I can communicate directly.”",
-        checks: ["Identify one cycle occurrence", "Name each person’s response", "Pause before continuing the interaction"]
+        script: "Interruption statement: "I notice the pattern escalating. I am going to pause and return when I can communicate directly."",
+        checks: ["Identify one cycle occurrence", "Name each person's response", "Pause before continuing the interaction"]
       },
       {
         focus: "Default parent role and household load",
         session: "Clarify practical responsibilities, anticipatory labor, monitoring, and emotional management. Identify what needs to be shared, delegated, or renegotiated.",
+        skillBuilding: {
+          what: "Select one task or mental-load responsibility to share, delegate, or renegotiate",
+          how: "Define what full ownership includes — planning, follow-through, and noticing — then have the conversation",
+          why: "To address the structural imbalance that creates ongoing depletion."
+        },
         homework: "Select one task or mental-load responsibility to share, delegate, or renegotiate.",
         prompts: [
           "Which invisible or anticipatory tasks are being carried?",
           "What would shared ownership require beyond occasional help?",
           "Which responsibility can be transferred with clear expectations?"
         ],
-        script: "Renegotiation statement: “I need shared ownership of [responsibility], including planning, follow-through, and noticing when it needs attention.”",
+        script: "Renegotiation statement: "I need shared ownership of [responsibility], including planning, follow-through, and noticing when it needs attention."",
         checks: ["Identify one mental-load item", "Define what full ownership includes", "Share, delegate, or renegotiate the item"]
       },
       {
         focus: "Trauma-informed self-compassion",
         session: "Connect childhood emotional monitoring and threat detection to current patterns without self-blame. Practice responding to guilt and hypervigilance as learned protective responses.",
+        skillBuilding: {
+          what: "Write one compassionate reframe after a guilt trigger",
+          how: "After noticing guilt, connect the response to the earlier environment where monitoring was adaptive, then write a present-tense reframe",
+          why: "To reduce self-blame and respond to patterns with understanding rather than shame."
+        },
         homework: "Write or reflect on one compassionate reframe after a guilt trigger.",
         prompts: [
           "What earlier environment made emotional monitoring adaptive?",
           "How is that response being activated in the present?",
           "What present-day information changes the interpretation?"
         ],
-        script: "Compassionate reframe: “This response developed for a reason. I can acknowledge its protective purpose and choose a response based on the present situation.”",
+        script: "Compassionate reframe: "This response developed for a reason. I can acknowledge its protective purpose and choose a response based on the present situation."",
         checks: ["Identify one guilt or monitoring trigger", "Name the learned protective response", "Write one compassionate reframe"]
       },
       {
         focus: "Review progress and next treatment phase",
         session: "Evaluate progress in anxiety, boundaries, marital communication, emotional responsibility, parenting load, and burnout. Select the next treatment focus.",
+        skillBuilding: {
+          what: "Create a maintenance plan with three skills to continue",
+          how: "Review which interventions were most reliable and write when and how you will use each one",
+          why: "To sustain progress with a specific plan that fits your real life — not just insight from sessions."
+        },
         homework: "Create a maintenance plan with three skills to continue.",
         prompts: [
           "Which symptoms or patterns have changed in frequency, intensity, or duration?",
@@ -660,26 +774,83 @@
     ];
 
     const RATING_FIELDS = [
-      ["anxiety", "Anxiety and hypervigilance"],
-      ["overload", "Emotional overload"],
-      ["responsibility", "Guilt and excessive responsibility"],
-      ["burnout", "Burnout or depletion"],
-      ["maritalTension", "Marital tension"],
-      ["parentingLoad", "Parenting or household load"]
+      ["anxiety", "Anxiety and Hypervigilance"],
+      ["overload", "Emotional Overload"],
+      ["responsibility", "Guilt and Excessive Responsibility"],
+      ["burnout", "Burnout or Depletion"],
+      ["maritalTension", "Marital Tension"],
+      ["parentingLoad", "Parenting or Household Load"]
     ];
 
+    const RATING_DEFINITIONS = {
+      anxiety: [
+        "",
+        "Rarely experiences anxiety or emotional monitoring.",
+        "Occasional anxiety with minimal impact on daily functioning.",
+        "Ongoing with occasional interference with relaxation and emotional regulation.",
+        "Frequent anxiety and hypervigilance that regularly affect mood, focus, or relationships.",
+        "Persistent anxiety and emotional scanning that significantly affect daily functioning.",
+        "Near-constant anxiety and hypervigilance causing substantial distress and impairment."
+      ],
+      overload: [
+        "",
+        "Rarely feels emotionally overwhelmed.",
+        "Occasional overwhelm that resolves quickly.",
+        "Periodic emotional overload with manageable impact on functioning.",
+        "Frequent overwhelm that interferes with coping and daily responsibilities.",
+        "Significant emotional overload that regularly impairs functioning.",
+        "Constant emotional overload resulting in substantial distress and inability to cope effectively."
+      ],
+      responsibility: [
+        "",
+        "Rarely feels responsible for others' emotions or outcomes.",
+        "Occasional guilt or over-responsibility with little impact.",
+        "Recurring guilt and responsibility-taking that occasionally affect emotional well-being.",
+        "Frequent guilt and over-responsibility that influence decisions and relationships.",
+        "Persistent guilt and responsibility for others that significantly affect functioning.",
+        "Constant guilt and excessive responsibility causing major distress and impairment."
+      ],
+      burnout: [
+        "",
+        "Generally feels energized and emotionally replenished.",
+        "Occasional fatigue or depletion that resolves with rest.",
+        "Ongoing fatigue with occasional impact on motivation or emotional availability.",
+        "Frequent exhaustion that interferes with daily functioning and recovery.",
+        "Significant depletion affecting performance, relationships, and self-care.",
+        "Chronic burnout with substantial impairment across multiple areas of life."
+      ],
+      maritalTension: [
+        "",
+        "Relationship feels generally connected and stable.",
+        "Occasional tension that resolves without significant distress.",
+        "Recurring tension with occasional impact on connection and communication.",
+        "Frequent conflict, disconnection, or unresolved concerns affecting the relationship.",
+        "Significant marital strain causing ongoing distress and relationship impairment.",
+        "Persistent conflict or disconnection causing major relational distress."
+      ],
+      parentingLoad: [
+        "",
+        "Responsibilities feel manageable and balanced.",
+        "Occasional stress related to parenting or household demands.",
+        "Ongoing responsibilities occasionally contribute to stress or overwhelm.",
+        "Frequent strain from parenting or household management affecting well-being.",
+        "Significant burden from parenting or household responsibilities causing regular distress.",
+        "Responsibilities feel overwhelming and substantially impair functioning."
+      ]
+    };
+
     const SKILLS = [
-      "Grounding or orienting",
-      "Paced breathing",
-      "Self-validation",
-      "Distress-tolerance pause",
-      "Containment statement",
-      "Direct request",
-      "Responsibility check: solve, support, or release",
-      "Boundary statement",
-      "Delegation or renegotiation",
-      "Compassionate reframe",
-      "No skill used"
+      { name: "Grounding or orienting", url: "https://whattodo-skills.github.io/skills/Calm_Coping_Tool.html" },
+      { name: "Paced breathing", url: "https://whattodo-skills.github.io/skills/Deep_Breathing_Coping_Practice.html" },
+      { name: "Self-validation", url: "https://whattodo-skills.github.io/skills/Inner_Critic_Focus_Practice.html" },
+      { name: "Distress-tolerance pause", url: "https://whattodo-skills.github.io/skills/Ride_The_Wave_Coping_Practice.html" },
+      { name: "Containment statement", url: "https://whattodo-skills.github.io/skills/the-stop-skill.html" },
+      { name: "Direct request", url: "https://whattodo-skills.github.io/skills/Hard_Conversations_Connecting_Practice.html" },
+      { name: "Responsibility check: solve, support, or release", url: "https://whattodo-skills.github.io/skills/Observe_Notice_Before_You_React_Focus_Practice.html" },
+      { name: "Boundary statement", url: "https://whattodo-skills.github.io/skills/Healthy_Boundaries_Connecting_Practice.html" },
+      { name: "Delegation or renegotiation", url: "https://whattodo-skills.github.io/skills/Say_No_Without_Guilt_Connecting_Practice.html" },
+      { name: "Compassionate reframe", url: "https://whattodo-skills.github.io/skills/Check_The_Story_Feelings_Practice.html" },
+      { name: "No skill used", url: "" }
     ];
 
     const state = {
@@ -729,18 +900,16 @@
       months.forEach((name, index) => $("dobMonth").add(new Option(name, String(index + 1).padStart(2, "0"))));
       for (let day = 1; day <= 31; day++) $("dobDay").add(new Option(String(day), String(day).padStart(2, "0")));
       const year = new Date().getFullYear();
-      for (let value = year; value >= year - 110; value--) $("dobYear").add(new Option(String(value), String(value)));
+      for (let value = year - 18; value >= year - 100; value--) $("dobYear").add(new Option(String(value), String(value)));
     }
 
     function identityFromForm() {
-      const firstName = $("firstName").value.trim();
-      const lastName = $("lastName").value.trim();
       const month = $("dobMonth").value;
       const day = $("dobDay").value;
       const year = $("dobYear").value;
       return {
-        firstName,
-        lastName,
+        firstName: $("firstName").value.trim(),
+        lastName: $("lastName").value.trim(),
         dateOfBirth: month && day && year ? `${year}-${month}-${day}` : ""
       };
     }
@@ -772,6 +941,12 @@
       $("currentWeekStat").textContent = currentWeek;
       $("completedStat").textContent = completed;
       $("checkinStat").textContent = state.checkins.length;
+
+      const recentAvg = state.checkins.length
+        ? averageRatings(state.checkins[state.checkins.length - 1]).toFixed(1)
+        : "—";
+      $("avgSeverityStat").textContent = recentAvg;
+
       $("currentWeekTitle").textContent = WEEK_DATA[currentWeek - 1].focus;
       $("currentWeekSummary").textContent = WEEK_DATA[currentWeek - 1].session;
     }
@@ -782,7 +957,7 @@
         const saved = state.weeks[number] || {};
         return `<button class="week-card ${number === Number(state.profile.currentWeek) ? "current" : ""} ${saved.complete ? "complete" : ""}" data-week="${number}">
           <span class="week-number">${saved.complete ? "✓" : number}</span>
-          <span><strong>${escapeHtml(week.focus)}</strong><small>${escapeHtml(week.homework)}</small></span>
+          <span><strong>${escapeHtml(week.focus)}</strong><small>${escapeHtml(week.skillBuilding.what)}</small></span>
           <span class="arrow">→</span>
         </button>`;
       }).join("");
@@ -797,9 +972,15 @@
       const saved = state.weeks[number] || {};
       $("weekNumber").textContent = number;
       $("weekTitle").textContent = week.focus;
-      $("weekFocus").textContent = `Week ${number}`;
       $("weekSession").textContent = week.session;
-      $("weekHomework").textContent = week.homework;
+
+      const sb = week.skillBuilding;
+      $("weekSkillBuilding").innerHTML = `
+        <div class="skill-building-row"><span class="label">What</span><span class="value">${escapeHtml(sb.what)}</span></div>
+        <div class="skill-building-row"><span class="label">How</span><span class="value">${escapeHtml(sb.how)}</span></div>
+        <div class="skill-building-row"><span class="label">Why</span><span class="value">${escapeHtml(sb.why)}</span></div>
+      `;
+
       $("weekPrompts").innerHTML = week.prompts.map((prompt, index) => `
         <div class="field">
           <label for="weekPrompt${index}">${escapeHtml(prompt)}</label>
@@ -835,9 +1016,12 @@
         <div class="rating-row">
           <label>${escapeHtml(label)} <span class="required">*</span></label>
           <div class="rating-buttons" data-rating="${key}">
-            ${[1,2,3,4,5,6].map(value => `<button type="button" class="rating-button" data-rating-key="${key}" data-rating-value="${value}">${value}</button>`).join("")}
+            ${[1,2,3,4,5,6].map(value => {
+              const levelLabel = ["","Minimal","Low","Mild","Moderate","High","Severe"][value];
+              return `<button type="button" class="rating-button" data-rating-key="${key}" data-rating-value="${value}" title="${value} — ${levelLabel}">${value}</button>`;
+            }).join("")}
           </div>
-          <div class="rating-description" id="${key}Description">Select a rating.</div>
+          <div class="rating-description" id="${key}Description">Select a rating to see its definition.</div>
         </div>
       `).join("");
       document.querySelectorAll("[data-rating-key]").forEach(button => {
@@ -847,28 +1031,34 @@
           document.querySelectorAll(`[data-rating-key="${key}"]`).forEach(item => {
             item.classList.toggle("selected", item === button);
           });
-          $(`${key}Description`).textContent = `${ratings[key]} — ${["","Minimal","Low","Mild","Moderate","High","Severe"][ratings[key]]}`;
+          const level = ratings[key];
+          const levelLabel = ["","Minimal","Low","Mild","Moderate","High","Severe"][level];
+          const definition = RATING_DEFINITIONS[key][level] || "";
+          $(`${key}Description`).textContent = `${level} — ${levelLabel}: ${definition}`;
           updateTrackerAvailability();
         });
       });
     }
 
     function renderSkills(selected = []) {
-      $("skillOptions").innerHTML = SKILLS.map((skill, index) => `
-        <label class="skill-option">
-          <input type="checkbox" data-skill="${index}" ${selected.includes(skill) ? "checked" : ""}>
-          <span>${escapeHtml(skill)}</span>
-        </label>
-      `).join("");
+      $("skillOptions").innerHTML = SKILLS.map((skill, index) => {
+        const nameHtml = skill.url
+          ? `<a href="${escapeHtml(skill.url)}" target="_blank" rel="noopener">${escapeHtml(skill.name)}</a>`
+          : `<span>${escapeHtml(skill.name)}</span>`;
+        return `<label class="skill-option">
+          <input type="checkbox" data-skill="${index}" ${selected.includes(skill.name) ? "checked" : ""}>
+          ${nameHtml}
+        </label>`;
+      }).join("");
     }
 
     function updateTrackerAvailability() {
       const completeRatings = RATING_FIELDS.every(([key]) => Number(ratings[key]) >= 1);
-      const ready = completeRatings && Boolean($("entryDate").value && $("triggerSituation").value.trim());
+      const ready = completeRatings && Boolean($("entryDate").value);
       $("saveCheckinButton").disabled = !ready;
       $("trackerStatus").textContent = ready
-        ? "Required information complete."
-        : "Select all six ratings and complete the trigger or situation.";
+        ? "Ready to save."
+        : "Select all six ratings to continue.";
       $("trackerStatus").className = ready ? "status success" : "status";
     }
 
@@ -881,7 +1071,7 @@
         behavioralResponse: $("behavioralResponse").value.trim(),
         outcome: $("outcome").value.trim(),
         sessionDiscussion: $("sessionDiscussion").value.trim(),
-        skillsUsed: [...document.querySelectorAll("[data-skill]:checked")].map(input => SKILLS[Number(input.dataset.skill)]),
+        skillsUsed: [...document.querySelectorAll("[data-skill]:checked")].map(input => SKILLS[Number(input.dataset.skill)].name),
         clientTimeZone: Intl.DateTimeFormat().resolvedOptions().timeZone || ""
       };
       RATING_FIELDS.forEach(([key]) => { checkin[key] = Number(ratings[key]); });
@@ -894,7 +1084,7 @@
       $("trackerForm").reset();
       $("entryDate").value = new Date().toISOString().slice(0,10);
       document.querySelectorAll(".rating-button").forEach(button => button.classList.remove("selected"));
-      RATING_FIELDS.forEach(([key]) => { $(`${key}Description`).textContent = "Select a rating."; });
+      RATING_FIELDS.forEach(([key]) => { $(`${key}Description`).textContent = "Select a rating to see its definition."; });
       renderSkills();
       updateTrackerAvailability();
     }
@@ -907,7 +1097,10 @@
         document.querySelectorAll(`[data-rating-key="${key}"]`).forEach(button => {
           button.classList.toggle("selected", Number(button.dataset.ratingValue) === Number(item[key]));
         });
-        $(`${key}Description`).textContent = `${item[key]} — ${["","Minimal","Low","Mild","Moderate","High","Severe"][item[key]]}`;
+        const level = item[key];
+        const levelLabel = ["","Minimal","Low","Mild","Moderate","High","Severe"][level];
+        const definition = RATING_DEFINITIONS[key][level] || "";
+        $(`${key}Description`).textContent = `${level} — ${levelLabel}: ${definition}`;
       });
       ["triggerSituation","bodyCues","automaticThought","behavioralResponse","outcome","sessionDiscussion"].forEach(key => {
         $(key).value = item[key] || "";
@@ -998,7 +1191,7 @@
       }
       if (message.type === "CLINICAL_TREATMENT_SAVE_RESULT") {
         if (message.action === "week") {
-          $("weekStatus").textContent = message.ok ? "Week saved." : (message.reason || "Unable to save week.");
+          $("weekStatus").textContent = message.ok ? "Saved." : (message.reason || "Unable to save week.");
           $("weekStatus").className = message.ok ? "status success" : "status error";
         }
         if (message.action === "checkin") {
@@ -1023,12 +1216,13 @@
       $("identityStatus").textContent = "Loading treatment records…";
       post({ type: "CLINICAL_TREATMENT_LOAD", identity: state.identity });
     });
-    ["firstName","lastName","dobMonth","dobDay","dobYear"].forEach(id => $(id).addEventListener("input", updateIdentityAvailability));
+    ["firstName","lastName"].forEach(id => $(id).addEventListener("input", updateIdentityAvailability));
     ["dobMonth","dobDay","dobYear"].forEach(id => $(id).addEventListener("change", updateIdentityAvailability));
 
     document.querySelectorAll(".nav button").forEach(button => button.addEventListener("click", () => showView(button.dataset.view)));
     document.querySelectorAll("[data-open-view]").forEach(button => button.addEventListener("click", () => showView(button.dataset.openView)));
     $("continueWeekButton").addEventListener("click", () => openWeek(Number(state.profile.currentWeek || 1)));
+    $("goToTrackerButton").addEventListener("click", () => showView("tracker"));
 
     $("saveWeekButton").addEventListener("click", () => {
       state.weeks[activeWeek] = weekFormData();
@@ -1065,6 +1259,26 @@
       const item = state.checkins.find(entry => entry.date === editingDate) || state.checkins[state.checkins.length - 1];
       if (item) editCheckin(item);
     });
+
+    $("testModeButton").addEventListener("click", () => {
+      const identity = identityFromForm();
+      state.identity = identity.firstName ? identity : { firstName: "Preview", lastName: "Mode", dateOfBirth: "2000-01-01" };
+      applyLoadedState({ profile: { currentWeek: 1 }, weeks: {}, checkins: [] });
+    });
+
+    // When not embedded in Wix, skip identity screen and load immediately
+    const inWix = window !== window.parent;
+    if (!inWix) {
+      state.identity = { firstName: "Preview", lastName: "Mode", dateOfBirth: "" };
+      applyLoadedState({ profile: { currentWeek: 1 }, weeks: {}, checkins: [] });
+    } else {
+      // Show test mode fallback button if Wix takes too long
+      window.setTimeout(() => {
+        if (!$("identityScreen").classList.contains("hidden")) {
+          $("testModeRow").style.display = "block";
+        }
+      }, 3000);
+    }
 
     initializeDob();
     renderRatings();
