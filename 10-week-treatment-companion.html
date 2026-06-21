@@ -841,16 +841,16 @@
     };
 
     const SKILLS = [
-      { name: "Grounding or orienting", url: "https://whattodo-skills.github.io/skills/Calm_Coping_Tool.html" },
-      { name: "Paced breathing", url: "https://whattodo-skills.github.io/skills/Deep_Breathing_Coping_Practice.html" },
-      { name: "Self-validation", url: "https://whattodo-skills.github.io/skills/Inner_Critic_Focus_Practice.html" },
-      { name: "Distress-tolerance pause", url: "https://whattodo-skills.github.io/skills/Ride_The_Wave_Coping_Practice.html" },
-      { name: "Containment statement", url: "https://whattodo-skills.github.io/skills/the-stop-skill.html" },
-      { name: "Direct request", url: "https://whattodo-skills.github.io/skills/Hard_Conversations_Connecting_Practice.html" },
-      { name: "Responsibility check: solve, support, or release", url: "https://whattodo-skills.github.io/skills/Observe_Notice_Before_You_React_Focus_Practice.html" },
-      { name: "Boundary statement", url: "https://whattodo-skills.github.io/skills/Healthy_Boundaries_Connecting_Practice.html" },
-      { name: "Delegation or renegotiation", url: "https://whattodo-skills.github.io/skills/Say_No_Without_Guilt_Connecting_Practice.html" },
-      { name: "Compassionate reframe", url: "https://whattodo-skills.github.io/skills/Check_The_Story_Feelings_Practice.html" },
+      { name: "Calm Tool", legacyName: "Grounding or orienting", url: "https://whattodo-skills.github.io/skills/Calm_Coping_Tool.html" },
+      { name: "Deep Breathing Practice", legacyName: "Paced breathing", url: "https://whattodo-skills.github.io/skills/Deep_Breathing_Coping_Practice.html" },
+      { name: "Inner Critic Practice", legacyName: "Self-validation", url: "https://whattodo-skills.github.io/skills/Inner_Critic_Focus_Practice.html" },
+      { name: "Ride the Wave Practice", legacyName: "Distress-tolerance pause", url: "https://whattodo-skills.github.io/skills/Ride_The_Wave_Coping_Practice.html" },
+      { name: "The STOP Skill", legacyName: "Containment statement", url: "https://whattodo-skills.github.io/skills/the-stop-skill.html" },
+      { name: "Hard Conversations Practice", legacyName: "Direct request", url: "https://whattodo-skills.github.io/skills/Hard_Conversations_Connecting_Practice.html" },
+      { name: "Observe: Notice Before You React", legacyName: "Responsibility check: solve, support, or release", url: "https://whattodo-skills.github.io/skills/Observe_Notice_Before_You_React_Focus_Practice.html" },
+      { name: "Healthy Boundaries Practice", legacyName: "Boundary statement", url: "https://whattodo-skills.github.io/skills/Healthy_Boundaries_Connecting_Practice.html" },
+      { name: "Say No Without Guilt Practice", legacyName: "Delegation or renegotiation", url: "https://whattodo-skills.github.io/skills/Say_No_Without_Guilt_Connecting_Practice.html" },
+      { name: "Check the Story", legacyName: "Compassionate reframe", url: "https://whattodo-skills.github.io/skills/Check_The_Story_Feelings_Practice.html" },
       { name: "No skill used", url: "" }
     ];
 
@@ -1047,7 +1047,7 @@
           ? `<a href="${escapeHtml(skill.url)}" target="_blank" rel="noopener">${escapeHtml(skill.name)}</a>`
           : `<span>${escapeHtml(skill.name)}</span>`;
         return `<label class="skill-option">
-          <input type="checkbox" data-skill="${index}" ${selected.includes(skill.name) ? "checked" : ""}>
+          <input type="checkbox" data-skill="${index}" ${selected.includes(skill.name) || selected.includes(skill.legacyName) ? "checked" : ""}>
           ${nameHtml}
         </label>`;
       }).join("");
