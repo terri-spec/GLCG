@@ -90,7 +90,23 @@ textarea { display:block; width:100%; min-height:100px; border:1px solid var(--l
 .pause button { margin:.4rem; }
 .compare-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
 .compare-grid .career-card { display:block; }
-.density-quick .supporting,.density-quick .detail-only,.density-quick .ut p,.density-quick .job ul,.density-quick .reassure { display:none; }
+.fit-card { max-width:880px; margin:2.5rem auto 0; padding:1.5rem; background:var(--sage2); border:1px solid var(--line); border-radius:20px; }
+.fit-card > p { color:var(--muted); }
+.fit-columns { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+.fit-columns h3 { margin-bottom:.4rem; }
+.fit-columns ul { margin-top:.4rem; padding-left:1.2rem; }
+.ending-actions { display:flex; gap:.6rem; flex-wrap:wrap; margin-top:1rem; }
+.preview-ending { margin-top:2rem; }
+.compare-picker { display:flex; gap:.6rem; flex-wrap:wrap; margin:2rem 0; }
+.compare-picker label { display:flex; align-items:center; gap:.45rem; border:1px solid var(--line); border-radius:999px; padding:.7rem 1rem; background:var(--card); }
+.table-wrap { overflow-x:auto; border:1px solid var(--line); border-radius:18px; background:var(--card); }
+table { width:100%; border-collapse:collapse; min-width:760px; }
+th,td { padding:1rem; text-align:left; vertical-align:top; border-bottom:1px solid var(--line); }
+thead th { background:var(--sage2); }
+tbody th { width:170px; }
+.save-confirmation { padding:1rem; background:var(--sage2); border-left:4px solid var(--green); }
+.load-note { width:100%; margin:.4rem 0 0; color:var(--muted); font-size:.9rem; }
+.density-quick .supporting,.density-quick .detail-only,.density-quick .ut p,.density-quick .reassure { display:none; }
 .density-detail .supporting,.density-detail .job p,.density-detail .timeline p { font-size:1.08rem; }
 
 @media (max-width:760px) {
@@ -98,7 +114,7 @@ textarea { display:block; width:100%; min-height:100px; border:1px solid var(--l
   .density-control { justify-content:flex-start; }
   .page { padding-top:3rem; }
   .hero { padding-top:5rem; }
-  .door-grid,.intro,.jobs,.day,.reality,.compare-grid { grid-template-columns:1fr; }
+  .door-grid,.intro,.jobs,.day,.reality,.compare-grid,.fit-columns { grid-template-columns:1fr; }
   .career-card { align-items:stretch; flex-direction:column; }
   .illustration { min-height:230px; order:2; }
   .stepper { align-items:flex-start; flex-direction:column; overflow:hidden; }
