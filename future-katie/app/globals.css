@@ -31,6 +31,10 @@ p { line-height:1.65; }
 .door span { font-size:1.4rem; font-weight:700; margin-bottom:.5rem; }
 .door small { color:var(--muted); font-size:1rem; line-height:1.45; }
 .career-list,.jobs,.compare-grid { display:grid; gap:1rem; margin-top:2.5rem; }
+.career-choice-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+.career-choice-grid .career-card { align-items:stretch; flex-direction:column; }
+.career-choice-grid .actions { margin-top:auto; }
+.job-preview { font-size:.92rem; }
 .career-card,.job,.notice,.reality article { background:var(--card); border:1px solid var(--line); border-radius:20px; padding:1.5rem; }
 .career-card { display:flex; align-items:center; justify-content:space-between; gap:2rem; }
 .career-card p { color:var(--muted); }
@@ -65,6 +69,10 @@ summary { cursor:pointer; font-weight:700; }
 .job button { margin-top:auto; align-self:flex-start; }
 .job button[aria-pressed="true"] { background:var(--sage); border-color:var(--green); }
 .day { display:grid; grid-template-columns:repeat(2,1fr); gap:1rem; }
+.environment-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1rem; margin:2rem 0; }
+.environment-card { padding:1.4rem; border:1px solid var(--line); border-radius:18px; background:var(--card); }
+.environment-card h2 { font-size:1.25rem; }
+.section-title { margin-top:3rem; }
 .day article { padding:1.4rem 0; border-top:2px solid var(--green); }
 .day span { color:var(--green); font-weight:700; }
 .game fieldset,.reflection fieldset { border:0; padding:0; margin:2rem 0; }
@@ -107,7 +115,7 @@ tbody th { width:170px; }
   .topbar { align-items:flex-start; gap:1rem; } .topbar nav { flex-wrap:wrap; justify-content:flex-end; }
   .page { padding-top:3rem; }
   .hero { padding-top:5rem; }
-  .door-grid,.intro,.jobs,.day,.reality,.compare-grid,.fit-columns { grid-template-columns:1fr; }
+  .door-grid,.intro,.jobs,.day,.reality,.compare-grid,.fit-columns,.career-choice-grid,.environment-grid { grid-template-columns:1fr; }
   .career-card { align-items:stretch; flex-direction:column; }
   .illustration { min-height:230px; order:2; }
   .stepper { align-items:flex-start; flex-direction:column; overflow:hidden; }
