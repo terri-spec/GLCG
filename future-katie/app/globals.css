@@ -41,16 +41,15 @@ p { line-height:1.65; }
 .actions { display:flex; gap:.5rem; flex-direction:column; min-width:190px; }
 .world { padding-top:2rem; }
 .world-head { display:flex; justify-content:space-between; align-items:center; }
-.saved { color:var(--green); font-size:.9rem; }
-.stepper { margin:1rem 0 3rem; padding:1rem 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center; gap:1rem; }
+.stepper { margin:1rem 0 3rem; padding:1rem 0; border-bottom:1px solid var(--line); display:grid; gap:.7rem; }
 .stepper span { font-weight:700; }
-.stepper div { display:flex; gap:.4rem; }
-.stepper button { width:34px; height:34px; padding:0; }
-.stepper button[aria-current="step"] { background:var(--green); color:white; border-color:var(--green); }
+.stepper .step-progress { width:100%; height:7px; border-radius:999px; background:var(--sage); overflow:hidden; }
+.stepper .step-progress i { display:block; height:100%; border-radius:inherit; background:var(--green); transition:width .2s ease; }
 .stage { max-width:880px; margin:auto; }
 .stage h1 { font-size:clamp(2rem,5vw,3.7rem); }
 .intro { display:grid; grid-template-columns:1fr 1.2fr; align-items:center; gap:4rem; }
-.illustration { min-height:350px; border-radius:45% 55% 50% 40%; background:var(--sage); display:grid; place-items:center; position:relative; overflow:hidden; }
+.career-scene { min-height:350px; border-radius:32px; background:var(--sage); display:grid; place-items:center; position:relative; overflow:hidden; background-size:cover; background-position:center; }
+.career-scene img { width:100%; height:100%; min-height:350px; object-fit:cover; display:block; }
 .pulse { font-size:8rem; color:var(--green); transform:rotate(-6deg); }
 .device { position:absolute; bottom:2.5rem; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:.7rem 1.2rem; text-transform:uppercase; letter-spacing:.08em; font-size:.7rem; }
 .mission { font-size:1.35rem; font-weight:650; }
@@ -117,9 +116,7 @@ tbody th { width:170px; }
   .hero { padding-top:5rem; }
   .door-grid,.intro,.jobs,.day,.reality,.compare-grid,.fit-columns,.career-choice-grid,.environment-grid { grid-template-columns:1fr; }
   .career-card { align-items:stretch; flex-direction:column; }
-  .illustration { min-height:230px; order:2; }
-  .stepper { align-items:flex-start; flex-direction:column; overflow:hidden; }
-  .stepper div { width:100%; justify-content:space-between; }
+  .career-scene { min-height:300px; order:2; }
   .scale { grid-template-columns:1fr; }
   .chips,.dispositions { grid-template-columns:1fr; }
   .work-facts > div { grid-template-columns:1fr; gap:.35rem; }
