@@ -13,9 +13,6 @@ button:disabled { opacity:.45; cursor:not-allowed; }
 .topbar { max-width:1120px; margin:auto; min-height:76px; display:flex; align-items:center; justify-content:space-between; padding:1rem 1.5rem; border-bottom:1px solid var(--line); }
 .topbar nav { display:flex; gap:.5rem; }
 .brand { border:0; background:none; padding:0; border-radius:0; font-size:1.25rem; font-weight:700; letter-spacing:-.02em; }
-.density-control { max-width:1120px; margin:1rem auto 0; padding:0 1.5rem; display:flex; align-items:center; justify-content:flex-end; gap:.35rem; color:var(--muted); font-size:.9rem; flex-wrap:wrap; }
-.density-control button { padding:.45rem .7rem; background:transparent; }
-.density-control button[aria-pressed="true"] { background:var(--green); color:white; border-color:var(--green); }
 .page { max-width:1040px; margin:0 auto; padding:5rem 1.5rem 7rem; }
 .hero { max-width:820px; text-align:center; padding-top:8rem; }
 h1 { font-size:clamp(2.3rem,6vw,4.8rem); line-height:1.04; letter-spacing:-.045em; margin:.35rem 0 1.25rem; font-weight:650; }
@@ -105,13 +102,9 @@ th,td { padding:1rem; text-align:left; vertical-align:top; border-bottom:1px sol
 thead th { background:var(--sage2); }
 tbody th { width:170px; }
 .save-confirmation { padding:1rem; background:var(--sage2); border-left:4px solid var(--green); }
-.load-note { width:100%; margin:.4rem 0 0; color:var(--muted); font-size:.9rem; }
-.density-quick .supporting,.density-quick .detail-only,.density-quick .ut p,.density-quick .reassure { display:none; }
-.density-detail .supporting,.density-detail .job p,.density-detail .timeline p { font-size:1.08rem; }
 
 @media (max-width:760px) {
   .topbar { align-items:flex-start; gap:1rem; } .topbar nav { flex-wrap:wrap; justify-content:flex-end; }
-  .density-control { justify-content:flex-start; }
   .page { padding-top:3rem; }
   .hero { padding-top:5rem; }
   .door-grid,.intro,.jobs,.day,.reality,.compare-grid,.fit-columns { grid-template-columns:1fr; }
@@ -124,7 +117,7 @@ tbody th { width:170px; }
   .work-facts > div { grid-template-columns:1fr; gap:.35rem; }
 }
 @media print {
-  .topbar,.density-control,.checkpoint,.back,button { display:none !important; }
+  .topbar,.checkpoint,.back,button { display:none !important; }
   body { background:white; }
   .page { padding:1rem; max-width:none; }
   .career-card,.job,.notice,.reality article { break-inside:avoid; }
