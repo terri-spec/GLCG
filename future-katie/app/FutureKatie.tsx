@@ -71,11 +71,20 @@ export default function FutureKatie() {
   function saveCareerState(id: string, patch: Partial<CareerState>) {
     setProgress((p) => ({ ...p, careerStates: { ...p.careerStates, [id]: { ...(p.careerStates[id] || emptyState()), ...patch } } }));
   }
+  function clearAndStartOver() {
+    if (!window.confirm("Clear all saved career progress and answers on this device and start over?")) return;
+    localStorage.removeItem(STORE);
+    localStorage.removeItem(SESSION_STORE);
+    setProgress(initial);
+    setCareerId(undefined);
+    setCompareIds([]);
+    setView("home");
+  }
 
   return <main className="app">
     <header className="topbar">
       <button className="brand" onClick={() => setView("home")}>Future Katie</button>
-      <nav aria-label="Main navigation"><button onClick={() => setView("doors")}>Explore</button><button onClick={() => { setCompareIds(eligible.slice(0, 3).map((c) => c.id)); setView("compare"); }} disabled={!compareUnlocked}>Compare</button><button onClick={() => window.print()}>Print</button></nav>
+      <nav aria-label="Main navigation"><button onClick={() => setView("doors")}>Explore</button><button onClick={() => { setCompareIds(eligible.slice(0, 3).map((c) => c.id)); setView("compare"); }} disabled={!compareUnlocked}>Compare</button><button onClick={() => window.print()}>Print</button><button className="clear-start" onClick={clearAndStartOver}>Clear and start over</button></nav>
     </header>
     {view === "home" && <section className="hero page"><p className="eyebrow">A calm place to explore</p><h1>Try on a future before choosing one.</h1><p className="lead">Katie, explore what different careers actually feel like. There are no wrong answers, and nothing here chooses a career for you.</p><button className="primary" onClick={() => setView("doors")}>{progress.lastCareer ? "Explore another future" : "Start exploring"}</button>{progress.lastCareer && <button className="continue" onClick={() => openCareer(progress.lastCareer!)}>Continue exactly where I stopped in {careers.find((c) => c.id === progress.lastCareer)?.title}</button>}<p className="reassure">You can pause anytime. Your exact place and answers are saved on this device.</p></section>}
 
