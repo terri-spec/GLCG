@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hypomania Checklist (HCL-32-R1)</title>
+  <style>
+    :root{--navy:#14324c;--ink:#10283a;--teal:#0f6f7d;--foam:#eef5f7;--panel:#fff;--line:#bdd0d8;--muted:#5d7280;--gold:#c3922e;--red:#a83232;--shadow:0 14px 32px rgba(16,40,58,.12)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--foam);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.48}button,input,select{font:inherit}
+    .shell{width:min(980px,calc(100% - 28px));margin:18px auto 34px}.hero,.card,.result{background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow)}
+    .hero{padding:28px;background:linear-gradient(135deg,#fff 0%,#e6f2f5 100%);border-top:7px solid var(--teal)}.eyebrow{font-size:12px;font-weight:900;letter-spacing:.11em;text-transform:uppercase;color:var(--teal)}h1{margin:5px 0 8px;font-size:clamp(28px,5vw,43px);line-height:1.05}h2{margin:0 0 8px;font-size:22px}.hero p{max-width:760px;margin:0;color:var(--muted)}
+    .notice{margin-top:18px;padding:14px 16px;border-left:4px solid var(--gold);background:#fff9e9;border-radius:6px;font-size:14px}.notice strong{color:var(--navy)}
+    .progress-wrap{position:sticky;top:0;z-index:5;margin:14px 0;padding:12px 16px;background:rgba(20,50,76,.97);color:#fff;border-radius:10px;box-shadow:0 9px 24px rgba(16,40,58,.2)}.progress-row{display:flex;justify-content:space-between;gap:12px;font-size:13px;font-weight:800}.track{height:8px;margin-top:8px;background:rgba(255,255,255,.2);border-radius:999px;overflow:hidden}.fill{height:100%;width:0;background:#e8c46a;transition:width .2s ease}
+    form{display:grid;gap:14px;width:100%;min-width:0}.card{padding:22px;min-width:0;max-width:100%}.section-note{margin:0 0 18px;color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.field label,.field-title{display:block;margin-bottom:6px;font-size:13px;font-weight:800}.field input,.field select{width:100%;min-height:46px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:#fbfdfe;color:var(--ink)}
+    fieldset{min-width:0;margin:0;padding:0;border:0}.choice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.choice{position:relative}.choice input{position:absolute;opacity:0;pointer-events:none}.choice label{display:flex;align-items:flex-start;gap:9px;min-height:48px;padding:11px 12px;border:1px solid var(--line);border-radius:8px;background:#fbfdfe;cursor:pointer}.choice label:before{content:"";width:17px;height:17px;margin-top:1px;border:2px solid #88a4af;border-radius:50%;flex:0 0 auto}.choice input:checked+label{border-color:var(--teal);background:#e6f2f5;box-shadow:inset 0 0 0 1px var(--teal)}.choice input:checked+label:before{border:5px solid var(--teal);background:#fff}.choice input:focus-visible+label{outline:3px solid #d8b65d;outline-offset:2px}
+    .symptoms{display:grid;gap:8px}.symptom{display:grid;grid-template-columns:minmax(0,1fr) 94px 94px;align-items:stretch;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#fff}.symptom-text{padding:12px 14px}.symptom-text b{display:inline-block;width:30px;color:var(--teal)}.yn{position:relative}.yn input{position:absolute;opacity:0;pointer-events:none}.yn label{height:100%;min-height:48px;display:grid;place-items:center;border-left:1px solid var(--line);font-weight:800;cursor:pointer}.yn input:checked+label{background:var(--teal);color:#fff}.yn input:focus-visible+label{outline:3px solid #d8b65d;outline-offset:-3px}
+    .matrix{display:block;width:100%;max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}.matrix table{width:100%;min-width:700px;border-collapse:collapse}.matrix th,.matrix td{padding:10px;border-bottom:1px solid var(--line);text-align:center}.matrix th:first-child,.matrix td:first-child{text-align:left}.matrix input{width:18px;height:18px;accent-color:var(--teal)}
+    .conditional{display:none;margin-top:14px}.conditional.show{display:block}.error{display:none;margin:0;padding:13px 15px;border:1px solid #d9a6a6;border-radius:8px;background:#fff0ed;color:var(--red);font-weight:700}.error.show{display:block}.actions{display:flex;gap:10px;justify-content:flex-end}.primary,.secondary{min-height:48px;padding:11px 18px;border-radius:8px;font-weight:900;cursor:pointer}.primary{border:1px solid var(--navy);background:var(--navy);color:#fff}.secondary{border:1px solid var(--line);background:#fff;color:var(--navy)}.primary:disabled{opacity:.55;cursor:wait}
+    .result{display:none;padding:28px;text-align:center}.result.show{display:block}.score{width:118px;height:118px;margin:20px auto;display:grid;place-items:center;border:8px solid #d7e8ec;border-top-color:var(--teal);border-radius:50%;font-size:31px;font-weight:900;color:var(--navy)}.result p{max-width:700px;margin:8px auto;color:var(--muted)}.status{min-height:22px;margin-top:12px;font-weight:800;color:var(--teal)}
+    .attribution{margin:20px 8px 0;padding-top:16px;border-top:1px solid var(--line);color:#4e6472;font-size:12px;text-align:center}.required{color:var(--red)}
+    @media(max-width:680px){.shell{width:min(100% - 18px,980px);margin-top:9px}.hero,.card,.result{padding:18px}.grid,.choice-grid{grid-template-columns:1fr}.symptom{grid-template-columns:minmax(0,1fr) 64px 64px}.symptom-text{padding:11px 10px}.yn label{font-size:13px}.actions{flex-direction:column}.primary,.secondary{width:100%}}
+  </style>
+</head>
+<body>
+<main class="shell">
+  <header class="hero">
+    <div class="eyebrow">Great Lakes Counseling Group</div>
+    <h1>Hypomania Checklist (HCL-32-R1)</h1>
+    <p>This questionnaire asks about periods when your energy, activity, and mood were higher than usual. Answer from your own experience, independently of how you feel today.</p>
+    <div class="notice"><strong>Important:</strong> This is a screening questionnaire, not a diagnosis. A clinician must interpret the responses alongside your history and current circumstances. Great Lakes Counseling Group is not a crisis-management practice. If you are in immediate danger, call 911, call or text 988, or go to the nearest emergency room.</div>
+  </header>
+
+  <div class="progress-wrap" aria-label="Assessment progress">
+    <div class="progress-row"><span id="progressLabel">0 of 46 required responses</span><span id="progressPercent">0%</span></div>
+    <div class="track"><div class="fill" id="progressFill"></div></div>
+  </div>
+
+  <form id="assessment" novalidate>
+    <section class="card" aria-labelledby="personalHeading">
+      <h2 id="personalHeading">Personal details</h2>
+      <p class="section-note">Fields marked <span class="required">*</span> are required.</p>
+      <div class="grid">
+        <div class="field"><label for="firstName">First name <span class="required">*</span></label><input id="firstName" name="firstName" autocomplete="given-name" required></div>
+        <div class="field"><label for="lastName">Last name <span class="required">*</span></label><input id="lastName" name="lastName" autocomplete="family-name" required></div>
+        <div class="field"><label for="dateOfBirth">Date of birth <span class="required">*</span></label><input id="dateOfBirth" name="dateOfBirth" type="date" autocomplete="bday" required></div>
+        <div class="field"><label for="sex">Sex</label><select id="sex" name="sex"><option value="">Prefer not to answer</option><option value="female">Female</option><option value="male">Male</option><option value="another">Another description</option></select></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <fieldset><legend><h2>1. How are you feeling today compared with your usual state?</h2></legend><p class="section-note">Select one answer.</p><div class="choice-grid" id="todayChoices"></div></fieldset>
+    </section>
+
+    <section class="card">
+      <fieldset><legend><h2>2. How are you usually compared with other people?</h2></legend><p class="section-note">Compared with other people, my level of activity, energy, and mood...</p><div class="choice-grid" id="usualChoices"></div></fieldset>
+    </section>
+
+    <section class="card">
+      <fieldset><legend><h2>3. Remember a period when you were in a “high” state</h2></legend><p class="section-note">In such a state, answer Yes or No to every statement.</p><div class="symptoms" id="symptoms"></div></fieldset>
+    </section>
+
+    <section class="card">
+      <fieldset><legend><h2>4. Impact of your “highs” on your life</h2></legend><p class="section-note">Select one response in each row.</p><div class="matrix" id="impactMatrix"></div></fieldset>
+    </section>
+
+    <section class="card">
+      <fieldset><legend><h2>5. Other people’s reactions and comments</h2></legend><p class="section-note">How did people close to you react to or comment on your “highs”?</p><div class="choice-grid" id="reactionChoices"></div></fieldset>
+    </section>
+
+    <section class="card">
+      <fieldset><legend><h2>6. Length of your “highs,” on average</h2></legend><div class="choice-grid" id="lengthChoices"></div></fieldset>
+    </section>
+
+    <section class="card">
+      <fieldset><legend><h2>7. Have you experienced such “highs” in the past twelve months?</h2></legend><div class="choice-grid" id="recentChoices"></div></fieldset>
+      <div class="conditional" id="daysWrap"><div class="field"><label for="daysHigh">8. About how many days did you spend in “highs” during the last twelve months? <span class="required">*</span></label><input id="daysHigh" name="daysHigh" type="number" min="0" max="366" inputmode="numeric"></div></div>
+    </section>
+
+    <p class="error" id="error" role="alert"></p>
+    <div class="actions"><button class="secondary" id="resetButton" type="button">Start over</button><button class="primary" id="submitButton" type="submit">Submit assessment</button></div>
+  </form>
+
+  <section class="result" id="result" tabindex="-1" aria-live="polite">
+    <div class="eyebrow">Assessment complete</div><h2>Your responses are ready for clinician review.</h2><div class="score" id="score">0/32</div>
+    <p id="resultExplanation"></p><p>A screening score cannot confirm or rule out bipolar disorder. Your clinician will review your item responses, impact, duration, and history with you.</p>
+    <div class="status" id="saveStatus">Sending your responses...</div><button class="secondary" id="retakeButton" type="button">Retake assessment</button>
+  </section>
+
+  <footer class="attribution">The HCL-32-R1 was was developed by Jules Angst with the support of other colleagues: Angst et al. The HCL-32. Towards a self-assessment tool for hypomanic symptoms in outpatients. J Affect Disord 2005; 88, 217-233.</footer>
+</main>
+<script>
+  const SCREENING_REVIEW_THRESHOLD = 14;
+  const todayOptions = [["much_worse","Much worse than usual"],["worse","Worse than usual"],["little_worse","A little worse than usual"],["same","Neither better nor worse than usual"],["little_better","A little better than usual"],["better","Better than usual"],["much_better","Much better than usual"]];
+  const usualOptions = [["stable","...is always rather stable and even"],["higher","...is generally higher"],["lower","...is generally lower"],["ups_downs","...repeatedly shows periods of ups and downs"]];
+  const symptomItems = [
+    "I need less sleep","I feel more energetic and more active","I am more self-confident","I enjoy my work more","I am more sociable (make more phone calls, go out more)","I want to travel and do travel more","I tend to drive faster or take more risks when driving","I spend more/too much money","I take more risks in my daily life (in my work and/or other activities)","I am physically more active (sport etc.)","I plan more activities or projects","I have more ideas, I am more creative","I am less shy or inhibited","I wear more colourful and more extravagant clothes/make-up","I want to meet or actually do meet more people","I am more interested in sex, and/or have increased sexual desire","I am more flirtatious and/or am sexually more active","I talk more","I think faster","I make more jokes or puns when I am talking","I am more easily distracted","I engage in lots of new things","My thoughts jump from topic to topic","I do things more quickly and/or more easily","I am more impatient and/or get irritable more easily","I can be exhausting or irritating for others","I get into more quarrels","My mood is higher, more optimistic","I drink more coffee","I smoke more cigarettes","I drink more alcohol","I take more drugs (sedatives, anxiolytics, stimulants...)"
+  ];
+  const impactRows = [["family","Family life"],["social","Social life"],["work","Work"],["leisure","Leisure"]];
+  const impactOptions = [["both","Positive and negative"],["positive","Positive"],["negative","Negative"],["none","No impact"]];
+  const reactionOptions = [["positive","Positively (encouraging or supportive)"],["neutral","Neutral"],["negative","Negatively (concerned, annoyed, irritated, critical)"],["both","Positively and negatively"],["none","No reactions"]];
+  const lengthOptions = [["1_day","1 day"],["2_3_days","2-3 days"],["4_7_days","4-7 days"],["over_1_week","Longer than 1 week"],["over_1_month","Longer than 1 month"],["unknown","I can’t judge / don’t know"]];
+  const requiredGroups = ["todayState","usualState",...symptomItems.map((_,i)=>`item${i+1}`),...impactRows.map(x=>`impact_${x[0]}`),"reactions","highLength","highsPastYear"];
+
+  function radioChoices(target,name,options){document.getElementById(target).innerHTML=options.map(([value,label],i)=>`<div class="choice"><input type="radio" id="${name}_${i}" name="${name}" value="${value}"><label for="${name}_${i}">${label}</label></div>`).join("")}
+  radioChoices("todayChoices","todayState",todayOptions);radioChoices("usualChoices","usualState",usualOptions);radioChoices("reactionChoices","reactions",reactionOptions);radioChoices("lengthChoices","highLength",lengthOptions);radioChoices("recentChoices","highsPastYear",[["yes","Yes"],["no","No"]]);
+  document.getElementById("symptoms").innerHTML=symptomItems.map((text,i)=>`<div class="symptom"><div class="symptom-text"><b>${i+1}.</b>${text}</div><div class="yn"><input id="item${i+1}_yes" name="item${i+1}" value="yes" type="radio"><label for="item${i+1}_yes">Yes</label></div><div class="yn"><input id="item${i+1}_no" name="item${i+1}" value="no" type="radio"><label for="item${i+1}_no">No</label></div></div>`).join("");
+  document.getElementById("impactMatrix").innerHTML=`<table><thead><tr><th>Area</th>${impactOptions.map(x=>`<th>${x[1]}</th>`).join("")}</tr></thead><tbody>${impactRows.map(([key,label])=>`<tr><th scope="row">${label}</th>${impactOptions.map(([value])=>`<td><input aria-label="${label}: ${impactOptions.find(x=>x[0]===value)[1]}" type="radio" name="impact_${key}" value="${value}"></td>`).join("")}</tr>`).join("")}</tbody></table>`;
+
+  const form=document.getElementById("assessment"),error=document.getElementById("error"),daysWrap=document.getElementById("daysWrap"),daysHigh=document.getElementById("daysHigh");
+  form.addEventListener("change",event=>{if(event.target.name==="highsPastYear"){const show=event.target.value==="yes";daysWrap.classList.toggle("show",show);daysHigh.required=show;if(!show)daysHigh.value=""}updateProgress()});form.addEventListener("input",updateProgress);
+  function answered(name){return Boolean(form.querySelector(`[name="${name}"]:checked`))}
+  function updateProgress(){const groupCount=requiredGroups.filter(answered).length;const details=["firstName","lastName","dateOfBirth"].filter(id=>document.getElementById(id).value.trim()).length;const recent=form.querySelector('[name="highsPastYear"]:checked')?.value;const daysNeeded=recent==="yes";const daysDone=!daysNeeded||daysHigh.value!=="";const total=requiredGroups.length+3+(daysNeeded?1:0);const completed=groupCount+details+(daysNeeded&&daysDone?1:0);const percent=Math.round(completed/total*100);document.getElementById("progressLabel").textContent=`${completed} of ${total} required responses`;document.getElementById("progressPercent").textContent=`${percent}%`;document.getElementById("progressFill").style.width=`${percent}%`}
+  function getValue(name){return form.querySelector(`[name="${name}"]:checked`)?.value||""}
+  function validate(){const missing=requiredGroups.filter(name=>!answered(name));const emptyDetails=["firstName","lastName","dateOfBirth"].filter(id=>!document.getElementById(id).value.trim());if(getValue("highsPastYear")==="yes"&&(daysHigh.value===""||Number(daysHigh.value)<0||Number(daysHigh.value)>366))missing.push("daysHigh");if(missing.length||emptyDetails.length){error.textContent="Please complete every required question before submitting.";error.classList.add("show");(form.querySelector(`[name="${missing[0]}"]`)||document.getElementById(emptyDetails[0])||error).scrollIntoView({behavior:"smooth",block:"center"});return false}error.classList.remove("show");return true}
+  function buildPayload(){const responses=symptomItems.map((text,i)=>({item:i+1,text,response:getValue(`item${i+1}`),endorsed:getValue(`item${i+1}`)==="yes"}));const score=responses.filter(x=>x.endorsed).length;return{instrument:"HCL-32-R1",version:"1",submittedAt:new Date().toISOString(),firstName:document.getElementById("firstName").value.trim(),lastName:document.getElementById("lastName").value.trim(),dateOfBirth:document.getElementById("dateOfBirth").value,sex:document.getElementById("sex").value,todayState:getValue("todayState"),usualState:getValue("usualState"),responses,score,reviewThreshold:SCREENING_REVIEW_THRESHOLD,screeningFlag:score>=SCREENING_REVIEW_THRESHOLD,impact:Object.fromEntries(impactRows.map(([key])=>[key,getValue(`impact_${key}`)])),reactions:getValue("reactions"),highLength:getValue("highLength"),highsPastYear:getValue("highsPastYear"),daysHigh:getValue("highsPastYear")==="yes"?Number(daysHigh.value):null};}
+  form.addEventListener("submit",event=>{event.preventDefault();if(!validate())return;const payload=buildPayload();document.getElementById("score").textContent=`${payload.score}/32`;document.getElementById("resultExplanation").textContent=payload.screeningFlag?"This score meets a commonly used threshold for additional clinical review. It is not a diagnosis.":"This score is below a commonly used review threshold. A lower score does not rule out a mood disorder.";form.style.display="none";document.querySelector(".progress-wrap").style.display="none";document.getElementById("result").classList.add("show");document.getElementById("result").focus();window.parent.postMessage({type:"HCL32_ASSESSMENT_SUBMIT",payload},"*");setTimeout(()=>{const status=document.getElementById("saveStatus");if(status.textContent.includes("Sending"))status.textContent="Responses completed. Please confirm with your clinician that they were received."},5000)});
+  window.addEventListener("message",event=>{if(event.data?.type!=="HCL32_ASSESSMENT_SAVED")return;const status=document.getElementById("saveStatus");status.textContent=event.data.ok?"Your responses were saved successfully.":(event.data.message||"Your responses could not be saved. Please tell your clinician.");status.style.color=event.data.ok?"var(--teal)":"var(--red)"});
+  function resetAll(){form.reset();daysWrap.classList.remove("show");daysHigh.required=false;form.style.display="grid";document.querySelector(".progress-wrap").style.display="block";document.getElementById("result").classList.remove("show");error.classList.remove("show");updateProgress();window.scrollTo({top:0,behavior:"smooth"})}
+  document.getElementById("resetButton").addEventListener("click",()=>{if(confirm("Clear all responses and start over?"))resetAll()});document.getElementById("retakeButton").addEventListener("click",resetAll);updateProgress();
+</script>
+</body>
+</html>
