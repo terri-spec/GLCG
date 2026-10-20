@@ -117,6 +117,26 @@
   window.addEventListener("message",event=>{if(event.data?.type!=="HCL32_ASSESSMENT_SAVED")return;const status=document.getElementById("saveStatus");status.textContent=event.data.ok?"Your responses were saved successfully.":(event.data.message||"Your responses could not be saved. Please tell your clinician.");status.style.color=event.data.ok?"var(--teal)":"var(--red)"});
   function resetAll(){form.reset();daysWrap.classList.remove("show");daysHigh.required=false;form.style.display="grid";document.querySelector(".progress-wrap").style.display="block";document.getElementById("result").classList.remove("show");error.classList.remove("show");updateProgress();window.scrollTo({top:0,behavior:"smooth"})}
   document.getElementById("resetButton").addEventListener("click",()=>{if(confirm("Clear all responses and start over?"))resetAll()});document.getElementById("retakeButton").addEventListener("click",resetAll);updateProgress();
+
+  // The Wix embed is intentionally as tall as the assessment so the site header
+  // and footer remain ordinary page content. Forward pointer and touch scrolling
+  // to the Wix page because wheel/touch events do not cross an iframe boundary.
+  window.addEventListener("wheel",event=>{
+    if(!event.deltaY)return;
+    event.preventDefault();
+    window.parent.postMessage({type:"HCL32_SCROLL_PAGE",deltaY:event.deltaY},"*");
+  },{passive:false});
+  let lastTouchY=null;
+  window.addEventListener("touchstart",event=>{lastTouchY=event.touches[0]?.clientY??null},{passive:true});
+  window.addEventListener("touchmove",event=>{
+    const currentY=event.touches[0]?.clientY;
+    if(lastTouchY==null||currentY==null)return;
+    const deltaY=lastTouchY-currentY;
+    lastTouchY=currentY;
+    event.preventDefault();
+    window.parent.postMessage({type:"HCL32_SCROLL_PAGE",deltaY},"*");
+  },{passive:false});
+  window.addEventListener("touchend",()=>{lastTouchY=null},{passive:true});
 </script>
 </body>
 </html>
